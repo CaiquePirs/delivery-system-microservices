@@ -30,8 +30,7 @@ public class CustomerController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CustomerResponseDTO> findCustomerById(@PathVariable(name = "id") UUID customerId){
-        Customer customer = customerService.findCustomerById(customerId);
-        return ResponseEntity.ok(customerMapper.mapToResponse(customer));
+        return ResponseEntity.ok(customerService.findCustomerById(customerId));
     }
 
 }

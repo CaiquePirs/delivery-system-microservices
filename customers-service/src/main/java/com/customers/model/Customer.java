@@ -35,7 +35,6 @@ public class Customer {
     private String phone;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_id")
     private List<Address> addresses = new ArrayList<>();
 
     @CreationTimestamp

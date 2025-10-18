@@ -26,7 +26,7 @@ public class CustomerService {
     public Customer createCustomer(CustomerRequestDTO dto) {
         validator.checkIfExistCustomerWithSameEmail(dto.email());
 
-        List<Address> addresses = addressService.createAddress(dto.addressRequest());
+        List<Address> addresses = addressService.createAddressByList(dto.addressRequest());
 
         Customer customer = Customer.builder()
                 .name(dto.name())

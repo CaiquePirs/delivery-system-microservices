@@ -2,7 +2,12 @@ package com.customers.controller.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.UUID;
+
 public record AddressRequestDTO(
+
+        @NotBlank(message = "Customer ID is required")
+        UUID customerId,
 
         @NotBlank(message = "Street is required")
         String street,

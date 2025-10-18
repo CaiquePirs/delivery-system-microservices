@@ -11,7 +11,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AddressService {
 
-    public List<Address> mapAddressToEntity(List<AddressRequestDTO> requests){
+    public List<Address> createAddress(List<AddressRequestDTO> requests){
         return requests.stream().map(dto -> Address.builder()
                         .street(dto.street())
                         .zipcode(dto.zipcode())

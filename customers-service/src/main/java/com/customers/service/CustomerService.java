@@ -1,6 +1,5 @@
 package com.customers.service;
 
-import com.customers.controller.advice.exceptions.CustomerFoundException;
 import com.customers.controller.advice.exceptions.CustomerNotFoundException;
 import com.customers.controller.dto.CustomerRequestDTO;
 import com.customers.controller.dto.CustomerResponseDTO;
@@ -8,6 +7,7 @@ import com.customers.mapper.CustomerMapper;
 import com.customers.model.Address;
 import com.customers.model.Customer;
 import com.customers.repository.CustomerRepository;
+import com.customers.validator.CustomerValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -17,15 +17,16 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CustomerService {
 
-    private final CustomerRepository customerRepository;
+    private final CustomerRepository repository;
     private final RedisService redisService;
     private final AddressService addressService;
-    private final CustomerMapper customerMapper;
+    private final CustomerMapper mapper;
+    private final CustomerValidator validator;
 
     public Customer createCustomer(CustomerRequestDTO dto) {
-        checkIfExistCustomerWithSameEmail(dto.email());
+        validator.checkIfExistCustomerWithSameEmail(dto.email());
 
-        List<Address> addresses = addressService.mapAddressToEntity(dto.addressRequest());
+        List<Address> addresses = addressService.createAddress(dto.addressRequest());
 
         Customer customer = Customer.builder()
                 .name(dto.name())
@@ -35,14 +36,7 @@ public class CustomerService {
                 .build();
 
         addresses.forEach(a -> a.setCustomer(customer));
-        return customerRepository.save(customer);
-    }
-
-    private void checkIfExistCustomerWithSameEmail(String email) {
-        customerRepository.findByEmail(email).ifPresent(customer -> {
-            throw new CustomerFoundException(
-                    String.format("Customer with email: %s already exist", email));
-        });
+        return repository.save(customer);
     }
 
     public CustomerResponseDTO findCustomerById(UUID customerId) {
@@ -52,11 +46,11 @@ public class CustomerService {
             return cachedCustomer;
         }
 
-        Customer customer = customerRepository.findById(customerId)
+        Customer customer = repository.findById(customerId)
                 .orElseThrow(() -> new CustomerNotFoundException(
                         String.format("Customer ID: %s not found", customerId)));
 
         redisService.insertCustomerInCache(customer);
-        return customerMapper.mapToResponse(customer);
+        return mapper.mapToResponse(customer);
     }
 }

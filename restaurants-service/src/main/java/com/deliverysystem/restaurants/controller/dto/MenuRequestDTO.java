@@ -1,6 +1,11 @@
 package com.deliverysystem.restaurants.controller.dto;
 
-public record MenuRequestDTO(
+import com.deliverysystem.restaurants.model.enums.MenuType;
 
-) {
+import java.math.BigDecimal;
+
+public record MenuRequestDTO(
+        String description,
+        MenuType menuType,
+        BigDecimal price) {
 }

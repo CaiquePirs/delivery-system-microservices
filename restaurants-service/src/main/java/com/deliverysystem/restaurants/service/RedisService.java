@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.UUID;
 
 @Service
@@ -24,7 +25,7 @@ public class RedisService {
     public void insertRestaurantInCache(Restaurant restaurant){
         String accessKey = String.format("restaurants:%s", restaurant.getId());
         RestaurantResponseDTO restaurantDTO = restaurantMapper.toResponse(restaurant);
-        redisTemplate.opsForValue().set(accessKey, restaurantDTO);
+        redisTemplate.opsForValue().set(accessKey, restaurantDTO, Duration.ofMinutes(60));
     }
 
 }

@@ -1,4 +1,4 @@
-package com.deliverysystem.restaurants.model;
+package com.deliverysystem.restaurants.model.enums;
 
 public enum RestaurantStatus {
     OPEN,

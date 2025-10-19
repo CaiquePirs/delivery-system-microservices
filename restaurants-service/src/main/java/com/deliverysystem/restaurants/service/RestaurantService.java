@@ -1,15 +1,22 @@
 package com.deliverysystem.restaurants.service;
 
 import com.deliverysystem.restaurants.controller.advice.exceptions.RestaurantNotFoundException;
+import com.deliverysystem.restaurants.controller.dto.RestaurantQueryFilter;
 import com.deliverysystem.restaurants.controller.dto.RestaurantRequestDTO;
+import com.deliverysystem.restaurants.controller.dto.RestaurantResponseDTO;
 import com.deliverysystem.restaurants.mapper.RestaurantMapper;
 import com.deliverysystem.restaurants.model.Restaurant;
-import com.deliverysystem.restaurants.model.RestaurantStatus;
+import com.deliverysystem.restaurants.model.enums.RestaurantStatus;
 import com.deliverysystem.restaurants.repository.RestaurantRepository;
+import com.deliverysystem.restaurants.repository.RestaurantSpecification;
 import com.deliverysystem.restaurants.validator.RestaurantValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -44,5 +51,14 @@ public class RestaurantService {
         }
 
         repository.save(restaurant);
+    }
+
+    public Page<RestaurantResponseDTO> findRestaurantsByFilter(RestaurantQueryFilter filter, Pageable pageable){
+        Page<Restaurant> restaurantsPage = repository.findAll(
+                RestaurantSpecification.specification(filter), pageable);
+
+        List<RestaurantResponseDTO> restaurantList = restaurantsPage.map(mapper::toResponse).toList();
+
+        return new PageImpl<>(restaurantList, pageable, restaurantList.size());
     }
 }

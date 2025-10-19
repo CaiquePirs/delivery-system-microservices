@@ -1,5 +1,6 @@
 package com.deliverysystem.restaurants.model;
 
+import com.deliverysystem.restaurants.model.enums.RestaurantStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

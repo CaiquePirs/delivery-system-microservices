@@ -1,5 +1,6 @@
 package com.deliverysystem.restaurants.model;
 
+import com.deliverysystem.restaurants.model.enums.MenuStatus;
 import com.deliverysystem.restaurants.model.enums.MenuType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,8 +34,9 @@ public class Menu {
     @Column(nullable = false)
     private BigDecimal price;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private boolean isAvailable;
+    private MenuStatus status;
 
     @ManyToOne
     @JoinColumn(name = "restaurant_id")

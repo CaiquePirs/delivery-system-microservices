@@ -5,6 +5,7 @@ import com.deliverysystem.restaurants.controller.dto.MenuRequestDTO;
 import com.deliverysystem.restaurants.mapper.MenuMapper;
 import com.deliverysystem.restaurants.model.Menu;
 import com.deliverysystem.restaurants.model.Restaurant;
+import com.deliverysystem.restaurants.model.enums.MenuStatus;
 import com.deliverysystem.restaurants.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class MenuService {
         Restaurant restaurant = restaurantService.findById(restaurantId);
 
         Menu menu = menuMapper.toEntity(dto);
-        menu.setAvailable(true);
+        menu.setStatus(MenuStatus.AVAILABLE);
         menu.setRestaurant(restaurant);
 
         restaurant.getMenus().add(menu);
@@ -32,8 +33,8 @@ public class MenuService {
 
     public Menu findMenuById(UUID restaurantId, UUID menuId){
         Menu menu = menuRepository.findById(menuId)
-                .orElseThrow(() -> new MenuNotFoundException(
-                        String.format("Menu ID: %s not found", menuId)));
+                .filter(m -> !m.getStatus().equals(MenuStatus.UNAVAILABLE))
+                .orElseThrow(() -> new MenuNotFoundException(String.format("Menu ID: %s not found", menuId)));
 
         Restaurant restaurant = restaurantService.findById(restaurantId);
 

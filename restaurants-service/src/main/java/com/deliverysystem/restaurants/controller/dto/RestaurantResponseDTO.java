@@ -1,7 +1,7 @@
 package com.deliverysystem.restaurants.controller.dto;
 
 import com.deliverysystem.restaurants.model.Address;
-import com.deliverysystem.restaurants.model.RestaurantStatus;
+import com.deliverysystem.restaurants.model.enums.RestaurantStatus;
 
 import java.util.List;
 import java.util.UUID;

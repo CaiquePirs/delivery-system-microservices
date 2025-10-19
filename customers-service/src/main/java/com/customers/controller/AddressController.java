@@ -9,13 +9,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/address")
+@RequestMapping("/api/customers/{customerId}/addresses")
 @RequiredArgsConstructor
 public class AddressController {
 
@@ -23,8 +22,10 @@ public class AddressController {
     private final AddressMapper addressMapper;
 
     @PostMapping
-    public ResponseEntity<AddressResponseDTO> createAddress(@RequestBody @Valid AddressRequestDTO addressRequestDTO){
-        Address address = addressService.createAddress(addressRequestDTO);
+    public ResponseEntity<AddressResponseDTO> createAddress(
+            @PathVariable UUID customerId,
+            @RequestBody @Valid AddressRequestDTO addressRequestDTO){
+        Address address = addressService.createAddress(customerId, addressRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(addressMapper.mapToResponse(address));
     }
 }

@@ -18,9 +18,7 @@ import java.util.UUID;
 public class CustomerService {
 
     private final CustomerRepository repository;
-    private final RedisService redisService;
     private final AddressService addressService;
-    private final CustomerMapper mapper;
     private final CustomerValidator validator;
 
     public Customer createCustomer(CustomerRequestDTO dto) {
@@ -39,18 +37,9 @@ public class CustomerService {
         return repository.save(customer);
     }
 
-    public CustomerResponseDTO findCustomerById(UUID customerId) {
-        CustomerResponseDTO cachedCustomer = redisService.findCustomerInCache(customerId);
-
-        if (cachedCustomer != null) {
-            return cachedCustomer;
-        }
-
-        Customer customer = repository.findById(customerId)
+    public Customer findCustomerById(UUID customerId) {
+       return repository.findById(customerId)
                 .orElseThrow(() -> new CustomerNotFoundException(
                         String.format("Customer ID: %s not found", customerId)));
-
-        redisService.insertCustomerInCache(customer);
-        return mapper.mapToResponse(customer);
     }
 }

@@ -25,7 +25,6 @@ public class RedisService {
     public void insertCustomerInCache(Customer customer) {
         String accessKey = String.format("customer:%s:cache", customer.getId());
         CustomerResponseDTO customerDTO = customerMapper.mapToResponse(customer);
-
         redisTemplate.opsForValue().set(accessKey, customerDTO, Duration.ofMinutes(60));
     }
 }

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -18,8 +19,8 @@ public class AddressService {
     private final AddressRepository addressRepository;
     private final CustomerRepository customerRepository;
 
-    public Address createAddress(AddressRequestDTO dto){
-        Customer customer = customerRepository.findById(dto.customerId())
+    public Address createAddress(UUID customerId, AddressRequestDTO dto){
+        Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new CustomerNotFoundException("Customer ID not found"));
 
         Address address = Address.builder()

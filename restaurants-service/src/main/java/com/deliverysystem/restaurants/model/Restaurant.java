@@ -35,6 +35,9 @@ public class Restaurant {
     @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
+    private RestaurantStatus status;
+
     @Embedded
     private Address address;
 

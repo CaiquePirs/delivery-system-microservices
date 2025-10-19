@@ -24,17 +24,19 @@ public class RestaurantController {
     private final RedisService redisService;
 
     @PostMapping
-    public ResponseEntity<RestaurantResponseDTO> createRestaurant(@RequestBody @Valid RestaurantRequestDTO dto){
+    public ResponseEntity<RestaurantResponseDTO> createRestaurant(
+            @RequestBody @Valid RestaurantRequestDTO dto) {
+
         Restaurant restaurant = restaurantService.createRestaurant(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(restaurantMapper.toResponse(restaurant));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RestaurantResponseDTO> findById(
-            @PathVariable(name = "id") UUID restaurantId){
+            @PathVariable(name = "id") UUID restaurantId) {
 
         RestaurantResponseDTO cachedRestaurant = redisService.findRestaurantInCache(restaurantId);
-        if(cachedRestaurant != null){
+        if (cachedRestaurant != null) {
             return ResponseEntity.ok(cachedRestaurant);
         }
 
@@ -43,4 +45,11 @@ public class RestaurantController {
 
         return ResponseEntity.ok(restaurantMapper.toResponse(restaurant));
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> toggleRestaurantStatus(@PathVariable(name = "id") UUID restaurantId) {
+        restaurantService.toggleRestaurantStatus(restaurantId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

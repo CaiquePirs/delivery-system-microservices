@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: restaurants
+
+  output:
+    ansi:
+      enabled: ALWAYS
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/restaurants
+    username: admin
+    password: admin123
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  cache:
+    type: REDIS
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+logging:
+  pattern:
+    console: "%clr(%d{dd-MM-yyyy HH:mm:ss}){faint} %clr(%5p) %clr([%t]){faint} %clr(%-40.40logger){cyan} %clr(:){yellow} %m%n"
+
+server:
+  port: 8081

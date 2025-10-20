@@ -17,7 +17,7 @@ public class CustomerMapper {
                 .name(customer.getName())
                 .email(customer.getEmail())
                 .phone(customer.getPhone())
-                .addressResponse(addressMapper.mapCustomerAddress(customer.getAddresses()))
+                .address(addressMapper.mapCustomerAddress(customer.getAddresses()))
                 .build();
     }
 

@@ -11,5 +11,5 @@ public record CustomerResponseDTO(
         String name,
         String email,
         String phone,
-        List<AddressResponseDTO> addressResponse) {
+        List<AddressResponseDTO> address) {
 }

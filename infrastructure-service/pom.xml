@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.deliverysistem</groupId>
-	<artifactId>service-infrastructure</artifactId>
+	<artifactId>infrastructure-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>service-infrastructure</name>
 	<description>Arquitetura de microsserviços e EDA com Spring Boot, comunicação assíncrona via RabbitMQ, PostgreSQL, Redis (Cache Aside + Sentinel), autenticação com Keycloak, notificações por e-mail, Docker, CI/CD (GitHub Actions) e deploy na AWS.</description>

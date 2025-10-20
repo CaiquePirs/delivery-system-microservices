@@ -70,3 +70,5 @@ services:
       - "5050:80"
     networks:
       - database-network
+    volumes:
+      - ./pgadmin_data:/var/lib/pgadmin

@@ -16,3 +16,8 @@ logging:
 
 server:
   port: 8082
+
+customers:
+  url: http://localhost:8080/api/customers
+restaurants:
+  url: http://localhost:8081/api/restaurants

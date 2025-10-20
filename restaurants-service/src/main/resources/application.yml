@@ -7,7 +7,7 @@ spring:
       enabled: ALWAYS
 
   datasource:
-    url: jdbc:postgresql://localhost:5433/restaurants
+    url: jdbc:postgresql://localhost:5433/restaurants_db
     username: admin
     password: admin123
 

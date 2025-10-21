@@ -1,6 +1,5 @@
 package com.deliverysystem.orders.controller.dto;
 
-import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
 import com.deliverysystem.orders.model.ItemsOrder;
 import com.deliverysystem.orders.model.PaymentData;
 import lombok.Builder;
@@ -22,5 +21,5 @@ public record OrderEventPublisherDTO(
         PaymentData paymentData,
         LocalDateTime estimated_delivery,
         List<ItemsOrder> items,
-        CustomerRepresentationDTO customer) {
+        CustomerEventPublisherDTO customer) {
 }

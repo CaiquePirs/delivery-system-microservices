@@ -1,6 +1,8 @@
 package com.deliverysystem.orders.mapper;
 
+import com.deliverysystem.orders.client.representation.AddressRepresentationDTO;
 import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
+import com.deliverysystem.orders.controller.dto.CustomerEventPublisherDTO;
 import com.deliverysystem.orders.controller.dto.OrderEventPublisherDTO;
 import com.deliverysystem.orders.controller.dto.OrderRequestDTO;
 import com.deliverysystem.orders.controller.dto.OrderResponseDTO;
@@ -49,7 +51,7 @@ public class OrderMapper {
                 .build();
     }
 
-    public OrderEventPublisherDTO mapToPublishEvent(Order order, CustomerRepresentationDTO customer) {
+    public OrderEventPublisherDTO mapToPublishEvent(Order order, CustomerRepresentationDTO customer, AddressRepresentationDTO deliveryAddress) {
         return OrderEventPublisherDTO.builder()
                 .id(order.getId().toString())
                 .orderDate(order.getOrderDate())
@@ -60,7 +62,18 @@ public class OrderMapper {
                 .estimated_delivery(order.getEstimated_delivery())
                 .total(order.getTotal())
                 .items(order.getItemsOrder())
-                .customer(customer)
+                .customer(mapToCustomerEvent(customer, deliveryAddress))
                 .build();
     }
+
+    private CustomerEventPublisherDTO mapToCustomerEvent(CustomerRepresentationDTO customer, AddressRepresentationDTO deliveryAddress){
+        return CustomerEventPublisherDTO.builder()
+                .id(customer.id())
+                .name(customer.name())
+                .phone(customer.phone())
+                .email(customer.email())
+                .deliveryAddress(deliveryAddress)
+                .build();
+    }
+
 }

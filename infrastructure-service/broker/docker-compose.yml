@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin123
+    volumes:
+      - ./rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - rabbitmq_network
+
+volumes:
+  rabbitmq_data:
+
+networks:
+  rabbitmq_network:
+    driver: bridge

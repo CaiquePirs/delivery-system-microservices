@@ -1,4 +1,4 @@
-package com.deliverysystem.order_service.model.enums;
+package com.deliverysystem.orders.model.enums;
 
 public enum OrderStatus {
     PENDING_PAYMENT,

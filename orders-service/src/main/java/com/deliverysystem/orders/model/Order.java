@@ -1,15 +1,15 @@
-package com.deliverysystem.order_service.model;
+package com.deliverysystem.orders.model;
 
-import com.deliverysystem.order_service.model.enums.AuditStatus;
-import com.deliverysystem.order_service.model.enums.OrderStatus;
+import com.deliverysystem.orders.model.enums.AuditStatus;
+import com.deliverysystem.orders.model.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,17 +26,19 @@ public class Order {
 
     @MongoId
     private ObjectId id;
-    private LocalDate orderDate;
-    private BigDecimal total;
     private UUID paymentId;
     private UUID deliveryId;
     private UUID customerId;
     private UUID restaurantId;
+    private LocalDate orderDate;
+    private BigDecimal total;
     private OrderStatus status;
     private String notes;
-    private AuditStatus auditStatus;
     private LocalDateTime estimated_delivery;
     private List<ItemsOrder> itemsOrder = new ArrayList<>();
-    private LocalDateTime created_at = LocalDateTime.now();
-    private LocalDateTime updated_at = LocalDateTime.now();
+    @Transient
+    private PaymentData paymentData;
+    private AuditStatus auditStatus;
+    private LocalDateTime created_at;
+    private LocalDateTime updated_at;
 }

@@ -1,6 +1,5 @@
 package com.deliverysystem.orders.mapper;
 
-import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
 import com.deliverysystem.orders.controller.dto.OrderRequestDTO;
 import com.deliverysystem.orders.controller.dto.OrderResponseDTO;
 import com.deliverysystem.orders.model.ItemsOrder;
@@ -34,19 +33,17 @@ public class OrderMapper {
                 .build();
     }
 
-    public OrderResponseDTO mapToResponse(Order order, CustomerRepresentationDTO customer){
+    public OrderResponseDTO mapToResponse(Order order){
         return OrderResponseDTO.builder()
                 .id(order.getId().toString())
-                .deliveryId(order.getDeliveryId())
                 .restaurantId(order.getRestaurantId())
-                .paymentId(order.getPaymentId())
                 .items(order.getItemsOrder())
                 .status(order.getStatus())
                 .total(order.getTotal())
                 .orderDate(order.getOrderDate())
                 .estimated_delivery(order.getEstimated_delivery())
                 .notes(order.getNotes())
-                .customer(customer)
+                .customerId(order.getCustomerId())
                 .build();
     }
 }

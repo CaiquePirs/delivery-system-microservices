@@ -3,12 +3,14 @@ package com.deliverysystem.orders.service;
 import com.deliverysystem.orders.client.service.ApiClientService;
 import com.deliverysystem.orders.controller.dto.OrderRequestDTO;
 import com.deliverysystem.orders.controller.exception.ClientNotFoundException;
+import com.deliverysystem.orders.controller.exception.OrderNotFoundException;
 import com.deliverysystem.orders.mapper.OrderMapper;
 import com.deliverysystem.orders.model.ItemsOrder;
 import com.deliverysystem.orders.model.Order;
 import com.deliverysystem.orders.repository.OrderRepository;
 import com.deliverysystem.orders.service.calculator.OrderCalculator;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,8 +39,13 @@ public class OrderService {
         List<ItemsOrder> items = itemOrderService.createItemsOrder(restaurant, orderDTO.itemsDTO());
         BigDecimal totalOrder = calculator.calculateTotalOrder(items);
 
-        Order order = orderMapper.mapToEntity(orderDTO, items, totalOrder);
-        return orderRepository.save(order);
+        Order orderMapped = orderMapper.mapToEntity(orderDTO, items, totalOrder);
+        return orderRepository.save(orderMapped);
     }
 
+    public Order findById(String orderId) {
+        return orderRepository.findById(new ObjectId(orderId))
+                .orElseThrow(() -> new OrderNotFoundException(
+                        String.format("Order ID: %s not found", orderId)));
+    }
 }

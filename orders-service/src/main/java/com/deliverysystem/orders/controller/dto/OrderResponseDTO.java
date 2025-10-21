@@ -1,6 +1,5 @@
 package com.deliverysystem.orders.controller.dto;
 
-import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
 import com.deliverysystem.orders.model.ItemsOrder;
 import com.deliverysystem.orders.model.enums.OrderStatus;
 import lombok.Builder;
@@ -13,14 +12,12 @@ import java.util.UUID;
 @Builder
 public record OrderResponseDTO(
         String id,
+        UUID customerId,
         UUID restaurantId,
         LocalDate orderDate,
         BigDecimal total,
         OrderStatus status,
         String notes,
         LocalDateTime estimated_delivery,
-        UUID paymentId,
-        UUID deliveryId,
-        List<ItemsOrder> items,
-        CustomerRepresentationDTO customer) {
+        List<ItemsOrder> items) {
 }

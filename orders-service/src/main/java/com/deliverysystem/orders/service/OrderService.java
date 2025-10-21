@@ -10,11 +10,11 @@ import com.deliverysystem.orders.model.ItemsOrder;
 import com.deliverysystem.orders.model.Order;
 import com.deliverysystem.orders.repository.OrderRepository;
 import com.deliverysystem.orders.service.calculator.OrderCalculator;
+import com.deliverysystem.orders.service.validator.OrderValidator;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -28,11 +28,13 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final OrderEventPublisher orderEventPublisher;
+    private final OrderValidator orderValidator;
 
     @Transactional
     public Order createOrder(OrderRequestDTO orderDTO){
         var customer = apiClientService.findCustomerById(orderDTO.customerId());
         var restaurant = apiClientService.findRestaurantById(orderDTO.restaurantId());
+        var deliveryAddress = orderValidator.resolveDeliveryAddress(orderDTO, customer);
 
         if(restaurant.status().equals("CLOSED")){
             throw new ClientNotFoundException("The selected restaurant is currently closed for orders. ");
@@ -44,9 +46,7 @@ public class OrderService {
         Order orderMapped = orderMapper.mapToEntity(orderDTO, items, totalOrder);
         Order orderCreated = orderRepository.save(orderMapped);
 
-        var orderEventDTO = orderMapper.mapToPublishEvent(orderCreated, customer);
-
-        orderEventPublisher.publisher(orderEventDTO);
+        orderEventPublisher.publisher(orderCreated, customer, deliveryAddress);
         return orderCreated;
     }
 

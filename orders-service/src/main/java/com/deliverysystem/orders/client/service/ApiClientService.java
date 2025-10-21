@@ -3,6 +3,7 @@ package com.deliverysystem.orders.client.service;
 import com.deliverysystem.orders.client.api.CustomerClientApi;
 import com.deliverysystem.orders.client.api.MenuClientApi;
 import com.deliverysystem.orders.client.api.RestaurantClientApi;
+import com.deliverysystem.orders.client.representation.AddressRepresentationDTO;
 import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
 import com.deliverysystem.orders.client.representation.MenuRepresentationDTO;
 import com.deliverysystem.orders.client.representation.RestaurantRepresentationDTO;
@@ -48,6 +49,16 @@ public class ApiClientService {
 
         } catch (FeignException e){
             throw new ClientNotFoundException("Menu not found. Please enter the ID correctly.");
+        }
+    }
+
+    public AddressRepresentationDTO findAddressById(UUID customerId, UUID addressId) {
+        try {
+            var address = customerClientApi.findCAddressById(addressId, customerId);
+            return address.getBody();
+
+        } catch (Exception e) {
+            throw new ClientNotFoundException("Address not found. Please enter the ID correctly.");
         }
     }
 

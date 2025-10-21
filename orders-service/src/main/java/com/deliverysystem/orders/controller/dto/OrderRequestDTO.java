@@ -10,6 +10,9 @@ public record OrderRequestDTO(
         @NotNull(message = "Customer ID is required")
         UUID customerId,
 
+        @NotNull(message = "Delivery Address ID is required")
+        UUID deliveryAddressId,
+
         @NotNull(message = "Restaurant ID is required")
         UUID restaurantId,
 

@@ -1,5 +1,6 @@
 package com.deliverysystem.orders.client.api;
 
+import com.deliverysystem.orders.client.representation.AddressRepresentationDTO;
 import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -14,4 +15,8 @@ public interface CustomerClientApi {
     ResponseEntity<CustomerRepresentationDTO> findCustomerById(
             @PathVariable(name = "id" ) UUID customerId);
 
+    @GetMapping("/{customerId}/address/{id}")
+    ResponseEntity<AddressRepresentationDTO> findCAddressById(
+            @PathVariable(name = "id" ) UUID addressId,
+            @PathVariable UUID customerId);
 }

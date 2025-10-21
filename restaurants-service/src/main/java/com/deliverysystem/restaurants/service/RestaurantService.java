@@ -25,6 +25,7 @@ public class RestaurantService {
 
     private final RestaurantRepository repository;
     private final RestaurantValidator validator;
+    private final RedisService redisService;
     private final RestaurantMapper mapper;
 
     public Restaurant createRestaurant(RestaurantRequestDTO dto){
@@ -50,6 +51,7 @@ public class RestaurantService {
             restaurant.setStatus(RestaurantStatus.OPEN);
         }
 
+        redisService.insertRestaurantInCache(restaurant);
         repository.save(restaurant);
     }
 

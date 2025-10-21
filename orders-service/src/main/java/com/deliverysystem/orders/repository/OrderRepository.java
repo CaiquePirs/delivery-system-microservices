@@ -1,6 +1,6 @@
-package com.deliverysystem.order_service.repository;
+package com.deliverysystem.orders.repository;
 
-import com.deliverysystem.order_service.model.Order;
+import com.deliverysystem.orders.model.Order;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 

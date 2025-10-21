@@ -1,6 +1,6 @@
-package com.deliverysystem.order_service.cliente.api;
+package com.deliverysystem.orders.client.api;
 
-import com.deliverysystem.order_service.cliente.representation.MenuRepresentationDTO;
+import com.deliverysystem.orders.client.representation.MenuRepresentationDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

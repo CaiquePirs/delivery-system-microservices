@@ -1,4 +1,4 @@
-package com.deliverysystem.order_service;
+package com.deliverysystem.orders;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

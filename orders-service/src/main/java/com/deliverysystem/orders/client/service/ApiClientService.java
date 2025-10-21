@@ -1,12 +1,12 @@
-package com.deliverysystem.order_service.cliente.service;
+package com.deliverysystem.orders.client.service;
 
-import com.deliverysystem.order_service.cliente.api.CustomerClientApi;
-import com.deliverysystem.order_service.cliente.api.MenuClientApi;
-import com.deliverysystem.order_service.cliente.api.RestaurantClientApi;
-import com.deliverysystem.order_service.cliente.representation.CustomerRepresentationDTO;
-import com.deliverysystem.order_service.cliente.representation.MenuRepresentationDTO;
-import com.deliverysystem.order_service.cliente.representation.RestaurantRepresentationDTO;
-import com.deliverysystem.order_service.controller.exception.ClientNotFoundException;
+import com.deliverysystem.orders.client.api.CustomerClientApi;
+import com.deliverysystem.orders.client.api.MenuClientApi;
+import com.deliverysystem.orders.client.api.RestaurantClientApi;
+import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
+import com.deliverysystem.orders.client.representation.MenuRepresentationDTO;
+import com.deliverysystem.orders.client.representation.RestaurantRepresentationDTO;
+import com.deliverysystem.orders.controller.exception.ClientNotFoundException;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

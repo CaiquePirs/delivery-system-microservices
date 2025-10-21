@@ -1,4 +1,4 @@
-package com.deliverysystem.order_service.cliente.representation;
+package com.deliverysystem.orders.client.representation;
 
 import java.util.UUID;
 

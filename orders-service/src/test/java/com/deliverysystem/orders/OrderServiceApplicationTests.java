@@ -1,4 +1,4 @@
-package com.deliverysystem.order_service;
+package com.deliverysystem.orders;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

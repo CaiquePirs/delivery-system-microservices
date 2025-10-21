@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.deliverysystem</groupId>
-	<artifactId>order-service</artifactId>
+	<artifactId>orders-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>order-service</name>
 	<description>Order Service</description>

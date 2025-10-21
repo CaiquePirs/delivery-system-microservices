@@ -1,5 +1,7 @@
 package com.deliverysystem.orders.mapper;
 
+import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
+import com.deliverysystem.orders.controller.dto.OrderEventPublisherDTO;
 import com.deliverysystem.orders.controller.dto.OrderRequestDTO;
 import com.deliverysystem.orders.controller.dto.OrderResponseDTO;
 import com.deliverysystem.orders.model.ItemsOrder;
@@ -44,6 +46,21 @@ public class OrderMapper {
                 .estimated_delivery(order.getEstimated_delivery())
                 .notes(order.getNotes())
                 .customerId(order.getCustomerId())
+                .build();
+    }
+
+    public OrderEventPublisherDTO mapToPublishEvent(Order order, CustomerRepresentationDTO customer) {
+        return OrderEventPublisherDTO.builder()
+                .id(order.getId().toString())
+                .orderDate(order.getOrderDate())
+                .notes(order.getNotes())
+                .paymentData(order.getPaymentData())
+                .status(order.getStatus().toString())
+                .restaurantId(order.getRestaurantId())
+                .estimated_delivery(order.getEstimated_delivery())
+                .total(order.getTotal())
+                .items(order.getItemsOrder())
+                .customer(customer)
                 .build();
     }
 }

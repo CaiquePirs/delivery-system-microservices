@@ -4,6 +4,7 @@ import com.deliverysystem.orders.client.service.ApiClientService;
 import com.deliverysystem.orders.controller.dto.OrderRequestDTO;
 import com.deliverysystem.orders.controller.exception.ClientNotFoundException;
 import com.deliverysystem.orders.controller.exception.OrderNotFoundException;
+import com.deliverysystem.orders.event.publisher.OrderEventPublisher;
 import com.deliverysystem.orders.mapper.OrderMapper;
 import com.deliverysystem.orders.model.ItemsOrder;
 import com.deliverysystem.orders.model.Order;
@@ -26,6 +27,7 @@ public class OrderService {
     private final OrderCalculator calculator;
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
+    private final OrderEventPublisher orderEventPublisher;
 
     @Transactional
     public Order createOrder(OrderRequestDTO orderDTO){
@@ -40,7 +42,12 @@ public class OrderService {
         BigDecimal totalOrder = calculator.calculateTotalOrder(items);
 
         Order orderMapped = orderMapper.mapToEntity(orderDTO, items, totalOrder);
-        return orderRepository.save(orderMapped);
+        Order orderCreated = orderRepository.save(orderMapped);
+
+        var orderEventDTO = orderMapper.mapToPublishEvent(orderCreated, customer);
+
+        orderEventPublisher.publisher(orderEventDTO);
+        return orderCreated;
     }
 
     public Order findById(String orderId) {

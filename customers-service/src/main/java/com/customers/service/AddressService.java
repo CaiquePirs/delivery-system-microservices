@@ -18,6 +18,7 @@ public class AddressService {
 
     private final AddressRepository addressRepository;
     private final CustomerRepository customerRepository;
+    private final RedisService redisService;
 
     public Address createAddress(UUID customerId, AddressRequestDTO dto){
         Customer customer = customerRepository.findById(customerId)
@@ -34,6 +35,7 @@ public class AddressService {
                 .build();
 
         customer.getAddresses().add(address);
+        redisService.insertCustomerInCache(customer);
         return addressRepository.save(address);
     }
 

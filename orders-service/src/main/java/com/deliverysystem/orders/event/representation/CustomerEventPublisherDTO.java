@@ -1,4 +1,4 @@
-package com.deliverysystem.orders.controller.dto;
+package com.deliverysystem.orders.event.representation;
 
 import com.deliverysystem.orders.client.representation.AddressRepresentationDTO;
 import lombok.Builder;

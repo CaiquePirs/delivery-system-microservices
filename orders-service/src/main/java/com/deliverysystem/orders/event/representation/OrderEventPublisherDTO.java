@@ -1,4 +1,4 @@
-package com.deliverysystem.orders.controller.dto;
+package com.deliverysystem.orders.event.representation;
 
 import com.deliverysystem.orders.model.ItemsOrder;
 import com.deliverysystem.orders.model.PaymentData;

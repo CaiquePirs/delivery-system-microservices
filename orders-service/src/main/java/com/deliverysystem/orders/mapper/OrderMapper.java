@@ -2,8 +2,8 @@ package com.deliverysystem.orders.mapper;
 
 import com.deliverysystem.orders.client.representation.AddressRepresentationDTO;
 import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
-import com.deliverysystem.orders.controller.dto.CustomerEventPublisherDTO;
-import com.deliverysystem.orders.controller.dto.OrderEventPublisherDTO;
+import com.deliverysystem.orders.event.representation.CustomerEventPublisherDTO;
+import com.deliverysystem.orders.event.representation.OrderEventPublisherDTO;
 import com.deliverysystem.orders.controller.dto.OrderRequestDTO;
 import com.deliverysystem.orders.controller.dto.OrderResponseDTO;
 import com.deliverysystem.orders.model.ItemsOrder;

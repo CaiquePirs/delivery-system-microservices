@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Order Confirmation</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px; }
+    .container { background-color: #fff; padding: 20px; border-radius: 8px; }
+    h2 { color: #2c3e50; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    .footer { margin-top: 20px; font-size: 0.9em; color: #888; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Hello, {{customer.name}}!</h2>
+  <p>Your order <strong>#{{order.id}}</strong> has been successfully received on {{order.orderDate}}.</p>
+  <p>Status: <strong>{{order.status}}</strong></p>
+  <p>Estimated delivery: <strong>{{order.estimated_delivery}}</strong></p>
+  <p>Notes: {{order.notes}}</p>
+
+  <h3>Order Items</h3>
+  <table>
+    <thead>
+    <tr>
+      <th>Item ID</th>
+      <th>Quantity</th>
+      <th>Total</th>
+      <th>Menu ID</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{items}}
+    </tbody>
+  </table>
+
+  <h3>Customer Information</h3>
+  <p>Name: {{customer.name}}</p>
+  <p>Email: {{customer.email}}</p>
+  <p>Phone: {{customer.phone}}</p>
+  <p>Delivery Address:</p>
+  <ul>
+    <li>Street: {{customer.deliveryAddress.street}}, {{customer.deliveryAddress.number}}</li>
+    <li>Neighborhood: {{customer.deliveryAddress.neighborhood}}</li>
+    <li>City: {{customer.deliveryAddress.city}} - {{customer.deliveryAddress.state}}</li>
+    <li>Zipcode: {{customer.deliveryAddress.zipcode}}</li>
+    <li>Country: {{customer.deliveryAddress.country}}</li>
+  </ul>
+
+  <h3>Order Total</h3>
+  <p><strong>${{order.total}}</strong></p>
+
+  <div class="footer">
+    Thank you for choosing our delivery service!
+  </div>
+</div>
+</body>
+</html>

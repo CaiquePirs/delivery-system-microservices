@@ -4,10 +4,18 @@ spring:
 
   data:
     mongodb:
-      port: 27018
-      host: localhost
-      username: admin
-      password: admin123
+      uri: mongodb://admin:admin123@localhost:27018/payments?authSource=admin
+
+  rabbitmq:
+    password: admin123
+    username: admin
+    host: localhost
+    port: 5672
+    subscriber:
+      payment-queue: verify-payment-queue
+    publisher:
+      payment-exchange: approved-payment-fanout
+
 
   output:
     ansi:

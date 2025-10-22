@@ -49,6 +49,20 @@ services:
     volumes:
       - ./mongodb_data:/data/db
 
+  payments_mongodb:
+      image: mongo:7
+      container_name: payments_mongodb
+      restart: always
+      environment:
+        MONGO_INITDB_ROOT_USERNAME: admin
+        MONGO_INITDB_ROOT_PASSWORD: admin123
+      ports:
+        - "27018:27017"
+      networks:
+        - database-network
+      volumes:
+        - ./payments_data:/data/db
+
   redis:
     image: redis:8
     container_name: redis_service

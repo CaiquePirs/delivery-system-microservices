@@ -1,0 +1,21 @@
+spring:
+  application:
+      name: payment-service
+
+  data:
+    mongodb:
+      port: 27018
+      host: localhost
+      username: admin
+      password: admin123
+
+  output:
+    ansi:
+      enabled: ALWAYS
+
+logging:
+  pattern:
+    console: "%clr(%d{dd-MM-yyyy HH:mm:ss}){faint} %clr(%5p) %clr([%t]){faint} %clr(%-40.40logger){cyan} %clr(:){yellow} %m%n"
+
+server:
+  port: 8084

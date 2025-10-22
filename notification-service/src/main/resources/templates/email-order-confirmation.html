@@ -16,7 +16,7 @@
 <body>
 <div class="container">
   <h2>Hello, {{customer.name}}!</h2>
-  <p>Your order <strong>#{{order.id}}</strong> has been successfully received on {{order.orderDate}}.</p>
+  <p>Your order <strong>#{{order.id}}</strong> {{confirmationPhrase}} {{order.orderDate}}.</p>
   <p>Status: <strong>{{order.status}}</strong></p>
   <p>Estimated delivery: <strong>{{order.estimated_delivery}}</strong></p>
   <p>Notes: {{order.notes}}</p>

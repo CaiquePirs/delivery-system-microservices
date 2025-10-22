@@ -1,7 +1,7 @@
-package com.deliveysistem.notification_service.service;
+package com.deliveysistem.notification.generator;
 
-import com.deliveysistem.notification_service.event.representation.ItemsOrderEventDTO;
-import com.deliveysistem.notification_service.model.Notification;
+import com.deliveysistem.notification.event.representation.ItemsOrderEventDTO;
+import com.deliveysistem.notification.model.Notification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,9 @@ public class EmailTemplateGenerator {
         ClassPathResource resource = new ClassPathResource("templates/email-order-confirmation.html");
         String html = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
 
-        html = html.replace("{{customer.name}}", notification.getBody().customer().name())
+        html = html
+                .replace("{{confirmationPhrase}}", notification.getText())
+                .replace("{{customer.name}}", notification.getBody().customer().name())
                 .replace("{{customer.email}}", notification.getBody().customer().email())
                 .replace("{{customer.phone}}", notification.getBody().customer().phone())
                 .replace("{{customer.deliveryAddress.street}}", notification.getBody().customer().deliveryAddress().street())

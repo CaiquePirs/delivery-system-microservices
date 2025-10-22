@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: notification-service
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_ADDRESS}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  rabbitmq:
+    password: admin123
+    username: admin
+    host: localhost
+    port: 5672
+    notification-queue: verify-payment-notify-queue
+
+  output:
+    ansi:
+      enabled: ALWAYS
+
+logging:
+  pattern:
+    console: "%clr(%d{dd-MM-yyyy HH:mm:ss}){faint} %clr(%5p) %clr([%t]){faint} %clr(%-40.40logger){cyan} %clr(:){yellow} %m%n"
+
+server:
+  port: 8083

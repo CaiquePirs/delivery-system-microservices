@@ -39,7 +39,6 @@ public class CustomerService {
 
     public Customer findCustomerById(UUID customerId) {
        return repository.findById(customerId)
-                .orElseThrow(() -> new CustomerNotFoundException(
-                        String.format("Customer ID: %s not found", customerId)));
+                .orElseThrow(() -> new CustomerNotFoundException("Customer ID not found"));
     }
 }

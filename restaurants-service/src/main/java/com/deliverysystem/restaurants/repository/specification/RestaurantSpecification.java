@@ -1,4 +1,4 @@
-package com.deliverysystem.restaurants.repository;
+package com.deliverysystem.restaurants.repository.specification;
 
 import com.deliverysystem.restaurants.controller.dto.RestaurantQueryFilter;
 import com.deliverysystem.restaurants.model.Menu;

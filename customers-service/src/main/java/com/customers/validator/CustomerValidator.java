@@ -13,8 +13,7 @@ public class CustomerValidator {
 
     public void checkIfExistCustomerWithSameEmail(String email) {
         customerRepository.findByEmail(email).ifPresent(customer -> {
-            throw new CustomerFoundException(
-                    String.format("Customer with email: %s already exist", email));
+            throw new CustomerFoundException("This email already exist");
         });
     }
 

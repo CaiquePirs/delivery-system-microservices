@@ -8,7 +8,7 @@ import com.deliverysystem.restaurants.mapper.RestaurantMapper;
 import com.deliverysystem.restaurants.model.Restaurant;
 import com.deliverysystem.restaurants.model.enums.RestaurantStatus;
 import com.deliverysystem.restaurants.repository.RestaurantRepository;
-import com.deliverysystem.restaurants.repository.RestaurantSpecification;
+import com.deliverysystem.restaurants.repository.specification.RestaurantSpecification;
 import com.deliverysystem.restaurants.validator.RestaurantValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

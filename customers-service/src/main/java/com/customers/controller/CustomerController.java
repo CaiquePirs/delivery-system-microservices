@@ -26,8 +26,7 @@ public class CustomerController {
     @PostMapping
     public ResponseEntity<CustomerResponseDTO> createCustomer(@RequestBody @Valid CustomerRequestDTO dto){
         Customer customer = customerService.createCustomer(dto);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(customerMapper.mapToResponse(customer));
+        return ResponseEntity.status(HttpStatus.CREATED).body(customerMapper.mapToResponse(customer));
     }
 
     @GetMapping("/{id}")

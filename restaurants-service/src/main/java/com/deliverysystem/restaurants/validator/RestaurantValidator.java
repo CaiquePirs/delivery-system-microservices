@@ -12,10 +12,8 @@ public class RestaurantValidator {
     private final RestaurantRepository restaurantRepository;
 
     public void checkIfExistRestaurantWithSameEmail(String email){
-        restaurantRepository.findByEmail(email)
-                .ifPresent(restaurant -> {
-                    throw new RestaurantFoundException(
-                            String.format("This email: %s already exit", email));
+        restaurantRepository.findByEmail(email).ifPresent(restaurant -> {
+                    throw new RestaurantFoundException("This email already exit");
                 });
     }
 

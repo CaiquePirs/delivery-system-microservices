@@ -1,4 +1,4 @@
-package com.deliveysistem.notification_service.event.representation;
+package com.deliveysistem.notification.event.representation;
 
 import java.util.UUID;
 

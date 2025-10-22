@@ -1,4 +1,4 @@
-package com.deliveysistem.notification_service.config;
+package com.deliveysistem.notification.config;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;

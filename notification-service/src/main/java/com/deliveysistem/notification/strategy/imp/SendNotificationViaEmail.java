@@ -1,9 +1,9 @@
-package com.deliveysistem.notification_service.strategy.imp;
+package com.deliveysistem.notification.strategy.imp;
 
-import com.deliveysistem.notification_service.model.Notification;
-import com.deliveysistem.notification_service.model.NotificationType;
-import com.deliveysistem.notification_service.service.EmailTemplateGenerator;
-import com.deliveysistem.notification_service.strategy.NotificationStrategy;
+import com.deliveysistem.notification.model.Notification;
+import com.deliveysistem.notification.model.NotificationType;
+import com.deliveysistem.notification.generator.EmailTemplateGenerator;
+import com.deliveysistem.notification.strategy.NotificationStrategy;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

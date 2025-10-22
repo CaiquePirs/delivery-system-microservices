@@ -1,6 +1,6 @@
-package com.deliveysistem.notification_service.strategy;
+package com.deliveysistem.notification.strategy;
 
-import com.deliveysistem.notification_service.model.Notification;
+import com.deliveysistem.notification.model.Notification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

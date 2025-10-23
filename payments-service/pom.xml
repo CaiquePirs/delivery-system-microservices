@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.systemdelivery</groupId>
-	<artifactId>payment-service</artifactId>
+	<artifactId>payments-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>payment-service</name>
 	<description>Payment Service</description>

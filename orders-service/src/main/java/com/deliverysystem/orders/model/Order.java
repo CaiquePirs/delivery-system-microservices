@@ -30,11 +30,12 @@ public class Order {
     private UUID deliveryId;
     private UUID customerId;
     private UUID restaurantId;
+    private UUID deliveryAddressId;
     private LocalDate orderDate;
     private BigDecimal total;
     private OrderStatus status;
     private String notes;
-    private LocalDateTime estimated_delivery;
+    private LocalDateTime estimatedDelivery;
     private List<ItemsOrder> itemsOrder = new ArrayList<>();
     @Transient
     private PaymentData paymentData;

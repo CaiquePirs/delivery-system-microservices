@@ -3,9 +3,10 @@ package com.deliverysystem.orders.service.validator;
 import com.deliverysystem.orders.client.representation.AddressRepresentationDTO;
 import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
 import com.deliverysystem.orders.client.service.ApiClientService;
-import com.deliverysystem.orders.controller.dto.OrderRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -13,10 +14,10 @@ public class OrderValidator {
 
     private final ApiClientService apiClientService;
 
-    public AddressRepresentationDTO resolveDeliveryAddress(OrderRequestDTO orderDTO, CustomerRepresentationDTO customer){
+    public AddressRepresentationDTO resolveDeliveryAddress(UUID deliveryAddressId, CustomerRepresentationDTO customer){
        return customer.address().stream()
-                .filter(address -> address.id().equals(orderDTO.deliveryAddressId()))
+                .filter(address -> address.id().equals(deliveryAddressId))
                 .findFirst()
-                .orElseGet(() -> apiClientService.findAddressById(customer.id(), orderDTO.deliveryAddressId()));
+                .orElseGet(() -> apiClientService.findAddressById(deliveryAddressId));
     }
 }

@@ -26,5 +26,7 @@ server:
 
 customers:
   url: http://localhost:8080/api/customers
+addresses:
+  url: http://localhost:8080/api/addresses
 restaurants:
   url: http://localhost:8081/api/restaurants

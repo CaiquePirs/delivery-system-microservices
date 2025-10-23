@@ -1,5 +1,6 @@
 package com.deliverysystem.orders.client.service;
 
+import com.deliverysystem.orders.client.api.AddressClientApi;
 import com.deliverysystem.orders.client.api.CustomerClientApi;
 import com.deliverysystem.orders.client.api.MenuClientApi;
 import com.deliverysystem.orders.client.api.RestaurantClientApi;
@@ -19,6 +20,7 @@ public class ApiClientService {
 
     private final CustomerClientApi customerClientApi;
     private final RestaurantClientApi restaurantClientApi;
+    private final AddressClientApi addressClientApi;
     private final MenuClientApi menuClientApi;
 
     public CustomerRepresentationDTO findCustomerById(UUID customerId) {
@@ -52,9 +54,9 @@ public class ApiClientService {
         }
     }
 
-    public AddressRepresentationDTO findAddressById(UUID customerId, UUID addressId) {
+    public AddressRepresentationDTO findAddressById(UUID addressId) {
         try {
-            var address = customerClientApi.findCAddressById(addressId, customerId);
+            var address = addressClientApi.findAddressById(addressId);
             return address.getBody();
 
         } catch (Exception e) {

@@ -19,7 +19,7 @@ public class OrderEventPublisher {
     private final RabbitTemplate rabbitTemplate;
     private final OrderMapper orderMapper;
 
-    @Value("${spring.rabbitmq.exchange-payment}")
+    @Value("${spring.rabbitmq.exchange-verify-payment}")
     private String exchangeKey;
 
     public void publisher(Order order, CustomerRepresentationDTO customer, AddressRepresentationDTO deliveryAddress){

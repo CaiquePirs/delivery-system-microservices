@@ -11,7 +11,8 @@ spring:
     port: 5672
     username: admin
     password: admin123
-    exchange-payment: verify-payment-fanout
+    exchange-verify-payment: verify-payment-fanout
+    exchange-approved-payment: payment-approved-order-queue
 
   output:
     ansi:

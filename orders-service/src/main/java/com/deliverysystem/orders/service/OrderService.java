@@ -52,7 +52,7 @@ public class OrderService {
         return orderMapper.mapToResponse(orderCreated, customer, deliveryAddress);
     }
 
-    public OrderResponseDTO findById(String orderId){
+    public OrderResponseDTO findOrderResponseById(String orderId){
         Order order = orderRepository.findById(new ObjectId(orderId))
                 .orElseThrow(() -> new OrderNotFoundException("Order ID not found"));
 
@@ -60,5 +60,10 @@ public class OrderService {
         var deliveryAddress = orderValidator.resolveDeliveryAddress(order.getDeliveryAddressId(), customer);
 
         return orderMapper.mapToResponse(order, customer, deliveryAddress);
+    }
+
+    public Order findOrderById(String orderId){
+        return orderRepository.findById(new ObjectId(orderId))
+                .orElseThrow(() -> new OrderNotFoundException("Order ID not found"));
     }
 }

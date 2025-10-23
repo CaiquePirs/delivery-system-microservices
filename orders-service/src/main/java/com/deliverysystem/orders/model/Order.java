@@ -26,7 +26,7 @@ public class Order {
 
     @MongoId
     private ObjectId id;
-    private UUID paymentId;
+    private ObjectId paymentId;
     private UUID deliveryId;
     private UUID customerId;
     private UUID restaurantId;

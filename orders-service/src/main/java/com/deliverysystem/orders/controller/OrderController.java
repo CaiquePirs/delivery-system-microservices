@@ -26,7 +26,7 @@ public class OrderController {
 
     @GetMapping("/{id}")
     public ResponseEntity<OrderResponseDTO> findOrderById(@PathVariable(name = "id") String orderId){
-        OrderResponseDTO orderResponse = orderService.findById(orderId);
+        OrderResponseDTO orderResponse = orderService.findOrderResponseById(orderId);
         return ResponseEntity.ok(orderResponse);
     }
 }

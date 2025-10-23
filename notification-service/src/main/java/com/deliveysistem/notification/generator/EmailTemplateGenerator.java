@@ -18,7 +18,7 @@ public class EmailTemplateGenerator {
         String html = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
 
         html = html
-                .replace("{{confirmationPhrase}}", notification.getText())
+                .replace("{{confirmationPhrase}}", notification.getMessage().text())
                 .replace("{{customer.name}}", notification.getBody().getCustomer().name())
                 .replace("{{customer.email}}", notification.getBody().getCustomer().email())
                 .replace("{{customer.phone}}", notification.getBody().getCustomer().phone())

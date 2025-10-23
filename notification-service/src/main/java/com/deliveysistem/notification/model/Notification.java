@@ -13,8 +13,7 @@ import lombok.NoArgsConstructor;
 public class Notification {
 
     private String to;
-    private String subject;
-    private String text;
+    private NotificationMessage message;
     private OrderEventDTO body;
     private NotificationType notificationType;
 }

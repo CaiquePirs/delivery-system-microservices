@@ -32,7 +32,7 @@ public class SendNotificationViaEmail implements NotificationStrategy {
 
                 String htmlTemplate = emailTemplateGenerator.generate(notification);
 
-                helper.setSubject(notification.getSubject());
+                helper.setSubject(notification.getMessage().subject());
                 helper.setTo(notification.getTo());
                 helper.setText(htmlTemplate, true);
                 helper.setFrom(emailAddress);

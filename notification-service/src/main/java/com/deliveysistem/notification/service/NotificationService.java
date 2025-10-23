@@ -15,7 +15,7 @@ public class NotificationService {
 
     public void sendNotificationByEmail(OrderEventDTO orderDTO, String subject, String text){
         Notification notification = Notification.builder()
-                .to(orderDTO.customer().email())
+                .to(orderDTO.getCustomer().email())
                 .notificationType(NotificationType.EMAIL)
                 .subject(subject)
                 .text(text)

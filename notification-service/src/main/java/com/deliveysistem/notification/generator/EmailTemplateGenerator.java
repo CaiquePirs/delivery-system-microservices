@@ -19,25 +19,25 @@ public class EmailTemplateGenerator {
 
         html = html
                 .replace("{{confirmationPhrase}}", notification.getText())
-                .replace("{{customer.name}}", notification.getBody().customer().name())
-                .replace("{{customer.email}}", notification.getBody().customer().email())
-                .replace("{{customer.phone}}", notification.getBody().customer().phone())
-                .replace("{{customer.deliveryAddress.street}}", notification.getBody().customer().deliveryAddress().street())
-                .replace("{{customer.deliveryAddress.number}}", notification.getBody().customer().deliveryAddress().number())
-                .replace("{{customer.deliveryAddress.neighborhood}}", notification.getBody().customer().deliveryAddress().neighborhood())
-                .replace("{{customer.deliveryAddress.city}}", notification.getBody().customer().deliveryAddress().city())
-                .replace("{{customer.deliveryAddress.state}}", notification.getBody().customer().deliveryAddress().state())
-                .replace("{{customer.deliveryAddress.zipcode}}", notification.getBody().customer().deliveryAddress().zipcode())
-                .replace("{{customer.deliveryAddress.country}}", notification.getBody().customer().deliveryAddress().country())
-                .replace("{{order.id}}", notification.getBody().id())
-                .replace("{{order.orderDate}}", notification.getBody().orderDate().toString())
-                .replace("{{order.status}}", notification.getBody().status())
-                .replace("{{order.estimated_delivery}}", notification.getBody().estimated_delivery().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")))
-                .replace("{{order.notes}}", notification.getBody().notes())
-                .replace("{{order.total}}", notification.getBody().total().toString());
+                .replace("{{customer.name}}", notification.getBody().getCustomer().name())
+                .replace("{{customer.email}}", notification.getBody().getCustomer().email())
+                .replace("{{customer.phone}}", notification.getBody().getCustomer().phone())
+                .replace("{{customer.deliveryAddress.street}}", notification.getBody().getCustomer().deliveryAddress().street())
+                .replace("{{customer.deliveryAddress.number}}", notification.getBody().getCustomer().deliveryAddress().number())
+                .replace("{{customer.deliveryAddress.neighborhood}}", notification.getBody().getCustomer().deliveryAddress().neighborhood())
+                .replace("{{customer.deliveryAddress.city}}", notification.getBody().getCustomer().deliveryAddress().city())
+                .replace("{{customer.deliveryAddress.state}}", notification.getBody().getCustomer().deliveryAddress().state())
+                .replace("{{customer.deliveryAddress.zipcode}}", notification.getBody().getCustomer().deliveryAddress().zipcode())
+                .replace("{{customer.deliveryAddress.country}}", notification.getBody().getCustomer().deliveryAddress().country())
+                .replace("{{order.id}}", notification.getBody().getId())
+                .replace("{{order.orderDate}}", notification.getBody().getOrderDate().toString())
+                .replace("{{order.status}}", notification.getBody().getStatus())
+                .replace("{{order.estimated_delivery}}", notification.getBody().getEstimated_delivery().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")))
+                .replace("{{order.notes}}", notification.getBody().getNotes())
+                .replace("{{order.total}}", notification.getBody().getTotal().toString());
 
         StringBuilder itemsHtml = new StringBuilder();
-        for (ItemsOrderEventDTO item : notification.getBody().items()) {
+        for (ItemsOrderEventDTO item : notification.getBody().getItems()) {
             itemsHtml.append("<tr>")
                     .append("<td>").append(item.id()).append("</td>")
                     .append("<td>").append(item.quantity()).append("</td>")

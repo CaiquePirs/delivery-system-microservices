@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class EventSubscriber {
+public class PaymentEventSubscriber {
 
     private final PaymentService paymentService;
 

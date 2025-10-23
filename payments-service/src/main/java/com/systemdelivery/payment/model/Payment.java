@@ -22,7 +22,7 @@ public class Payment {
 
     @MongoId
     private ObjectId id;
-    private UUID orderId;
+    private String orderId;
     private BigDecimal amount;
     private PaymentStatus status;
     private PaymentData paymentData;

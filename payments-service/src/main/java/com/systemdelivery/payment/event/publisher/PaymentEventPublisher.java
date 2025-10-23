@@ -30,10 +30,7 @@ public class PaymentEventPublisher {
             rabbitTemplate.convertAndSend(exchangeKey, "", dto);
 
         } catch (Exception e){
-            log.error("Error publishing paid order event, PaymentId: {}, Error: {}",
-                    payment.getId().toString(), e.getStackTrace());
+            log.error("Error publishing paid order event, PaymentId: {}, Error: {}", payment.getId().toString(), e.getStackTrace());
         }
-
     }
-
 }

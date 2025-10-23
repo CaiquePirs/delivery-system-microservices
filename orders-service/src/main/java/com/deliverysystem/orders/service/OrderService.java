@@ -57,9 +57,12 @@ public class OrderService {
                 .orElseThrow(() -> new OrderNotFoundException("Order ID not found"));
 
         var customer = apiClientService.findCustomerById(order.getCustomerId());
+        var restaurant = apiClientService.findRestaurantById(order.getRestaurantId());
         var deliveryAddress = orderValidator.resolveDeliveryAddress(order.getDeliveryAddressId(), customer);
 
-        return orderMapper.mapToResponse(order, customer, deliveryAddress);
+        OrderResponseDTO orderResponse = orderMapper.mapToResponse(order, customer, deliveryAddress);
+        orderResponse.setRestaurantEmail(restaurant.email());
+        return orderResponse;
     }
 
     public Order findOrderById(String orderId){

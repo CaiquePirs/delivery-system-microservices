@@ -19,6 +19,7 @@ public class OrderEventDTO{
 
     private String id;
     private UUID restaurantId;
+    private String restaurantEmail;
     private LocalDate orderDate;
     private BigDecimal total;
     private String status;

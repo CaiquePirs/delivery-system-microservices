@@ -1,9 +1,7 @@
 package com.customers.service;
 
-import com.customers.controller.advice.exceptions.CustomerNotFoundException;
+import com.customers.controller.advice.exceptions.NotFoundException;
 import com.customers.controller.dto.CustomerRequestDTO;
-import com.customers.controller.dto.CustomerResponseDTO;
-import com.customers.mapper.CustomerMapper;
 import com.customers.model.Address;
 import com.customers.model.Customer;
 import com.customers.repository.CustomerRepository;
@@ -39,6 +37,6 @@ public class CustomerService {
 
     public Customer findCustomerById(UUID customerId) {
        return repository.findById(customerId)
-                .orElseThrow(() -> new CustomerNotFoundException("Customer ID not found"));
+                .orElseThrow(() -> new NotFoundException("Customer ID not found"));
     }
 }

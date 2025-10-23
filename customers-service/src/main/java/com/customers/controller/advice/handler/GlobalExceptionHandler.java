@@ -3,7 +3,7 @@ package com.customers.controller.advice.handler;
 import com.customers.controller.advice.dto.ErrorMessageDTO;
 import com.customers.controller.advice.dto.ErrorResponseDTO;
 import com.customers.controller.advice.exceptions.CustomerFoundException;
-import com.customers.controller.advice.exceptions.CustomerNotFoundException;
+import com.customers.controller.advice.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -45,8 +45,8 @@ public class GlobalExceptionHandler {
                 ));
     }
 
-    @ExceptionHandler(CustomerNotFoundException.class)
-    public ResponseEntity<ErrorResponseDTO> handleCustomerNotFound(CustomerNotFoundException e){
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleCustomerNotFound(NotFoundException e){
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(new ErrorResponseDTO(
                         HttpStatus.CONFLICT.value(),

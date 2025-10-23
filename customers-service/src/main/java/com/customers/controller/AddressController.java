@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/customers/{customerId}/addresses")
+@RequestMapping("/api/addresses")
 @RequiredArgsConstructor
 public class AddressController {
 
@@ -22,11 +22,14 @@ public class AddressController {
     private final AddressMapper addressMapper;
 
     @PostMapping
-    public ResponseEntity<AddressResponseDTO> createAddress(
-            @PathVariable UUID customerId,
-            @RequestBody @Valid AddressRequestDTO addressRequestDTO){
-
-        Address address = addressService.createAddress(customerId, addressRequestDTO);
+    public ResponseEntity<AddressResponseDTO> createAddress(@RequestBody @Valid AddressRequestDTO addressRequestDTO){
+        Address address = addressService.createAddress(addressRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(addressMapper.mapToResponse(address));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AddressResponseDTO> findAddressById(@PathVariable("id") UUID addressId){
+        Address address = addressService.findById(addressId);
+        return ResponseEntity.ok(addressMapper.mapToResponse(address));
     }
 }

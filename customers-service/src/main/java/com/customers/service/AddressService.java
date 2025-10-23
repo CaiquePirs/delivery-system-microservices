@@ -1,6 +1,6 @@
 package com.customers.service;
 
-import com.customers.controller.advice.exceptions.CustomerNotFoundException;
+import com.customers.controller.advice.exceptions.NotFoundException;
 import com.customers.controller.dto.AddressRequestDTO;
 import com.customers.model.Address;
 import com.customers.model.Customer;
@@ -20,9 +20,9 @@ public class AddressService {
     private final CustomerRepository customerRepository;
     private final RedisService redisService;
 
-    public Address createAddress(UUID customerId, AddressRequestDTO dto){
-        Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new CustomerNotFoundException("Customer ID not found"));
+    public Address createAddress(AddressRequestDTO dto){
+        Customer customer = customerRepository.findById(dto.customerId())
+                .orElseThrow(() -> new NotFoundException("Customer ID not found"));
 
         Address address = Address.builder()
                 .zipcode(dto.zipcode())
@@ -52,5 +52,8 @@ public class AddressService {
         ).toList();
     }
 
-
+    public Address findById(UUID addressId){
+       return addressRepository.findById(addressId)
+                .orElseThrow(() -> new NotFoundException("Address ID not found"));
+    }
 }

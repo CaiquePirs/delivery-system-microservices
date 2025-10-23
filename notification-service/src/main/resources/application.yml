@@ -19,7 +19,11 @@ spring:
     username: admin
     host: localhost
     port: 5672
-    notification-queue: verify-payment-notify-queue
+    order-confirmation-queue: verify-payment-notify-queue
+    payment-approved-queue: payment-approved-notify-queue
+
+  clients:
+    orders-api: http://localhost:8082/api/orders
 
   output:
     ansi:

@@ -3,7 +3,6 @@ package com.deliverysystem.orders.controller;
 import com.deliverysystem.orders.controller.dto.OrderRequestDTO;
 import com.deliverysystem.orders.controller.dto.OrderResponseDTO;
 import com.deliverysystem.orders.mapper.OrderMapper;
-import com.deliverysystem.orders.model.Order;
 import com.deliverysystem.orders.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +20,13 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderResponseDTO> createOrder(@RequestBody @Valid OrderRequestDTO dto){
-        Order order = orderService.createOrder(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderMapper.mapToResponse(order));
+        OrderResponseDTO orderResponseDTO = orderService.createOrder(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderResponseDTO);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<OrderResponseDTO> findOrderById(@PathVariable(name = "id") String orderId){
-        Order order = orderService.findById(orderId);
-        return ResponseEntity.ok(orderMapper.mapToResponse(order));
+        OrderResponseDTO orderResponse = orderService.findById(orderId);
+        return ResponseEntity.ok(orderResponse);
     }
 }

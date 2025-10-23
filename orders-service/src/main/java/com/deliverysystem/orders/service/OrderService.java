@@ -2,6 +2,7 @@ package com.deliverysystem.orders.service;
 
 import com.deliverysystem.orders.client.service.ApiClientService;
 import com.deliverysystem.orders.controller.dto.OrderRequestDTO;
+import com.deliverysystem.orders.controller.dto.OrderResponseDTO;
 import com.deliverysystem.orders.controller.exception.ClientNotFoundException;
 import com.deliverysystem.orders.controller.exception.OrderNotFoundException;
 import com.deliverysystem.orders.event.publisher.OrderEventPublisher;
@@ -31,10 +32,10 @@ public class OrderService {
     private final OrderValidator orderValidator;
 
     @Transactional
-    public Order createOrder(OrderRequestDTO orderDTO){
+    public OrderResponseDTO createOrder(OrderRequestDTO orderDTO){
         var customer = apiClientService.findCustomerById(orderDTO.customerId());
         var restaurant = apiClientService.findRestaurantById(orderDTO.restaurantId());
-        var deliveryAddress = orderValidator.resolveDeliveryAddress(orderDTO, customer);
+        var deliveryAddress = orderValidator.resolveDeliveryAddress(orderDTO.deliveryAddressId(), customer);
 
         if(restaurant.status().equals("CLOSED")){
             throw new ClientNotFoundException("The selected restaurant is currently closed for orders. ");
@@ -47,12 +48,16 @@ public class OrderService {
         Order orderCreated = orderRepository.save(orderMapped);
 
         orderEventPublisher.publisher(orderCreated, customer, deliveryAddress);
-        return orderCreated;
+        return orderMapper.mapToResponse(orderCreated, customer, deliveryAddress);
     }
 
-    public Order findById(String orderId) {
-        return orderRepository.findById(new ObjectId(orderId))
-                .orElseThrow(() -> new OrderNotFoundException(
-                        String.format("Order ID: %s not found", orderId)));
+    public OrderResponseDTO findById(String orderId){
+        Order order = orderRepository.findById(new ObjectId(orderId))
+                .orElseThrow(() -> new OrderNotFoundException("Order ID not found"));
+
+        var customer = apiClientService.findCustomerById(order.getCustomerId());
+        var deliveryAddress = orderValidator.resolveDeliveryAddress(order.getDeliveryAddressId(), customer);
+
+        return orderMapper.mapToResponse(order, customer, deliveryAddress);
     }
 }

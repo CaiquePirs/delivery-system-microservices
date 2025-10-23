@@ -2,7 +2,7 @@ package com.deliverysystem.orders.event.publisher;
 
 import com.deliverysystem.orders.client.representation.AddressRepresentationDTO;
 import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
-import com.deliverysystem.orders.event.representation.OrderEventPublisherDTO;
+import com.deliverysystem.orders.controller.dto.OrderResponseDTO;
 import com.deliverysystem.orders.mapper.OrderMapper;
 import com.deliverysystem.orders.model.Order;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class OrderEventPublisher {
 
     public void publisher(Order order, CustomerRepresentationDTO customer, AddressRepresentationDTO deliveryAddress){
         try {
-            OrderEventPublisherDTO orderEventDTO = orderMapper.mapToPublishEvent(order, customer, deliveryAddress);
+            OrderResponseDTO orderEventDTO = orderMapper.mapToResponse(order, customer, deliveryAddress);
             rabbitTemplate.convertAndSend(exchangeKey, "", orderEventDTO);
 
         } catch (Exception e){

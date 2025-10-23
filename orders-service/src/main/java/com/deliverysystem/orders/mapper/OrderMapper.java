@@ -2,8 +2,7 @@ package com.deliverysystem.orders.mapper;
 
 import com.deliverysystem.orders.client.representation.AddressRepresentationDTO;
 import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
-import com.deliverysystem.orders.event.representation.CustomerEventPublisherDTO;
-import com.deliverysystem.orders.event.representation.OrderEventPublisherDTO;
+import com.deliverysystem.orders.event.representation.CustomerResponseDTO;
 import com.deliverysystem.orders.controller.dto.OrderRequestDTO;
 import com.deliverysystem.orders.controller.dto.OrderResponseDTO;
 import com.deliverysystem.orders.model.ItemsOrder;
@@ -11,7 +10,6 @@ import com.deliverysystem.orders.model.Order;
 import com.deliverysystem.orders.model.enums.AuditStatus;
 import com.deliverysystem.orders.model.enums.OrderStatus;
 import org.springframework.stereotype.Component;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,14 +28,15 @@ public class OrderMapper {
                 .total(totalOrder)
                 .restaurantId(orderDTO.restaurantId())
                 .customerId(orderDTO.customerId())
-                .estimated_delivery(LocalDateTime.now().plusHours(2))
+                .deliveryAddressId(orderDTO.deliveryAddressId())
+                .estimatedDelivery(LocalDateTime.now().plusHours(2))
                 .auditStatus(AuditStatus.ACTIVE)
                 .created_at(LocalDateTime.now())
                 .updated_at(LocalDateTime.now())
                 .build();
     }
 
-    public OrderResponseDTO mapToResponse(Order order){
+    public OrderResponseDTO mapToResponse(Order order, CustomerRepresentationDTO customer, AddressRepresentationDTO deliveryAddress){
         return OrderResponseDTO.builder()
                 .id(order.getId().toString())
                 .restaurantId(order.getRestaurantId())
@@ -45,29 +44,14 @@ public class OrderMapper {
                 .status(order.getStatus())
                 .total(order.getTotal())
                 .orderDate(order.getOrderDate())
-                .estimated_delivery(order.getEstimated_delivery())
+                .estimated_delivery(order.getEstimatedDelivery())
                 .notes(order.getNotes())
-                .customerId(order.getCustomerId())
+                .customer(mapToCustomerResponse(customer, deliveryAddress))
                 .build();
     }
 
-    public OrderEventPublisherDTO mapToPublishEvent(Order order, CustomerRepresentationDTO customer, AddressRepresentationDTO deliveryAddress) {
-        return OrderEventPublisherDTO.builder()
-                .id(order.getId().toString())
-                .orderDate(order.getOrderDate())
-                .notes(order.getNotes())
-                .paymentData(order.getPaymentData())
-                .status(order.getStatus().toString())
-                .restaurantId(order.getRestaurantId())
-                .estimated_delivery(order.getEstimated_delivery())
-                .total(order.getTotal())
-                .items(order.getItemsOrder())
-                .customer(mapToCustomerEvent(customer, deliveryAddress))
-                .build();
-    }
-
-    private CustomerEventPublisherDTO mapToCustomerEvent(CustomerRepresentationDTO customer, AddressRepresentationDTO deliveryAddress){
-        return CustomerEventPublisherDTO.builder()
+    private CustomerResponseDTO mapToCustomerResponse(CustomerRepresentationDTO customer, AddressRepresentationDTO deliveryAddress){
+        return CustomerResponseDTO.builder()
                 .id(customer.id())
                 .name(customer.name())
                 .phone(customer.phone())

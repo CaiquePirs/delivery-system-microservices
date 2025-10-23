@@ -1,7 +1,7 @@
-package com.deliverysystem.orders.controller.dto;
+package com.deliverysystem.orders.event.representation;
 
-import com.deliverysystem.orders.event.representation.CustomerResponseEvent;
 import com.deliverysystem.orders.model.ItemsOrder;
+import com.deliverysystem.orders.model.PaymentData;
 import com.deliverysystem.orders.model.enums.OrderStatus;
 import lombok.Builder;
 import java.math.BigDecimal;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Builder
-public record OrderResponseDTO(
+public record OrderResponseEvent(
         String id,
         UUID restaurantId,
         LocalDate orderDate,
@@ -20,5 +20,6 @@ public record OrderResponseDTO(
         String notes,
         LocalDateTime estimated_delivery,
         List<ItemsOrder> items,
-        CustomerResponseEvent customer) {
+        CustomerResponseEvent customer,
+        PaymentData paymentData) {
 }

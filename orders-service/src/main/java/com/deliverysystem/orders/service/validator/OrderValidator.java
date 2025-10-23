@@ -5,7 +5,6 @@ import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO
 import com.deliverysystem.orders.client.service.ApiClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
 import java.util.UUID;
 
 @Component

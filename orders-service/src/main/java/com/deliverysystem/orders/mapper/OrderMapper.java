@@ -2,9 +2,10 @@ package com.deliverysystem.orders.mapper;
 
 import com.deliverysystem.orders.client.representation.AddressRepresentationDTO;
 import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
-import com.deliverysystem.orders.event.representation.CustomerResponseDTO;
+import com.deliverysystem.orders.event.representation.CustomerResponseEvent;
 import com.deliverysystem.orders.controller.dto.OrderRequestDTO;
 import com.deliverysystem.orders.controller.dto.OrderResponseDTO;
+import com.deliverysystem.orders.event.representation.OrderResponseEvent;
 import com.deliverysystem.orders.model.ItemsOrder;
 import com.deliverysystem.orders.model.Order;
 import com.deliverysystem.orders.model.enums.AuditStatus;
@@ -50,8 +51,23 @@ public class OrderMapper {
                 .build();
     }
 
-    private CustomerResponseDTO mapToCustomerResponse(CustomerRepresentationDTO customer, AddressRepresentationDTO deliveryAddress){
-        return CustomerResponseDTO.builder()
+    public OrderResponseEvent mapToEventResponse(Order order, CustomerRepresentationDTO customer, AddressRepresentationDTO deliveryAddress){
+        return OrderResponseEvent.builder()
+                .id(order.getId().toString())
+                .restaurantId(order.getRestaurantId())
+                .items(order.getItemsOrder())
+                .status(order.getStatus())
+                .total(order.getTotal())
+                .orderDate(order.getOrderDate())
+                .estimated_delivery(order.getEstimatedDelivery())
+                .notes(order.getNotes())
+                .customer(mapToCustomerResponse(customer, deliveryAddress))
+                .paymentData(order.getPaymentData())
+                .build();
+    }
+
+    private CustomerResponseEvent mapToCustomerResponse(CustomerRepresentationDTO customer, AddressRepresentationDTO deliveryAddress){
+        return CustomerResponseEvent.builder()
                 .id(customer.id())
                 .name(customer.name())
                 .phone(customer.phone())

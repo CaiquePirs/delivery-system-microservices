@@ -3,7 +3,7 @@ package com.deliveysistem.notification.service;
 import com.deliveysistem.notification.event.representation.OrderEventDTO;
 import com.deliveysistem.notification.model.Notification;
 import com.deliveysistem.notification.model.NotificationType;
-import com.deliveysistem.notification.strategy.NotificationFactory;
+import com.deliveysistem.notification.strategy.factory.NotificationFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

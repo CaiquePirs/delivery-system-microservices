@@ -1,4 +1,4 @@
-package com.deliveysistem.notification.strategy.imp;
+package com.deliveysistem.notification.strategy.impl;
 
 import com.deliveysistem.notification.model.Notification;
 import com.deliveysistem.notification.model.NotificationType;

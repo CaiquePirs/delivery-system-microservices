@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
+import java.time.format.DateTimeFormatter;
 
 
 @Component
@@ -31,7 +32,7 @@ public class EmailTemplateGenerator {
                 .replace("{{order.id}}", notification.getBody().id())
                 .replace("{{order.orderDate}}", notification.getBody().orderDate().toString())
                 .replace("{{order.status}}", notification.getBody().status())
-                .replace("{{order.estimated_delivery}}", notification.getBody().estimated_delivery().toString())
+                .replace("{{order.estimated_delivery}}", notification.getBody().estimated_delivery().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")))
                 .replace("{{order.notes}}", notification.getBody().notes())
                 .replace("{{order.total}}", notification.getBody().total().toString());
 

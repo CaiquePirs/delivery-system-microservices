@@ -25,6 +25,7 @@ public class PaymentService {
 
     public void processPayment(ProcessOrderPaymentEvent orderDTO){
         Payment payment = Payment.builder()
+                .orderId(orderDTO.id())
                 .paymentData(orderDTO.paymentData())
                 .status(PaymentStatus.PENDING)
                 .amount(orderDTO.total())
@@ -33,29 +34,28 @@ public class PaymentService {
                 .build();
 
         Payment paymentSaved = paymentRepository.save(payment);
-
         simulatedGatewayService.simulateCallback(paymentSaved.getId().toString());
     }
 
-    public void callbackPayment(PaymentWebhookDTO webhookDTO){
+    public void callbackPayment(PaymentWebhookDTO webhookDTO) {
         Payment payment = findPaymentById(webhookDTO.paymentId());
 
-        if(webhookDTO.status() != null){
-            if(webhookDTO.status().equals(PaymentStatus.FAILED)){
-                Objects.requireNonNull(payment).setStatus(PaymentStatus.FAILED);
-                payment.setUpdated_at(LocalDateTime.now());
-                paymentRepository.save(payment);
-            }
+        if (payment != null) {
+            if (webhookDTO.status() != null) {
+                if (webhookDTO.status().equals(PaymentStatus.AUTHORIZED)) {
+                    payment.setStatus(PaymentStatus.AUTHORIZED);
+                    payment.setPaymentCode(webhookDTO.paymentKey());
+                    payment.setNotes(webhookDTO.notes());
+                    payment.setUpdated_at(LocalDateTime.now());
 
-            if(webhookDTO.status().equals(PaymentStatus.AUTHORIZED)){
-                Objects.requireNonNull(payment).setStatus(PaymentStatus.AUTHORIZED);
-                payment.setPaymentCode(webhookDTO.paymentKey());
-                payment.setNotes(webhookDTO.notes());
-                payment.setUpdated_at(LocalDateTime.now());
+                    paymentEventPublisher.publisher(payment);
 
-                paymentEventPublisher.publisher(payment);
-
-                paymentRepository.save(payment);
+                    paymentRepository.save(payment);
+                } else {
+                    Objects.requireNonNull(payment).setStatus(PaymentStatus.FAILED);
+                    payment.setUpdated_at(LocalDateTime.now());
+                    paymentRepository.save(payment);
+                }
             }
         }
     }
@@ -65,7 +65,7 @@ public class PaymentService {
                 .orElse(null);
 
         if(payment == null){
-            log.error("Error receiving payment webhook. PaymentID: {} not found.", paymentId);
+            log.error("PaymentID: {} not found.", paymentId);
         }
         return payment;
     }

@@ -53,8 +53,7 @@ public class OrderService {
     }
 
     public OrderResponseDTO findOrderResponseById(String orderId){
-        Order order = orderRepository.findById(new ObjectId(orderId))
-                .orElseThrow(() -> new OrderNotFoundException("Order ID not found"));
+        Order order = findOrderById(orderId);
 
         var customer = apiClientService.findCustomerById(order.getCustomerId());
         var restaurant = apiClientService.findRestaurantById(order.getRestaurantId());

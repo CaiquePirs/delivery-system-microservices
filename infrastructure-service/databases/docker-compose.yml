@@ -35,6 +35,21 @@ services:
     volumes:
       - ./restaurants_data:/var/lib/postgresql/data
 
+  delivery_postgres:
+    image: postgres:16
+    container_name: deliveries_database
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: delivery_db
+    ports:
+      - "5434:5432"
+    networks:
+      - database-network
+    volumes:
+      - ./deliveries_data:/var/lib/postgresql/data
+
   orders_mongodb:
     image: mongo:7
     container_name: orders_mongodb

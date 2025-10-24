@@ -38,7 +38,7 @@ public class Delivery {
     @Column(name = "estimated_delivery_time", nullable = false)
     private LocalDateTime estimatedDeliveryTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "currier_id")
     private Currier currier;
 

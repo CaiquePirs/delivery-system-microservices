@@ -7,6 +7,13 @@ spring:
     username: admin
     password: admin123
 
+  rabbitmq:
+    port: 5672
+    host: localhost
+    username: admin
+    password: admin123
+    delivery-queue: payment-approved-delivery-queue
+
   output:
     ansi:
       enabled: ALWAYS

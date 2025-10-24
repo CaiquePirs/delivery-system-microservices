@@ -1,9 +1,7 @@
 package com.deliveysistem.notification.event.subsbscriber;
 
-import com.deliveysistem.notification.client.service.OrderClientApiService;
 import com.deliveysistem.notification.event.representation.OrderEventDTO;
 import com.deliveysistem.notification.event.representation.PaymentConfirmedEvent;
-import com.deliveysistem.notification.model.NotificationMessage;
 import com.deliveysistem.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,38 +14,24 @@ import org.springframework.stereotype.Component;
 public class EventSubscriber {
 
     private final NotificationService notificationService;
-    private final OrderClientApiService orderClientApiService;
 
     @RabbitListener(queues = "${spring.rabbitmq.order-confirmation-queue}")
     public void subscriberOrderConfirmation(OrderEventDTO event){
         try {
-            NotificationMessage message = NotificationMessage.builder()
-                    .subject("Order confirmed ✅")
-                    .text("has been successfully received on")
-                    .build();
-
-            notificationService.sendNotificationByEmail(event, message);
+            notificationService.sendNotificationOrderConfirmed(event);
 
         } catch (Exception e){
-            log.error("Error when received order: {}, error: {}", event, e.getStackTrace());
+            log.error("Error when received order confirmed event, OrderId: {}, error: {}", event.getId(), e.getStackTrace());
         }
     }
 
     @RabbitListener(queues = "${spring.rabbitmq.payment-approved-queue}")
     public void subscriberPaymentApproved(PaymentConfirmedEvent event){
         try {
-            OrderEventDTO orderEvent = orderClientApiService.findOrderById(event.orderId());
-            orderEvent.setStatus(event.status());
-
-            NotificationMessage message = NotificationMessage.builder()
-                    .subject("Order payment approved 💳")
-                    .text("The payment has been successfully confirmed and has been sent for processing on")
-                    .build();
-
-            notificationService.sendNotificationByEmail(orderEvent, message);
+            notificationService.sendNotificationPaymentApproved(event);
 
         } catch (Exception e){
-            log.error("Error when received orderID: {}, error: {}", event.id(), e.getStackTrace());
+            log.error("Error when received payment approved event, OrderId: {}, error: {}", event.orderId(), e.getStackTrace());
         }
     }
 }

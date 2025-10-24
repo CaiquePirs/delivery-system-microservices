@@ -1,10 +1,13 @@
 package com.deliveysistem.notification.model;
 
 import com.deliveysistem.notification.event.representation.OrderEventDTO;
+import com.deliveysistem.notification.model.enums.NotificationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -12,8 +15,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Notification {
 
-    private String to;
+    private List<Recipient> recipients;
     private NotificationMessage message;
-    private OrderEventDTO body;
     private NotificationType notificationType;
+    private OrderEventDTO body;
 }

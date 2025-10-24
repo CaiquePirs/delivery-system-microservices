@@ -1,4 +1,4 @@
-package com.deliveysistem.notification.model;
+package com.deliveysistem.notification.model.enums;
 
 public enum NotificationType {
     EMAIL,

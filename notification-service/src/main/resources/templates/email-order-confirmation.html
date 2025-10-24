@@ -1,33 +1,84 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
 <head>
   <meta charset="UTF-8">
-  <title>Order Confirmation</title>
+  <title>Order Confirmation!</title>
   <style>
-    body { font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px; }
-    .container { background-color: #fff; padding: 20px; border-radius: 8px; }
-    h2 { color: #2c3e50; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-    th { background-color: #f2f2f2; }
-    .footer { margin-top: 20px; font-size: 0.9em; color: #888; }
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f7f7f7;
+        padding: 20px;
+        color: #333;
+    }
+    .container {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        max-width: 700px;
+        margin: auto;
+    }
+    h1 {
+        color: #27ae60;
+    }
+    h2 {
+        color: #2c3e50;
+    }
+    .customer-info, .order-info {
+        margin-top: 20px;
+    }
+    .order-items {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    .order-items th, .order-items td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    .order-items th {
+        background-color: #f2f2f2;
+    }
+    .footer {
+        text-align: center;
+        margin-top: 30px;
+        font-size: 0.9em;
+        color: #999;
+    }
+    .highlight {
+        color: #d35400;
+        font-weight: bold;
+    }
+    ul {
+        list-style-type: none;
+        padding-left: 0;
+    }
+    ul li {
+        margin-bottom: 5px;
+    }
   </style>
 </head>
 <body>
 <div class="container">
-  <h2>Hello, {{customer.name}}!</h2>
-  <p>Your order <strong>#{{order.id}}</strong> {{confirmationPhrase}} {{order.orderDate}}.</p>
-  <p>Status: <strong>{{order.status}}</strong></p>
-  <p>Estimated delivery: <strong>{{order.estimated_delivery}}</strong></p>
-  <p>Notes: {{order.notes}}</p>
+  <h1>{{subject}}</h1>
+  <p>Hello <strong>{{customer.name}}</strong>,</p>
+  <p>Your order <strong>#{{order.id}}</strong> {{confirmationPhrase}} on <strong>{{order.orderDate}}</strong>.</p>
 
-  <h3>Order Items</h3>
-  <table>
+  <div class="order-info">
+    <h3>📦 Order Details</h3>
+    <p><strong>Status:</strong> {{order.status}}</p>
+    <p><strong>Estimated Delivery:</strong> {{order.estimated_delivery}}</p>
+    <p><strong>Notes:</strong> {{order.notes}}</p>
+  </div>
+
+  <h3>🍕 Order Items</h3>
+  <table class="order-items">
     <thead>
     <tr>
       <th>Item ID</th>
       <th>Quantity</th>
-      <th>Total</th>
+      <th>Total Price</th>
       <th>Menu ID</th>
     </tr>
     </thead>
@@ -36,21 +87,23 @@
     </tbody>
   </table>
 
-  <h3>Customer Information</h3>
-  <p>Name: {{customer.name}}</p>
-  <p>Email: {{customer.email}}</p>
-  <p>Phone: {{customer.phone}}</p>
-  <p>Delivery Address:</p>
-  <ul>
-    <li>Street: {{customer.deliveryAddress.street}}, {{customer.deliveryAddress.number}}</li>
-    <li>Neighborhood: {{customer.deliveryAddress.neighborhood}}</li>
-    <li>City: {{customer.deliveryAddress.city}} - {{customer.deliveryAddress.state}}</li>
-    <li>Zipcode: {{customer.deliveryAddress.zipcode}}</li>
-    <li>Country: {{customer.deliveryAddress.country}}</li>
-  </ul>
+  <div class="customer-info">
+    <h3>👤 Customer Information</h3>
+    <p><strong>Name:</strong> {{customer.name}}</p>
+    <p><strong>Email:</strong> {{customer.email}}</p>
+    <p><strong>Phone:</strong> {{customer.phone}}</p>
+    <p><strong>Delivery Address:</strong></p>
+    <ul>
+      <li>Street: {{customer.deliveryAddress.street}}, {{customer.deliveryAddress.number}}</li>
+      <li>Neighborhood: {{customer.deliveryAddress.neighborhood}}</li>
+      <li>City: {{customer.deliveryAddress.city}} / {{customer.deliveryAddress.state}}</li>
+      <li>ZIP: {{customer.deliveryAddress.zipcode}}</li>
+      <li>Country: {{customer.deliveryAddress.country}}</li>
+    </ul>
+  </div>
 
-  <h3>Order Total</h3>
-  <p><strong>${{order.total}}</strong></p>
+  <h3>💰 Order Total</h3>
+  <p><span class="highlight">R$ {{order.total}}</span></p>
 
   <div class="footer">
     Thank you for choosing our delivery service!

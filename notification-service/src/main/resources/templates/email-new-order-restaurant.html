@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Order Received!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            max-width: 700px;
+            margin: auto;
+        }
+        h1 {
+            color: #d35400;
+        }
+        .customer-info, .order-info {
+            margin-top: 20px;
+        }
+        .order-items {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .order-items th, .order-items td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .order-items th {
+            background-color: #f2f2f2;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #999;
+        }
+        .highlight {
+            color: #27ae60;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🍽️ New Order Received!</h1>
+    <p>Hello <strong>{{restaurant.name}}</strong>,</p>
+    <p>You have just received a new order through <strong>System Delivery</strong>.</p>
+
+    <div class="order-info">
+        <h3>📦 Order Details</h3>
+        <p><strong>Order ID:</strong> {{order.id}}</p>
+        <p><strong>Date:</strong> {{order.orderDate}}</p>
+        <p><strong>Status:</strong> {{order.status}}</p>
+        <p><strong>Estimated Delivery:</strong> {{order.estimated_delivery}}</p>
+        <p><strong>Notes:</strong> {{order.notes}}</p>
+    </div>
+
+    <div class="customer-info">
+        <h3>👤 Customer Information</h3>
+        <p><strong>Name:</strong> {{customer.name}}</p>
+        <p><strong>Email:</strong> {{customer.email}}</p>
+        <p><strong>Phone:</strong> {{customer.phone}}</p>
+        <p><strong>Address:</strong> {{customer.deliveryAddress.street}}, {{customer.deliveryAddress.number}} - {{customer.deliveryAddress.neighborhood}}</p>
+        <p><strong>City:</strong> {{customer.deliveryAddress.city}} / {{customer.deliveryAddress.state}}</p>
+        <p><strong>ZIP:</strong> {{customer.deliveryAddress.zipcode}} - {{customer.deliveryAddress.country}}</p>
+    </div>
+
+    <h3>🍕 Order Items</h3>
+    <table class="order-items">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Product</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{items}}
+        </tbody>
+    </table>
+
+    <p><strong>Order Total:</strong> <span class="highlight">R$ {{order.total}}</span></p>
+
+    <div class="footer">
+        <p>This is an automatic email from the <strong>System Delivery</strong>. No reply is necessary.</p>
+    </div>
+</div>
+</body>
+</html>

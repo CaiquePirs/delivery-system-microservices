@@ -3,7 +3,7 @@ package com.deliverysystem.delivery.advice.handler;
 import com.deliverysystem.delivery.advice.dtos.ErrorMessageDTO;
 import com.deliverysystem.delivery.advice.dtos.ErrorResponseDTO;
 import com.deliverysystem.delivery.advice.exceptions.CurrierFoundException;
-import com.deliverysystem.delivery.advice.exceptions.CurrierNotFoundException;
+import com.deliverysystem.delivery.advice.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -45,8 +45,8 @@ public class GlobalExceptionHandler {
                 ));
     }
 
-    @ExceptionHandler(CurrierNotFoundException.class)
-    public ResponseEntity<ErrorResponseDTO> handleCurrierNotFound(CurrierNotFoundException e) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleCurrierNotFound(NotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponseDTO(
                         HttpStatus.NOT_FOUND.value(),

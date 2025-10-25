@@ -26,7 +26,7 @@ public class NotificationService {
     public void sendNotificationOrderConfirmed(OrderEvent event) {
         Notification notification = Notification.builder()
                 .body(event)
-                .notificationType(NotificationType.EMAIL)
+                .notificationTypes(List.of(NotificationType.EMAIL))
                 .recipients(List.of(new Recipient(event.getCustomer().email(), RecipientType.CUSTOMER)))
                 .message(new NotificationMessage("Order confirmed ✅", "has been successfully received on"))
                 .build();
@@ -40,7 +40,7 @@ public class NotificationService {
 
         Notification notification = Notification.builder()
                 .body(orderEvent)
-                .notificationType(NotificationType.EMAIL)
+                .notificationTypes(List.of(NotificationType.EMAIL))
                 .recipients(List.of(
                         new Recipient(orderEvent.getCustomer().email(), RecipientType.CUSTOMER),
                         new Recipient(orderEvent.getRestaurantEmail(), RecipientType.RESTAURANT)
@@ -56,7 +56,7 @@ public class NotificationService {
 
         Notification notification = Notification.builder()
                 .body(order)
-                .notificationType(NotificationType.EMAIL)
+                .notificationTypes(List.of(NotificationType.EMAIL))
                 .recipients(List.of(
                         new Recipient(order.getCustomer().email(), RecipientType.CUSTOMER)
                 ))

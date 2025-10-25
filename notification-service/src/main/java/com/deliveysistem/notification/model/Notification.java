@@ -16,7 +16,7 @@ import java.util.List;
 public class Notification {
 
     private List<Recipient> recipients;
+    private List<NotificationType> notificationTypes;
     private NotificationMessage message;
-    private NotificationType notificationType;
     private OrderEvent body;
 }

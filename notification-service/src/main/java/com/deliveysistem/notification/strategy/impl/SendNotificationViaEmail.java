@@ -27,7 +27,8 @@ public class SendNotificationViaEmail implements NotificationStrategy {
 
     @Override
     public void send(Notification notification) {
-        if (notification.getNotificationType().equals(NotificationType.EMAIL)) {
+        boolean isEmailNotification = notification.getNotificationTypes().contains(NotificationType.EMAIL);
+        if (isEmailNotification) {
             for (Recipient recipient : notification.getRecipients()) {
                 try {
                     String htmlTemplate = emailTemplateGenerator.generateTemplateForRecipient(recipient, notification);

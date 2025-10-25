@@ -1,9 +1,11 @@
 package com.deliverysystem.orders.service;
 
+import com.deliverysystem.orders.client.representation.AddressRepresentationDTO;
+import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
+import com.deliverysystem.orders.client.representation.RestaurantRepresentationDTO;
 import com.deliverysystem.orders.client.service.ApiClientService;
 import com.deliverysystem.orders.controller.dto.OrderRequestDTO;
 import com.deliverysystem.orders.controller.dto.OrderResponseDTO;
-import com.deliverysystem.orders.controller.exception.ClientNotFoundException;
 import com.deliverysystem.orders.controller.exception.OrderNotFoundException;
 import com.deliverysystem.orders.event.publisher.OrderEventPublisher;
 import com.deliverysystem.orders.mapper.OrderMapper;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -33,13 +36,15 @@ public class OrderService {
 
     @Transactional
     public OrderResponseDTO createOrder(OrderRequestDTO orderDTO){
-        var customer = apiClientService.findCustomerById(orderDTO.customerId());
-        var restaurant = apiClientService.findRestaurantById(orderDTO.restaurantId());
-        var deliveryAddress = orderValidator.resolveDeliveryAddress(orderDTO.deliveryAddressId(), customer);
+        var customerFuture = apiClientService.findCustomerById(orderDTO.customerId());
+        var restaurantFuture = apiClientService.findRestaurantById(orderDTO.restaurantId());
 
-        if(restaurant.status().equals("CLOSED")){
-            throw new ClientNotFoundException("The selected restaurant is currently closed for orders. ");
-        }
+        CompletableFuture.allOf(customerFuture, restaurantFuture).join();
+        CustomerRepresentationDTO customer = customerFuture.join();
+        RestaurantRepresentationDTO restaurant = restaurantFuture.join();
+
+        orderValidator.validateIfRestaurantIsOpen(restaurant.status());
+        AddressRepresentationDTO deliveryAddress = orderValidator.resolveDeliveryAddress(orderDTO.deliveryAddressId(), customer);
 
         List<ItemsOrder> items = itemOrderService.createItemsOrder(restaurant, orderDTO.itemsDTO());
         BigDecimal totalOrder = calculator.calculateTotalOrder(items);
@@ -55,12 +60,17 @@ public class OrderService {
     public OrderResponseDTO findOrderResponseById(String orderId){
         Order order = findOrderById(orderId);
 
-        var customer = apiClientService.findCustomerById(order.getCustomerId());
-        var restaurant = apiClientService.findRestaurantById(order.getRestaurantId());
-        var deliveryAddress = orderValidator.resolveDeliveryAddress(order.getDeliveryAddressId(), customer);
+        var customerFuture = apiClientService.findCustomerById(order.getCustomerId());
+        var restaurantFuture = apiClientService.findRestaurantById(order.getRestaurantId());
+        CompletableFuture.allOf(customerFuture, restaurantFuture).join();
+
+        CustomerRepresentationDTO customer = customerFuture.join();
+        RestaurantRepresentationDTO restaurant = restaurantFuture.join();
+        AddressRepresentationDTO deliveryAddress = orderValidator.resolveDeliveryAddress(order.getDeliveryAddressId(), customer);
 
         OrderResponseDTO orderResponse = orderMapper.mapToResponse(order, customer, deliveryAddress);
         orderResponse.setRestaurantEmail(restaurant.email());
+
         return orderResponse;
     }
 

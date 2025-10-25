@@ -3,6 +3,7 @@ package com.deliverysystem.orders.service.validator;
 import com.deliverysystem.orders.client.representation.AddressRepresentationDTO;
 import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
 import com.deliverysystem.orders.client.service.ApiClientService;
+import com.deliverysystem.orders.controller.exception.ClientNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.util.UUID;
@@ -19,4 +20,11 @@ public class OrderValidator {
                 .findFirst()
                 .orElseGet(() -> apiClientService.findAddressById(deliveryAddressId));
     }
+
+    public void validateIfRestaurantIsOpen(String status){
+        if(status.equals("CLOSED")){
+            throw new ClientNotFoundException("The selected restaurant is currently closed for orders.");
+        }
+    }
+
 }

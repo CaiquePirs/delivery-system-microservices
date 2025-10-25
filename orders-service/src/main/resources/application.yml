@@ -13,6 +13,7 @@ spring:
     password: admin123
     exchange-verify-payment: verify-payment-fanout
     exchange-approved-payment: payment-approved-order-queue
+    delivery-ready-update: delivery-shipped-update-queue
 
   output:
     ansi:

@@ -1,5 +1,6 @@
 package com.deliverysystem.orders.event.subscriber;
 
+import com.deliverysystem.orders.event.representation.DeliveryReadyEvent;
 import com.deliverysystem.orders.event.representation.PaymentApprovedEvent;
 import com.deliverysystem.orders.model.Order;
 import com.deliverysystem.orders.model.enums.OrderStatus;
@@ -22,7 +23,7 @@ public class OrderEventSubscriber {
     private final OrderRepository orderRepository;
 
     @RabbitListener(queues = "${spring.rabbitmq.exchange-approved-payment}")
-    public void subscriber(PaymentApprovedEvent event){
+    public void subscriberPaymentApproved(PaymentApprovedEvent event){
         try {
             Order order = orderService.findOrderById(event.getOrderId());
 
@@ -36,5 +37,26 @@ public class OrderEventSubscriber {
             log.info("Error updating order information from the approved payment queue, error: {}", e.getMessage());
         }
     }
+
+    @RabbitListener(queues = "${spring.rabbitmq.delivery-ready-update}")
+    public void subscriberDeliveryReady(DeliveryReadyEvent event) {
+        try {
+            log.info("Received DeliveryReadyEvent: {}", event);
+
+            Order order = orderService.findOrderById(event.orderId());
+
+            order.setDeliveryId(event.deliveryId());
+            order.setStatus(OrderStatus.OUT_FOR_DELIVERY);
+            order.setUpdated_at(LocalDateTime.now());
+
+            orderRepository.save(order);
+
+            log.info("Order updated successfully for DeliveryReadyEvent: {}", event);
+
+        } catch (Exception e){
+            log.info("Error updating order information from the delivery ready queue, error: {}", e.getMessage());
+        }
+    }
+
 
 }

@@ -51,7 +51,6 @@ public class DeliveryService {
         Delivery delivery = deliveryRepository.findById(deliveryId)
                 .orElseThrow(() -> new NotFoundException("Delivery not found with ID: " + deliveryId));
 
-
         Currier currier = currierService.findAvailableCourierForDelivery();
         BigDecimal deliveryTax = deliveryTaxCalculator.calculateDeliveryTax(delivery.getTotalOrderAmount());
 

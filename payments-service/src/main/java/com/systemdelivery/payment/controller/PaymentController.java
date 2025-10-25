@@ -18,7 +18,6 @@ public class PaymentController {
 
     @PostMapping
     public ResponseEntity<Void> receivePayment(@RequestBody PaymentWebhookDTO webhookDTO){
-        // Logic for validating the payment gateway's apiKey
         paymentService.callbackPayment(webhookDTO);
         return ResponseEntity.noContent().build();
     }

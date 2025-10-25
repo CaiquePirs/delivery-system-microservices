@@ -2,7 +2,7 @@ package com.systemdelivery.payment.service;
 
 import com.systemdelivery.payment.event.publisher.PaymentEventPublisher;
 import com.systemdelivery.payment.event.representational.ProcessOrderPaymentEvent;
-import com.systemdelivery.payment.gateway.SimulatedGatewayService;
+import com.systemdelivery.payment.gateway.PaymentGateway;
 import com.systemdelivery.payment.gateway.dto.PaymentWebhookDTO;
 import com.systemdelivery.payment.model.Payment;
 import com.systemdelivery.payment.model.enums.PaymentStatus;
@@ -21,7 +21,7 @@ public class PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final PaymentEventPublisher paymentEventPublisher;
-    private final SimulatedGatewayService simulatedGatewayService;
+    private final PaymentGateway paymentGateway;
 
     public void processPayment(ProcessOrderPaymentEvent orderDTO){
         Payment payment = Payment.builder()
@@ -34,11 +34,12 @@ public class PaymentService {
                 .build();
 
         Payment paymentSaved = paymentRepository.save(payment);
-        simulatedGatewayService.simulateCallback(paymentSaved.getId().toString());
+        paymentGateway.pay(paymentSaved);
     }
 
     public void callbackPayment(PaymentWebhookDTO webhookDTO) {
-        Payment payment = findPaymentById(webhookDTO.paymentId());
+        Payment payment = paymentRepository.findById(new ObjectId(webhookDTO.paymentId()))
+                .orElse(null);
 
         if (payment != null) {
             if (webhookDTO.status() != null) {
@@ -49,7 +50,6 @@ public class PaymentService {
                     payment.setUpdated_at(LocalDateTime.now());
 
                     paymentEventPublisher.publisher(payment);
-
                     paymentRepository.save(payment);
                 } else {
                     Objects.requireNonNull(payment).setStatus(PaymentStatus.FAILED);
@@ -57,16 +57,8 @@ public class PaymentService {
                     paymentRepository.save(payment);
                 }
             }
+        } else {
+            log.error("Payment not found with id: {}", webhookDTO.paymentId());
         }
-    }
-
-    private Payment findPaymentById(String paymentId) {
-        Payment payment = paymentRepository.findById(new ObjectId(paymentId))
-                .orElse(null);
-
-        if(payment == null){
-            log.error("PaymentID: {} not found.", paymentId);
-        }
-        return payment;
     }
 }

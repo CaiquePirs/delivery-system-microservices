@@ -1,4 +1,4 @@
-package com.systemdelivery.payment.gateway;
+package com.systemdelivery.payment.gateway.impl;
 
 import com.systemdelivery.payment.gateway.dto.PaymentWebhookDTO;
 import com.systemdelivery.payment.model.enums.PaymentStatus;
@@ -11,9 +11,10 @@ import java.util.UUID;
 
 @Service
 @Slf4j
-public class SimulatedGatewayService {
+public class SimulatedGateway {
 
     public void simulateCallback(String paymentId){
+        // Simulate a delay for payment processing
         try {
             Thread.sleep(Duration.ofMinutes(1));
         } catch (InterruptedException e) {

@@ -18,12 +18,12 @@ public class RedisService {
     private final RestaurantMapper restaurantMapper;
 
     public RestaurantResponseDTO findRestaurantInCache(UUID id){
-        String accessKey = String.format("restaurants:%s", id);
+        String accessKey = String.format("restaurants:%s:cache", id);
         return (RestaurantResponseDTO) redisTemplate.opsForValue().get(accessKey);
     }
 
     public void insertRestaurantInCache(Restaurant restaurant){
-        String accessKey = String.format("restaurants:%s", restaurant.getId());
+        String accessKey = String.format("restaurants:%s:cache", restaurant.getId());
         RestaurantResponseDTO restaurantDTO = restaurantMapper.toResponse(restaurant);
         redisTemplate.opsForValue().set(accessKey, restaurantDTO, Duration.ofMinutes(60));
     }

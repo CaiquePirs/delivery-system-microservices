@@ -1,6 +1,6 @@
 package com.deliverysystem.delivery.validator;
 
-import com.deliverysystem.delivery.advice.exceptions.CurrierFoundException;
+import com.deliverysystem.delivery.controller.advice.exceptions.CurrierFoundException;
 import com.deliverysystem.delivery.repositories.CurrierRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

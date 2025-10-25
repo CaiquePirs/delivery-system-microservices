@@ -1,6 +1,6 @@
 package com.deliverysystem.delivery.service;
 
-import com.deliverysystem.delivery.advice.exceptions.NotFoundException;
+import com.deliverysystem.delivery.controller.advice.exceptions.NotFoundException;
 import com.deliverysystem.delivery.controller.dtos.CurrierRequestDTO;
 import com.deliverysystem.delivery.mapper.CurrierMapper;
 import com.deliverysystem.delivery.model.Currier;

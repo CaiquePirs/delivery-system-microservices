@@ -1,9 +1,10 @@
-package com.deliverysystem.delivery.advice.handler;
+package com.deliverysystem.delivery.controller.advice.handler;
 
-import com.deliverysystem.delivery.advice.dtos.ErrorMessageDTO;
-import com.deliverysystem.delivery.advice.dtos.ErrorResponseDTO;
-import com.deliverysystem.delivery.advice.exceptions.CurrierFoundException;
-import com.deliverysystem.delivery.advice.exceptions.NotFoundException;
+import com.deliverysystem.delivery.controller.advice.dtos.ErrorMessageDTO;
+import com.deliverysystem.delivery.controller.advice.dtos.ErrorResponseDTO;
+import com.deliverysystem.delivery.controller.advice.exceptions.CurrierFoundException;
+import com.deliverysystem.delivery.controller.advice.exceptions.DeliveryErrorException;
+import com.deliverysystem.delivery.controller.advice.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -36,9 +37,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CurrierFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleCurrierFound(CurrierFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(new ErrorResponseDTO(
-                        HttpStatus.NOT_FOUND.value(),
+                        HttpStatus.CONFLICT.value(),
                         e.getMessage(),
                         LocalDateTime.now(),
                         List.of(new ErrorMessageDTO("Currier found", e.getMessage()))
@@ -55,4 +56,17 @@ public class GlobalExceptionHandler {
                         List.of(new ErrorMessageDTO("Currier not found", e.getMessage()))
                 ));
     }
+
+    @ExceptionHandler(DeliveryErrorException.class)
+    public ResponseEntity<ErrorResponseDTO> handleDeliveryError(DeliveryErrorException e) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .body(new ErrorResponseDTO(
+                        HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                        e.getMessage(),
+                        LocalDateTime.now(),
+                        List.of(new ErrorMessageDTO("Delivery Error", e.getMessage()))
+                ));
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package com.deliveysistem.notification.event.subsbscriber;
 
+import com.deliveysistem.notification.event.representation.DeliveryReadyEvent;
 import com.deliveysistem.notification.event.representation.OrderEvent;
 import com.deliveysistem.notification.event.representation.PaymentConfirmedEvent;
 import com.deliveysistem.notification.service.NotificationService;
@@ -34,4 +35,15 @@ public class EventSubscriber {
             log.error("Error when received payment approved event, OrderId: {}, error: {}", event.orderId(), e.getStackTrace());
         }
     }
+
+    @RabbitListener(queues = "${spring.rabbitmq.delivery-ready-queue}")
+    public void subscriberDeliveryReady(DeliveryReadyEvent event){
+        try {
+            notificationService.sendNotificationDeliveryReady(event);
+
+        } catch (Exception e){
+            log.error("Error when received delivery ready event, OrderId: {}, error: {}", event.orderId(), e.getStackTrace());
+        }
+    }
+
 }

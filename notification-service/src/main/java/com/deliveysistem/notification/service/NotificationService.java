@@ -1,6 +1,7 @@
 package com.deliveysistem.notification.service;
 
 import com.deliveysistem.notification.client.service.OrderClientApiService;
+import com.deliveysistem.notification.event.representation.DeliveryReadyEvent;
 import com.deliveysistem.notification.event.representation.OrderEvent;
 import com.deliveysistem.notification.event.representation.PaymentConfirmedEvent;
 import com.deliveysistem.notification.model.Notification;
@@ -12,7 +13,6 @@ import com.deliveysistem.notification.strategy.factory.NotificationFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -38,16 +38,29 @@ public class NotificationService {
         OrderEvent orderEvent = orderClientApiService.findOrderById(event.orderId());
         orderEvent.setStatus(event.status());
 
-        List<Recipient> recipients = List.of(
-                new Recipient(orderEvent.getCustomer().email(), RecipientType.CUSTOMER),
-                new Recipient(orderEvent.getRestaurantEmail(), RecipientType.RESTAURANT)
-        );
-
         Notification notification = Notification.builder()
                 .body(orderEvent)
                 .notificationType(NotificationType.EMAIL)
-                .recipients(recipients)
+                .recipients(List.of(
+                        new Recipient(orderEvent.getCustomer().email(), RecipientType.CUSTOMER),
+                        new Recipient(orderEvent.getRestaurantEmail(), RecipientType.RESTAURANT)
+                ))
                 .message(new NotificationMessage("Order payment approved 💳", "The payment has been successfully confirmed and has been sent for processing on"))
+                .build();
+
+        notificationFactory.send(notification);
+    }
+
+    public void sendNotificationDeliveryReady(DeliveryReadyEvent event){
+        var order = orderClientApiService.findOrderById(event.orderId());
+
+        Notification notification = Notification.builder()
+                .body(order)
+                .notificationType(NotificationType.EMAIL)
+                .recipients(List.of(
+                        new Recipient(order.getCustomer().email(), RecipientType.CUSTOMER)
+                ))
+                .message(new NotificationMessage("Order is out for delivery 🚚", "Order is out for delivery Arriving on"))
                 .build();
 
         notificationFactory.send(notification);

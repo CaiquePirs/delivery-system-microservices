@@ -13,6 +13,9 @@ spring:
     username: admin
     password: admin123
     delivery-queue: payment-approved-delivery-queue
+  clients:
+    order-service:
+        url: http://localhost:8082/api/orders
 
   output:
     ansi:

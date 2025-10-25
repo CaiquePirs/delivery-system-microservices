@@ -1,5 +1,6 @@
 package com.deliveysistem.notification.event.representation;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +16,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Builder
-public class OrderEventDTO{
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class OrderEvent {
 
     private String id;
     private UUID restaurantId;
@@ -24,9 +26,8 @@ public class OrderEventDTO{
     private BigDecimal total;
     private String status;
     private String notes;
-    private PaymentDataEventDTO paymentData;
     private LocalDateTime estimated_delivery;
-    private List<ItemsOrderEventDTO> items;
+    private List<ItemsOrderEvent> items;
     private CustomerEventDTO customer;
 
 }

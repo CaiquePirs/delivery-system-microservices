@@ -1,7 +1,7 @@
 package com.deliveysistem.notification.client.service;
 
 import com.deliveysistem.notification.client.api.OrdersClientApi;
-import com.deliveysistem.notification.event.representation.OrderEventDTO;
+import com.deliveysistem.notification.event.representation.OrderEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ public class OrderClientApiService {
 
     private final OrdersClientApi ordersClientApi;
 
-    public OrderEventDTO findOrderById(String orderId){
+    public OrderEvent findOrderById(String orderId){
         try {
             var response = ordersClientApi.findOrderById(orderId);
             return response.getBody();

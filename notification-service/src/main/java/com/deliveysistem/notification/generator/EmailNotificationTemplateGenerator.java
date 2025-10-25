@@ -1,6 +1,6 @@
 package com.deliveysistem.notification.generator;
 
-import com.deliveysistem.notification.event.representation.ItemsOrderEventDTO;
+import com.deliveysistem.notification.event.representation.ItemsOrderEvent;
 import com.deliveysistem.notification.model.Notification;
 import com.deliveysistem.notification.model.Recipient;
 import org.springframework.core.io.ClassPathResource;
@@ -45,7 +45,7 @@ public class EmailNotificationTemplateGenerator {
                 .replace("{{order.total}}", notification.getBody().getTotal().toString());
 
         StringBuilder itemsHtml = new StringBuilder();
-        for (ItemsOrderEventDTO item : notification.getBody().getItems()) {
+        for (ItemsOrderEvent item : notification.getBody().getItems()) {
             itemsHtml.append("<tr>")
                     .append("<td>").append(item.id()).append("</td>")
                     .append("<td>").append(item.quantity()).append("</td>")
@@ -84,7 +84,7 @@ public class EmailNotificationTemplateGenerator {
                 .replace("{{order.total}}", notification.getBody().getTotal().toString());
 
         StringBuilder itemsHtml = new StringBuilder();
-        for (ItemsOrderEventDTO item : notification.getBody().getItems()) {
+        for (ItemsOrderEvent item : notification.getBody().getItems()) {
             itemsHtml.append("<tr>")
                     .append("<td>").append(item.id()).append("</td>")
                     .append("<td>").append(item.quantity()).append("</td>")

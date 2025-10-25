@@ -1,7 +1,7 @@
 package com.deliveysistem.notification.service;
 
 import com.deliveysistem.notification.client.service.OrderClientApiService;
-import com.deliveysistem.notification.event.representation.OrderEventDTO;
+import com.deliveysistem.notification.event.representation.OrderEvent;
 import com.deliveysistem.notification.event.representation.PaymentConfirmedEvent;
 import com.deliveysistem.notification.model.Notification;
 import com.deliveysistem.notification.model.NotificationMessage;
@@ -23,7 +23,7 @@ public class NotificationService {
     private final NotificationFactory notificationFactory;
     private final OrderClientApiService orderClientApiService;
 
-    public void sendNotificationOrderConfirmed(OrderEventDTO event) {
+    public void sendNotificationOrderConfirmed(OrderEvent event) {
         Notification notification = Notification.builder()
                 .body(event)
                 .notificationType(NotificationType.EMAIL)
@@ -35,7 +35,7 @@ public class NotificationService {
     }
 
     public void sendNotificationPaymentApproved(PaymentConfirmedEvent event){
-        OrderEventDTO orderEvent = orderClientApiService.findOrderById(event.orderId());
+        OrderEvent orderEvent = orderClientApiService.findOrderById(event.orderId());
         orderEvent.setStatus(event.status());
 
         List<Recipient> recipients = List.of(

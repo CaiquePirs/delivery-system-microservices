@@ -2,7 +2,7 @@ package com.deliveysistem.notification.event.representation;
 
 import java.util.UUID;
 
-public record AddressEventDTO(
+public record AddressEvent(
         UUID id,
         String street,
         String number,

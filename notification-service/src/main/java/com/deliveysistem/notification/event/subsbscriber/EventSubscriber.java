@@ -1,6 +1,6 @@
 package com.deliveysistem.notification.event.subsbscriber;
 
-import com.deliveysistem.notification.event.representation.OrderEventDTO;
+import com.deliveysistem.notification.event.representation.OrderEvent;
 import com.deliveysistem.notification.event.representation.PaymentConfirmedEvent;
 import com.deliveysistem.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class EventSubscriber {
     private final NotificationService notificationService;
 
     @RabbitListener(queues = "${spring.rabbitmq.order-confirmation-queue}")
-    public void subscriberOrderConfirmation(OrderEventDTO event){
+    public void subscriberOrderConfirmation(OrderEvent event){
         try {
             notificationService.sendNotificationOrderConfirmed(event);
 

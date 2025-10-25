@@ -21,6 +21,7 @@ spring:
     port: 5672
     order-confirmation-queue: verify-payment-notify-queue
     payment-approved-queue: payment-approved-notify-queue
+    delivery-ready-queue: delivery-ready-notify-queue
 
   clients:
     orders-api: http://localhost:8082/api/orders

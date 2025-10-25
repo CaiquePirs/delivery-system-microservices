@@ -7,5 +7,5 @@ public record CustomerEventDTO(
         String name,
         String email,
         String phone,
-        AddressEventDTO deliveryAddress) {
+        AddressEvent deliveryAddress) {
 }

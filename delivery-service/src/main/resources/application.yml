@@ -12,7 +12,9 @@ spring:
     host: localhost
     username: admin
     password: admin123
-    delivery-queue: payment-approved-delivery-queue
+    subscribe-payment-queue: payment-approved-delivery-queue
+    publisher-delivery-ready: delivery-ready-fanout
+
   clients:
     order-service:
         url: http://localhost:8082/api/orders

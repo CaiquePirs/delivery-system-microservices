@@ -3,6 +3,7 @@ package com.deliverysystem.delivery.model;
 import com.deliverysystem.delivery.model.enums.DeliveryStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class Delivery {
 
     @Id
@@ -25,8 +27,11 @@ public class Delivery {
     @Column(name = "order_id", nullable = false, unique = true, length = 100)
     private String orderId;
 
-    @Column(name = "delivery_tax", nullable = false, precision = 19, scale = 2)
+    @Column(name = "delivery_tax", precision = 19, scale = 2)
     private BigDecimal deliveryTax;
+
+    @Column(name = "total_order_amount", nullable = false, precision = 19, scale = 2)
+    private BigDecimal totalOrderAmount;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)

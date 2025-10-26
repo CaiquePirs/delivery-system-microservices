@@ -1,6 +1,6 @@
 spring:
   application:
-    name: service-infra
+    name: eureka-server-Infra
 
 server:
   port: 8761

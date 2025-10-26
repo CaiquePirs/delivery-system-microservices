@@ -18,7 +18,7 @@ public class DeliveryEventPublisher {
     @Value("${spring.rabbitmq.publisher-delivery-ready}")
     private String exchangeKey;
 
-    public void publishEvent(Delivery delivery) {
+    public void publishDeliveryShipped(Delivery delivery) {
         try {
             DeliveryReadyEvent event = new DeliveryReadyEvent(
                    delivery.getId(),

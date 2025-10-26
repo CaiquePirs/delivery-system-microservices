@@ -15,7 +15,7 @@ public class PaymentEventSubscriber {
     private final PaymentService paymentService;
 
     @RabbitListener(queues = "${spring.rabbitmq.subscriber.payment-queue}")
-    public void subscriber(ProcessOrderPaymentEvent orderEventDTO){
+    public void subscriberInVerifyPayment(ProcessOrderPaymentEvent orderEventDTO){
         try {
             paymentService.processPayment(orderEventDTO);
 

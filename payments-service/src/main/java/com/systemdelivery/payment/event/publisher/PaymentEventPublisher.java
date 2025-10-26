@@ -18,7 +18,7 @@ public class PaymentEventPublisher {
     @Value("${spring.rabbitmq.publisher.payment-exchange}")
     private String exchangeKey;
 
-    public void publisher(Payment payment){
+    public void publisherInPaymentApproved(Payment payment){
         try {
             PaymentConfirmedEvent dto = PaymentConfirmedEvent.builder()
                     .id(payment.getId().toString())

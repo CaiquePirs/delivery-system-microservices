@@ -64,11 +64,15 @@ public class DeliveryService {
             currier.getCompletedDeliveries().add(delivery);
 
             deliveryRepository.save(delivery);
-            deliveryEventPublisher.publishEvent(delivery);
+            deliveryEventPublisher.publishDeliveryShipped(delivery);
 
-        } else throw new DeliveryErrorException(
-                    String.format("Error processing delivery ID: %s , the current delivery status is: %s",
-                            deliveryId, delivery.getStatus()));
+        } else {
+            throw new DeliveryErrorException(String.format(
+                    "Error processing delivery ID: %s , the current delivery status is: %s",
+                    deliveryId,
+                    delivery.getStatus())
+            );
+        }
     }
 
 }

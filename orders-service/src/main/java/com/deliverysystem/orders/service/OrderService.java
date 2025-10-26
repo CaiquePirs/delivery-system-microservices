@@ -53,7 +53,7 @@ public class OrderService {
         Order orderCreated = orderRepository.save(orderMapped);
         orderCreated.setPaymentData(orderDTO.paymentData());
 
-        orderEventPublisher.publisher(orderCreated, customer, deliveryAddress);
+        orderEventPublisher.publishVerifyPayment(orderCreated, customer, deliveryAddress);
         return orderMapper.mapToResponse(orderCreated, customer, deliveryAddress);
     }
 

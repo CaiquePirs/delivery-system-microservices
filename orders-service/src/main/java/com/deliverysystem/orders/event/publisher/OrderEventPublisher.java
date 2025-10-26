@@ -22,7 +22,7 @@ public class OrderEventPublisher {
     @Value("${spring.rabbitmq.exchange-verify-payment}")
     private String exchangeKey;
 
-    public void publisher(Order order, CustomerRepresentationDTO customer, AddressRepresentationDTO deliveryAddress){
+    public void publishVerifyPayment(Order order, CustomerRepresentationDTO customer, AddressRepresentationDTO deliveryAddress){
         try {
             OrderResponseEvent orderEventDTO = orderMapper.mapToEventResponse(order, customer, deliveryAddress);
             rabbitTemplate.convertAndSend(exchangeKey, "", orderEventDTO);

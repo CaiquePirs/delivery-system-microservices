@@ -22,13 +22,12 @@ public class OrderEventPublisher {
     @Value("${spring.rabbitmq.exchange-verify-payment}")
     private String exchangeKey;
 
-    public void publishVerifyPayment(Order order, CustomerRepresentationDTO customer, AddressRepresentationDTO deliveryAddress){
+    public void publishVerifyPayment(OrderResponseEvent event){
         try {
-            OrderResponseEvent orderEventDTO = orderMapper.mapToEventResponse(order, customer, deliveryAddress);
-            rabbitTemplate.convertAndSend(exchangeKey, "", orderEventDTO);
+            rabbitTemplate.convertAndSend(exchangeKey, "", event);
 
         } catch (Exception e){
-            log.error("Error when publisher orderId: {}, with error: {}", order.getId(), e.getStackTrace());
+            log.error("Error when publisher orderId: {}, with error: {}", event.id(), e.getStackTrace());
         }
     }
 }

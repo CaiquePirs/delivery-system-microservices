@@ -17,7 +17,6 @@ import com.deliverysystem.orders.service.validator.OrderValidator;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -30,31 +29,33 @@ public class OrderService {
     private final ItemOrderService itemOrderService;
     private final OrderCalculator calculator;
     private final OrderRepository orderRepository;
-    private final OrderMapper orderMapper;
-    private final OrderEventPublisher orderEventPublisher;
-    private final OrderValidator orderValidator;
+    private final OrderMapper mapper;
+    private final OrderEventPublisher eventPublisher;
+    private final OrderValidator validator;
 
-    @Transactional
-    public OrderResponseDTO createOrder(OrderRequestDTO orderDTO){
+    public void createOrder(OrderRequestDTO orderDTO){
         var customerFuture = apiClientService.findCustomerById(orderDTO.customerId());
         var restaurantFuture = apiClientService.findRestaurantById(orderDTO.restaurantId());
-
         CompletableFuture.allOf(customerFuture, restaurantFuture).join();
+
         CustomerRepresentationDTO customer = customerFuture.join();
         RestaurantRepresentationDTO restaurant = restaurantFuture.join();
 
-        orderValidator.validateIfRestaurantIsOpen(restaurant.status());
-        AddressRepresentationDTO deliveryAddress = orderValidator.resolveDeliveryAddress(orderDTO.deliveryAddressId(), customer);
+        validator.validateIfRestaurantIsOpen(restaurant.status());
+        AddressRepresentationDTO deliveryAddress = validator.resolveDeliveryAddress(orderDTO.deliveryAddressId(), customer);
 
         List<ItemsOrder> items = itemOrderService.createItemsOrder(restaurant, orderDTO.itemsDTO());
         BigDecimal totalOrder = calculator.calculateTotalOrder(items);
 
-        Order orderMapped = orderMapper.mapToEntity(orderDTO, items, totalOrder);
-        Order orderCreated = orderRepository.save(orderMapped);
-        orderCreated.setPaymentData(orderDTO.paymentData());
+        Order orderEntity = mapper.mapToEntity(orderDTO, items, totalOrder);
+        Order createdOrder = orderRepository.save(orderEntity);
+        createdOrder.setPaymentData(orderDTO.paymentData());
 
-        orderEventPublisher.publishVerifyPayment(orderCreated, customer, deliveryAddress);
-        return orderMapper.mapToResponse(orderCreated, customer, deliveryAddress);
+        eventPublisher.publishVerifyPayment(mapper.mapToEventResponse(
+                createdOrder,
+                customer,
+                deliveryAddress)
+        );
     }
 
     public OrderResponseDTO findOrderResponseById(String orderId){
@@ -66,9 +67,9 @@ public class OrderService {
 
         CustomerRepresentationDTO customer = customerFuture.join();
         RestaurantRepresentationDTO restaurant = restaurantFuture.join();
-        AddressRepresentationDTO deliveryAddress = orderValidator.resolveDeliveryAddress(order.getDeliveryAddressId(), customer);
+        AddressRepresentationDTO deliveryAddress = validator.resolveDeliveryAddress(order.getDeliveryAddressId(), customer);
 
-        OrderResponseDTO orderResponse = orderMapper.mapToResponse(order, customer, deliveryAddress);
+        OrderResponseDTO orderResponse = mapper.mapToResponse(order, customer, deliveryAddress);
         orderResponse.setRestaurantEmail(restaurant.email());
 
         return orderResponse;

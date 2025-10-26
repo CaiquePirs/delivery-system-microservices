@@ -28,12 +28,22 @@ public class ApiClientService {
     @Async
     public CompletableFuture<CustomerRepresentationDTO> findCustomerById(UUID customerId) {
         var customerResponse = customerClientApi.findCustomerById(customerId);
+
+        if (customerResponse == null) {
+            throw new ClientNotFoundException("Customer not found. Please enter the ID correctly.");
+        }
+
         return CompletableFuture.completedFuture(customerResponse.getBody());
     }
 
     @Async
     public CompletableFuture<RestaurantRepresentationDTO> findRestaurantById(UUID restaurantId) {
         var restaurantResponse = restaurantClientApi.findRestaurantById(restaurantId);
+
+        if( restaurantResponse == null) {
+            throw new ClientNotFoundException("Restaurant not found. Please enter the ID correctly.");
+        }
+
         return CompletableFuture.completedFuture(restaurantResponse.getBody());
     }
 

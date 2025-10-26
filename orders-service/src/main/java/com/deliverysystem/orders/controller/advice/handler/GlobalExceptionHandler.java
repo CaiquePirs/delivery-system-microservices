@@ -4,6 +4,7 @@ import com.deliverysystem.orders.controller.advice.dto.ErrorMessageDTO;
 import com.deliverysystem.orders.controller.advice.dto.ErrorResponseDTO;
 import com.deliverysystem.orders.controller.exception.ClientNotFoundException;
 import com.deliverysystem.orders.controller.exception.OrderNotFoundException;
+import com.deliverysystem.orders.controller.exception.RestaurantClosedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -55,4 +56,16 @@ public class GlobalExceptionHandler {
                         List.of(new ErrorMessageDTO("Not Found", e.getMessage()))
                 ));
     }
+
+    @ExceptionHandler(RestaurantClosedException.class)
+    public ResponseEntity<ErrorResponseDTO> handleOrderNotFound(RestaurantClosedException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponseDTO(
+                        HttpStatus.BAD_REQUEST.value(),
+                        e.getMessage(),
+                        LocalDateTime.now(),
+                        List.of(new ErrorMessageDTO("Restaurant Closed", e.getMessage()))
+                ));
+    }
+
 }

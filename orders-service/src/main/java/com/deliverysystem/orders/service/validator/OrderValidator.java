@@ -4,6 +4,7 @@ import com.deliverysystem.orders.client.representation.AddressRepresentationDTO;
 import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
 import com.deliverysystem.orders.client.service.ApiClientService;
 import com.deliverysystem.orders.controller.exception.ClientNotFoundException;
+import com.deliverysystem.orders.controller.exception.RestaurantClosedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.util.UUID;
@@ -23,7 +24,7 @@ public class OrderValidator {
 
     public void validateIfRestaurantIsOpen(String status){
         if(status.equals("CLOSED")){
-            throw new ClientNotFoundException("The selected restaurant is currently closed for orders.");
+            throw new RestaurantClosedException("The selected restaurant is currently closed for orders.");
         }
     }
 

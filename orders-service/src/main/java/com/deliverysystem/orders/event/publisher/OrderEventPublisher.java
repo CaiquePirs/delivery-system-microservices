@@ -4,7 +4,6 @@ import com.deliverysystem.orders.client.representation.AddressRepresentationDTO;
 import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
 import com.deliverysystem.orders.event.representation.OrderResponseEvent;
 import com.deliverysystem.orders.mapper.OrderMapper;
-import com.deliverysystem.orders.model.Order;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Component;
 public class OrderEventPublisher {
 
     private final RabbitTemplate rabbitTemplate;
-    private final OrderMapper orderMapper;
 
     @Value("${spring.rabbitmq.exchange-verify-payment}")
     private String exchangeKey;

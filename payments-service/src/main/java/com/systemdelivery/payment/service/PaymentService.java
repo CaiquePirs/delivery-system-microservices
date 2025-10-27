@@ -49,7 +49,7 @@ public class PaymentService {
                     payment.setNotes(webhookDTO.notes());
                     payment.setUpdated_at(LocalDateTime.now());
 
-                    paymentEventPublisher.publisher(payment);
+                    paymentEventPublisher.publisherInPaymentApproved(payment);
                     paymentRepository.save(payment);
                 } else {
                     Objects.requireNonNull(payment).setStatus(PaymentStatus.FAILED);

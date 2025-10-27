@@ -1,6 +1,6 @@
 spring:
   application:
-    name: order-service
+    name: orders-service
 
   data:
     mongodb:
@@ -23,12 +23,19 @@ logging:
   pattern:
     console: "%clr(%d{dd-MM-yyyy HH:mm:ss}){faint} %clr(%5p) %clr([%t]){faint} %clr(%-40.40logger){cyan} %clr(:){yellow} %m%n"
 
-server:
-  port: 8082
-
 customers:
   url: http://localhost:8080/api/customers
 addresses:
   url: http://localhost:8080/api/addresses
 restaurants:
   url: http://localhost:8081/api/restaurants
+
+server:
+  port: 0
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    instance:
+      instance-id: ${spring.application.name}:${random.value}

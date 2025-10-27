@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/addresses")
+@RequestMapping("/api/customers/my-addresses")
 @RequiredArgsConstructor
 public class AddressController {
 

@@ -47,9 +47,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleCustomerNotFound(NotFoundException e){
-        return ResponseEntity.status(HttpStatus.CONFLICT)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponseDTO(
-                        HttpStatus.CONFLICT.value(),
+                        HttpStatus.NOT_FOUND.value(),
                         e.getMessage(),
                         LocalDateTime.now(),
                         List.of(new ErrorMessageDTO("Customer not Found", e.getMessage()))

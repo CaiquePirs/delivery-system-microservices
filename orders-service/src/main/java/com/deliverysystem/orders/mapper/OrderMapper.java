@@ -1,7 +1,7 @@
 package com.deliverysystem.orders.mapper;
 
-import com.deliverysystem.orders.client.representation.AddressRepresentationDTO;
-import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
+import com.deliverysystem.orders.client.representation.DeliveryAddressDTO;
+import com.deliverysystem.orders.client.representation.CustomerDTO;
 import com.deliverysystem.orders.event.representation.CustomerResponseEvent;
 import com.deliverysystem.orders.controller.dto.OrderRequestDTO;
 import com.deliverysystem.orders.controller.dto.OrderResponseDTO;
@@ -37,7 +37,7 @@ public class OrderMapper {
                 .build();
     }
 
-    public OrderResponseDTO mapToResponse(Order order, CustomerRepresentationDTO customer, AddressRepresentationDTO deliveryAddress){
+    public OrderResponseDTO mapToResponse(Order order, CustomerDTO customer, DeliveryAddressDTO deliveryAddress){
         return OrderResponseDTO.builder()
                 .id(order.getId().toString())
                 .restaurantId(order.getRestaurantId())
@@ -51,7 +51,7 @@ public class OrderMapper {
                 .build();
     }
 
-    public OrderResponseEvent mapToEventResponse(Order order, CustomerRepresentationDTO customer, AddressRepresentationDTO deliveryAddress){
+    public OrderResponseEvent mapToEventResponse(Order order, CustomerDTO customer, DeliveryAddressDTO deliveryAddress){
         return OrderResponseEvent.builder()
                 .id(order.getId().toString())
                 .restaurantId(order.getRestaurantId())
@@ -66,7 +66,7 @@ public class OrderMapper {
                 .build();
     }
 
-    private CustomerResponseEvent mapToCustomerResponse(CustomerRepresentationDTO customer, AddressRepresentationDTO deliveryAddress){
+    private CustomerResponseEvent mapToCustomerResponse(CustomerDTO customer, DeliveryAddressDTO deliveryAddress){
         return CustomerResponseEvent.builder()
                 .id(customer.id())
                 .name(customer.name())

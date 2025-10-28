@@ -1,9 +1,6 @@
 package com.deliverysystem.orders.event.publisher;
 
-import com.deliverysystem.orders.client.representation.AddressRepresentationDTO;
-import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
 import com.deliverysystem.orders.event.representation.OrderResponseEvent;
-import com.deliverysystem.orders.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

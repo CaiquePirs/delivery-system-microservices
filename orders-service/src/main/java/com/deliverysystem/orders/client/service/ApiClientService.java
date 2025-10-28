@@ -2,10 +2,10 @@ package com.deliverysystem.orders.client.service;
 
 import com.deliverysystem.orders.client.api.CustomerClientApi;
 import com.deliverysystem.orders.client.api.RestaurantClientApi;
-import com.deliverysystem.orders.client.representation.AddressRepresentationDTO;
-import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
+import com.deliverysystem.orders.client.representation.DeliveryAddressDTO;
+import com.deliverysystem.orders.client.representation.CustomerDTO;
 import com.deliverysystem.orders.client.representation.MenuRepresentationDTO;
-import com.deliverysystem.orders.client.representation.RestaurantRepresentationDTO;
+import com.deliverysystem.orders.client.representation.RestaurantDTO;
 import com.deliverysystem.orders.controller.exception.ClientNotFoundException;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class ApiClientService {
     private final RestaurantClientApi restaurantClientApi;
 
     @Async
-    public CompletableFuture<CustomerRepresentationDTO> findCustomerById(UUID customerId) {
+    public CompletableFuture<CustomerDTO> findCustomerById(UUID customerId) {
         try {
             var customerResponse = customerClientApi.findCustomerById(customerId);
             return CompletableFuture.completedFuture(customerResponse.getBody());
@@ -35,7 +35,7 @@ public class ApiClientService {
     }
 
     @Async
-    public CompletableFuture<RestaurantRepresentationDTO> findRestaurantById(UUID restaurantId) {
+    public CompletableFuture<RestaurantDTO> findRestaurantById(UUID restaurantId) {
         try {
             var restaurantResponse = restaurantClientApi.findRestaurantById(restaurantId);
             return CompletableFuture.completedFuture(restaurantResponse.getBody());
@@ -55,7 +55,7 @@ public class ApiClientService {
         }
     }
 
-    public AddressRepresentationDTO findAddressById(UUID addressId) {
+    public DeliveryAddressDTO findAddressById(UUID addressId) {
         try {
             var address = customerClientApi.findAddressById(addressId);
             return address.getBody();

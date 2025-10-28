@@ -2,7 +2,7 @@ package com.deliverysystem.orders.client.representation;
 
 import java.util.UUID;
 
-public record AddressRepresentationDTO(
+public record DeliveryAddressDTO(
         UUID id,
         String street,
         String number,

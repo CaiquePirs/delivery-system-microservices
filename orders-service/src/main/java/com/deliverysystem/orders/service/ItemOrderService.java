@@ -1,6 +1,6 @@
 package com.deliverysystem.orders.service;
 
-import com.deliverysystem.orders.client.representation.RestaurantRepresentationDTO;
+import com.deliverysystem.orders.client.representation.RestaurantDTO;
 import com.deliverysystem.orders.client.service.ApiClientService;
 import com.deliverysystem.orders.controller.dto.ItemOrderRequestDTO;
 import com.deliverysystem.orders.model.ItemsOrder;
@@ -17,7 +17,7 @@ public class ItemOrderService {
 
     private final ApiClientService apiClientService;
 
-    public List<ItemsOrder> createItemsOrder(RestaurantRepresentationDTO restaurant, List<ItemOrderRequestDTO> itemsDTO){
+    public List<ItemsOrder> createItemsOrder(RestaurantDTO restaurant, List<ItemOrderRequestDTO> itemsDTO){
         return itemsDTO.stream().map(item -> {
 
             var menu = restaurant.menus()

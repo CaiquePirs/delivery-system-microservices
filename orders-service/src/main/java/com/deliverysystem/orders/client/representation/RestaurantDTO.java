@@ -3,13 +3,13 @@ package com.deliverysystem.orders.client.representation;
 import java.util.List;
 import java.util.UUID;
 
-public record RestaurantRepresentationDTO(
+public record RestaurantDTO(
         UUID id,
         String name,
         String email,
         String website,
         String description,
         String status,
-        AddressRepresentationDTO address,
+        DeliveryAddressDTO address,
         List<MenuRepresentationDTO> menus) {
 }

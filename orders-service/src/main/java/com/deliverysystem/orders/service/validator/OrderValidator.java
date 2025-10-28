@@ -1,9 +1,8 @@
 package com.deliverysystem.orders.service.validator;
 
-import com.deliverysystem.orders.client.representation.AddressRepresentationDTO;
-import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
+import com.deliverysystem.orders.client.representation.DeliveryAddressDTO;
+import com.deliverysystem.orders.client.representation.CustomerDTO;
 import com.deliverysystem.orders.client.service.ApiClientService;
-import com.deliverysystem.orders.controller.exception.ClientNotFoundException;
 import com.deliverysystem.orders.controller.exception.RestaurantClosedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,7 +14,7 @@ public class OrderValidator {
 
     private final ApiClientService apiClientService;
 
-    public AddressRepresentationDTO resolveDeliveryAddress(UUID deliveryAddressId, CustomerRepresentationDTO customer){
+    public DeliveryAddressDTO resolveDeliveryAddress(UUID deliveryAddressId, CustomerDTO customer){
        return customer.address().stream()
                 .filter(address -> address.id().equals(deliveryAddressId))
                 .findFirst()

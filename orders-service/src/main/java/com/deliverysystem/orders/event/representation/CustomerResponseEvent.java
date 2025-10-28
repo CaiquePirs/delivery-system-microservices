@@ -1,6 +1,6 @@
 package com.deliverysystem.orders.event.representation;
 
-import com.deliverysystem.orders.client.representation.AddressRepresentationDTO;
+import com.deliverysystem.orders.client.representation.DeliveryAddressDTO;
 import lombok.Builder;
 import java.util.UUID;
 
@@ -10,5 +10,5 @@ public record CustomerResponseEvent(
         String name,
         String email,
         String phone,
-        AddressRepresentationDTO deliveryAddress) {
+        DeliveryAddressDTO deliveryAddress) {
 }

@@ -1,8 +1,8 @@
 package com.deliverysystem.orders.service;
 
-import com.deliverysystem.orders.client.representation.AddressRepresentationDTO;
-import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
-import com.deliverysystem.orders.client.representation.RestaurantRepresentationDTO;
+import com.deliverysystem.orders.client.representation.DeliveryAddressDTO;
+import com.deliverysystem.orders.client.representation.CustomerDTO;
+import com.deliverysystem.orders.client.representation.RestaurantDTO;
 import com.deliverysystem.orders.client.service.ApiClientService;
 import com.deliverysystem.orders.controller.dto.OrderRequestDTO;
 import com.deliverysystem.orders.controller.dto.OrderResponseDTO;
@@ -34,15 +34,15 @@ public class OrderService {
     private final OrderValidator validator;
 
     public void createOrder(OrderRequestDTO orderDTO){
-        var customerFuture = apiClientService.findCustomerById(orderDTO.customerId());
-        var restaurantFuture = apiClientService.findRestaurantById(orderDTO.restaurantId());
+        CompletableFuture<CustomerDTO> customerFuture = apiClientService.findCustomerById(orderDTO.customerId());
+        CompletableFuture<RestaurantDTO> restaurantFuture = apiClientService.findRestaurantById(orderDTO.restaurantId());
         CompletableFuture.allOf(customerFuture, restaurantFuture).join();
 
-        CustomerRepresentationDTO customer = customerFuture.join();
-        RestaurantRepresentationDTO restaurant = restaurantFuture.join();
+        CustomerDTO customer = customerFuture.join();
+        RestaurantDTO restaurant = restaurantFuture.join();
 
         validator.validateIfRestaurantIsOpen(restaurant.status());
-        AddressRepresentationDTO deliveryAddress = validator.resolveDeliveryAddress(orderDTO.deliveryAddressId(), customer);
+        DeliveryAddressDTO deliveryAddress = validator.resolveDeliveryAddress(orderDTO.deliveryAddressId(), customer);
 
         List<ItemsOrder> items = itemOrderService.createItemsOrder(restaurant, orderDTO.itemsDTO());
         BigDecimal totalOrder = calculator.calculateTotalOrder(items);
@@ -65,9 +65,9 @@ public class OrderService {
         var restaurantFuture = apiClientService.findRestaurantById(order.getRestaurantId());
         CompletableFuture.allOf(customerFuture, restaurantFuture).join();
 
-        CustomerRepresentationDTO customer = customerFuture.join();
-        RestaurantRepresentationDTO restaurant = restaurantFuture.join();
-        AddressRepresentationDTO deliveryAddress = validator.resolveDeliveryAddress(order.getDeliveryAddressId(), customer);
+        CustomerDTO customer = customerFuture.join();
+        RestaurantDTO restaurant = restaurantFuture.join();
+        DeliveryAddressDTO deliveryAddress = validator.resolveDeliveryAddress(order.getDeliveryAddressId(), customer);
 
         OrderResponseDTO orderResponse = mapper.mapToResponse(order, customer, deliveryAddress);
         orderResponse.setRestaurantEmail(restaurant.email());

@@ -1,7 +1,7 @@
 package com.deliverysystem.orders.client.api;
 
 import com.deliverysystem.orders.client.representation.MenuRepresentationDTO;
-import com.deliverysystem.orders.client.representation.RestaurantRepresentationDTO;
+import com.deliverysystem.orders.client.representation.RestaurantDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +13,7 @@ import java.util.UUID;
 public interface RestaurantClientApi {
 
     @GetMapping("/api/restaurants/{id}")
-    ResponseEntity<RestaurantRepresentationDTO> findRestaurantById(@PathVariable(name = "id" ) UUID restaurantId);
+    ResponseEntity<RestaurantDTO> findRestaurantById(@PathVariable(name = "id" ) UUID restaurantId);
 
     @GetMapping("/api/restaurants/{restaurantId}/menus/{id}")
     ResponseEntity<MenuRepresentationDTO> findMenuById(@PathVariable UUID restaurantId, @PathVariable(name = "id") UUID menuId);

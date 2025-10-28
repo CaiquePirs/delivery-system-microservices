@@ -2,6 +2,10 @@ spring:
   application:
     name: cloud-gateway
 
+  output:
+    ansi:
+      enabled: ALWAYS
+
   cloud:
     gateway:
       discovery:
@@ -18,3 +22,8 @@ eureka:
 
 server:
   port: 8080
+
+logging:
+  pattern:
+    console: "%clr(%d{dd-MM-yyyy HH:mm:ss}){faint} %clr(%5p) %clr([%t]){faint} %clr(%-40.40logger){cyan} %clr(:){yellow} %m%n"
+

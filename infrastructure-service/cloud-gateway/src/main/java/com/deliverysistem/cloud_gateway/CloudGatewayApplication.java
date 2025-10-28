@@ -21,6 +21,7 @@ public class CloudGatewayApplication {
 				.route(r -> r.path("/api/orders/**").uri("lb://orders-service"))
 				.route(r -> r.path("/api/payments/**").uri("lb://payments-service"))
 				.route(r -> r.path("/api/deliveries/**").uri("lb://deliveries-service"))
+				.route(r -> r.path("/api/curriers/**").uri("lb://deliveries-service"))
 				.route(r -> r.path("/api/notifications/**").uri("lb://notifications-service"))
 				.build();
 	}

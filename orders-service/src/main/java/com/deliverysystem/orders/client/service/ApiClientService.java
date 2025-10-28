@@ -1,8 +1,6 @@
 package com.deliverysystem.orders.client.service;
 
-import com.deliverysystem.orders.client.api.AddressClientApi;
 import com.deliverysystem.orders.client.api.CustomerClientApi;
-import com.deliverysystem.orders.client.api.MenuClientApi;
 import com.deliverysystem.orders.client.api.RestaurantClientApi;
 import com.deliverysystem.orders.client.representation.AddressRepresentationDTO;
 import com.deliverysystem.orders.client.representation.CustomerRepresentationDTO;
@@ -11,45 +9,45 @@ import com.deliverysystem.orders.client.representation.RestaurantRepresentationD
 import com.deliverysystem.orders.controller.exception.ClientNotFoundException;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ApiClientService {
 
     private final CustomerClientApi customerClientApi;
     private final RestaurantClientApi restaurantClientApi;
-    private final AddressClientApi addressClientApi;
-    private final MenuClientApi menuClientApi;
 
     @Async
     public CompletableFuture<CustomerRepresentationDTO> findCustomerById(UUID customerId) {
-        var customerResponse = customerClientApi.findCustomerById(customerId);
+        try {
+            var customerResponse = customerClientApi.findCustomerById(customerId);
+            return CompletableFuture.completedFuture(customerResponse.getBody());
 
-        if (customerResponse == null) {
+        } catch (FeignException.NotFound e) {
             throw new ClientNotFoundException("Customer not found. Please enter the ID correctly.");
         }
-
-        return CompletableFuture.completedFuture(customerResponse.getBody());
     }
 
     @Async
     public CompletableFuture<RestaurantRepresentationDTO> findRestaurantById(UUID restaurantId) {
-        var restaurantResponse = restaurantClientApi.findRestaurantById(restaurantId);
+        try {
+            var restaurantResponse = restaurantClientApi.findRestaurantById(restaurantId);
+            return CompletableFuture.completedFuture(restaurantResponse.getBody());
 
-        if( restaurantResponse == null) {
+        } catch (FeignException.NotFound e) {
             throw new ClientNotFoundException("Restaurant not found. Please enter the ID correctly.");
         }
-
-        return CompletableFuture.completedFuture(restaurantResponse.getBody());
     }
 
     public MenuRepresentationDTO findMenuById(UUID menuId, UUID restaurantId){
         try {
-            var menuResponse = menuClientApi.findMenuById(restaurantId, menuId);
+            var menuResponse = restaurantClientApi.findMenuById(restaurantId, menuId);
             return menuResponse.getBody();
 
         } catch (FeignException e){
@@ -59,10 +57,10 @@ public class ApiClientService {
 
     public AddressRepresentationDTO findAddressById(UUID addressId) {
         try {
-            var address = addressClientApi.findAddressById(addressId);
+            var address = customerClientApi.findAddressById(addressId);
             return address.getBody();
 
-        } catch (Exception e) {
+        } catch (FeignException e) {
             throw new ClientNotFoundException("Address not found. Please enter the ID correctly.");
         }
     }

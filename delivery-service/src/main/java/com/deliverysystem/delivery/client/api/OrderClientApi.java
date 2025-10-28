@@ -6,9 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "order-service", url = "${spring.clients.order-service.url}")
+@FeignClient(name = "orders-service")
 public interface OrderClientApi {
 
-    @GetMapping("/{id}")
+    @GetMapping("/api/orders/{id}")
     ResponseEntity<OrderRepresentationDTO> findById(@PathVariable(name = "id") String orderId);
 }

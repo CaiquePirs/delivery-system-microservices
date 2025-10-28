@@ -8,9 +8,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import java.util.UUID;
 
-@FeignClient(name = "CustomersApi", url = "${customers.url}")
+@FeignClient(name = "customers-service")
 public interface CustomerClientApi {
 
-    @GetMapping("/{id}")
+    @GetMapping("/api/customers/{id}")
     ResponseEntity<CustomerRepresentationDTO> findCustomerById(@PathVariable(name = "id" ) UUID customerId);
+
+    @GetMapping("/my-addresses/{id}")
+    ResponseEntity<AddressRepresentationDTO> findAddressById(@PathVariable("id") UUID addressId);
+
 }

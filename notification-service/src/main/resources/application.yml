@@ -23,9 +23,6 @@ spring:
     payment-approved-queue: payment-approved-notify-queue
     delivery-ready-queue: delivery-ready-notify-queue
 
-  clients:
-    orders-api: http://localhost:8082/api/orders
-
   output:
     ansi:
       enabled: ALWAYS

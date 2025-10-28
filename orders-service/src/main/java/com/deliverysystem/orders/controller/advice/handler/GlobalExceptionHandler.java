@@ -5,6 +5,7 @@ import com.deliverysystem.orders.controller.advice.dto.ErrorResponseDTO;
 import com.deliverysystem.orders.controller.exception.ClientNotFoundException;
 import com.deliverysystem.orders.controller.exception.OrderNotFoundException;
 import com.deliverysystem.orders.controller.exception.RestaurantClosedException;
+import feign.FeignException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,6 +18,17 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<ErrorResponseDTO> handleFeignException(FeignException e){
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+                .body(new ErrorResponseDTO(
+                        HttpStatus.BAD_GATEWAY.value(),
+                        "Error communicating with external service",
+                        LocalDateTime.now(),
+                        List.of(new ErrorMessageDTO("Feign Exception", e.getMessage()))
+                ));
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponseDTO> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {

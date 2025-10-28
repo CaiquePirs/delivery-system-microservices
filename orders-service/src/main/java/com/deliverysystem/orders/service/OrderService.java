@@ -61,8 +61,8 @@ public class OrderService {
     public OrderResponseDTO findOrderResponseById(String orderId){
         Order order = findOrderById(orderId);
 
-        var customerFuture = apiClientService.findCustomerById(order.getCustomerId());
-        var restaurantFuture = apiClientService.findRestaurantById(order.getRestaurantId());
+        CompletableFuture<CustomerDTO> customerFuture = apiClientService.findCustomerById(order.getCustomerId());
+        CompletableFuture<RestaurantDTO> restaurantFuture = apiClientService.findRestaurantById(order.getRestaurantId());
         CompletableFuture.allOf(customerFuture, restaurantFuture).join();
 
         CustomerDTO customer = customerFuture.join();

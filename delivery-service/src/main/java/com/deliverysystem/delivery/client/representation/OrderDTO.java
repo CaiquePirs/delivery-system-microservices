@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record OrderRepresentationDTO(
+public record OrderDTO(
         String id,
         UUID restaurantId,
         LocalDate orderDate,
@@ -16,5 +16,5 @@ public record OrderRepresentationDTO(
         String status,
         String notes,
         LocalDateTime estimated_delivery,
-        CustomerRepresentationDTO customer) {
+        CustomerDTO customer) {
 }

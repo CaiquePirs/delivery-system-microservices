@@ -11,5 +11,5 @@ public record RestaurantDTO(
         String description,
         String status,
         DeliveryAddressDTO address,
-        List<MenuRepresentationDTO> menus) {
+        List<MenuDTO> menus) {
 }

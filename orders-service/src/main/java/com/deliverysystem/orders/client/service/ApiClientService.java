@@ -4,7 +4,7 @@ import com.deliverysystem.orders.client.api.CustomerClientApi;
 import com.deliverysystem.orders.client.api.RestaurantClientApi;
 import com.deliverysystem.orders.client.representation.DeliveryAddressDTO;
 import com.deliverysystem.orders.client.representation.CustomerDTO;
-import com.deliverysystem.orders.client.representation.MenuRepresentationDTO;
+import com.deliverysystem.orders.client.representation.MenuDTO;
 import com.deliverysystem.orders.client.representation.RestaurantDTO;
 import com.deliverysystem.orders.controller.exception.ClientNotFoundException;
 import feign.FeignException;
@@ -45,7 +45,7 @@ public class ApiClientService {
         }
     }
 
-    public MenuRepresentationDTO findMenuById(UUID menuId, UUID restaurantId){
+    public MenuDTO findMenuById(UUID menuId, UUID restaurantId){
         try {
             var menuResponse = restaurantClientApi.findMenuById(restaurantId, menuId);
             return menuResponse.getBody();

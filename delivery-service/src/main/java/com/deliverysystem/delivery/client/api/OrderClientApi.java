@@ -1,6 +1,6 @@
 package com.deliverysystem.delivery.client.api;
 
-import com.deliverysystem.delivery.client.representation.OrderRepresentationDTO;
+import com.deliverysystem.delivery.client.representation.OrderDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface OrderClientApi {
 
     @GetMapping("/api/orders/{id}")
-    ResponseEntity<OrderRepresentationDTO> findById(@PathVariable(name = "id") String orderId);
+    ResponseEntity<OrderDTO> findById(@PathVariable(name = "id") String orderId);
 }

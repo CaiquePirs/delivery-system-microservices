@@ -5,7 +5,6 @@ import com.systemdelivery.payment.model.enums.PaymentStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
 import java.time.Duration;
 import java.util.UUID;
 
@@ -31,7 +30,7 @@ public class SimulatedGateway {
 
         try {
             RestTemplate restTemplate = new RestTemplate();
-            restTemplate.postForEntity("http://localhost:8084/api/payments/webhook", webhook, Void.class);
+            restTemplate.postForEntity("http://localhost:8082/api/payments/webhook", webhook, Void.class);
 
         } catch (Exception e){
             log.error("Error when simulating payment callback: {}", e.getMessage());

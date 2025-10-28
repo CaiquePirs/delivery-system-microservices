@@ -25,11 +25,11 @@ logging:
     console: "%clr(%d{dd-MM-yyyy HH:mm:ss}){faint} %clr(%5p) %clr([%t]){faint} %clr(%-40.40logger){cyan} %clr(:){yellow} %m%n"
 
 server:
-  port: 0
+  port: 8082
 
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
     instance:
-      instance-id: ${spring.application.name}:${random.value}
+      instance-id: ${spring.application.name}:${server.port}

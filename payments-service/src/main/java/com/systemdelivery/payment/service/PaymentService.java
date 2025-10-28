@@ -49,8 +49,9 @@ public class PaymentService {
                     payment.setNotes(webhookDTO.notes());
                     payment.setUpdated_at(LocalDateTime.now());
 
-                    paymentEventPublisher.publisherInPaymentApproved(payment);
                     paymentRepository.save(payment);
+                    paymentEventPublisher.publisherInPaymentApproved(payment);
+
                 } else {
                     Objects.requireNonNull(payment).setStatus(PaymentStatus.FAILED);
                     payment.setUpdated_at(LocalDateTime.now());

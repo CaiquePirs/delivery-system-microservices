@@ -1,4 +1,4 @@
-package com.deliverysistem.cloud_gateway;
+package com.deliverysistem.gateway;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

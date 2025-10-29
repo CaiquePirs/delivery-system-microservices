@@ -27,6 +27,7 @@ public class DeliveryService {
     private final CurrierService currierService;
     private final DeliveryTaxCalculator deliveryTaxCalculator;
     private final DeliveryEventPublisher deliveryEventPublisher;
+    private final SimulatedCallbackDelivery simulatedCallbackDelivery;
 
     public void processDeliveryForOrder(PaymentApprovedEvent event) {
         var order = clientApiService.findById(event.orderId());
@@ -45,6 +46,7 @@ public class DeliveryService {
                 .build();
 
         deliveryRepository.save(delivery);
+        simulatedCallbackDelivery.simulateWebhook(delivery.getId());
     }
 
     public void callbackDeliveryReady(UUID deliveryId) {
@@ -66,10 +68,10 @@ public class DeliveryService {
             deliveryEventPublisher.publishDeliveryShipped(delivery);
 
         } else {
-            throw new DeliveryErrorException(String.format(
-                    "Error processing delivery ID: %s , the current delivery status is: %s",
-                    deliveryId,
-                    delivery.getStatus())
+            throw new DeliveryErrorException(
+                    String.format("Error processing delivery ID: %s , the current delivery status is: %s",
+                            deliveryId,
+                            delivery.getStatus())
             );
         }
     }

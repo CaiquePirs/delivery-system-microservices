@@ -1,0 +1,9 @@
+package com.systemdelivery.authentication.controller.advice.dto;
+
+import java.time.LocalDateTime;
+
+public record ErrorResponseDTO(
+        Integer status,
+        String message,
+        LocalDateTime timeStamp) {
+}

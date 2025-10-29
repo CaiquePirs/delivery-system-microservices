@@ -1,0 +1,38 @@
+spring:
+  application:
+      name: authentication-service
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081/realms/delivery-system-realm
+
+  keycloak:
+    token-url: http://localhost:8081/realms/delivery-system-realm/protocol/openid-connect/token
+    client-id: api-gateway-systemdelivery
+    client-secret: JSgtF9WAQXPMGr8b5IqbELnwFNquJALx
+
+  rabbitmq:
+    password: admin123
+    username: admin
+    host: localhost
+    port: 5672
+
+  output:
+    ansi:
+      enabled: ALWAYS
+
+logging:
+  pattern:
+    console: "%clr(%d{dd-MM-yyyy HH:mm:ss}){faint} %clr(%5p) %clr([%t]){faint} %clr(%-40.40logger){cyan} %clr(:){yellow} %m%n"
+
+server:
+  port: 0
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    instance-id: ${spring.application.name}:${random.value}

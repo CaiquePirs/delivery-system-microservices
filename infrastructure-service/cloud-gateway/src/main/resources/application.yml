@@ -13,6 +13,12 @@ spring:
             enabled: true
             lower-case-service-id: true
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+         issuer-uri: http://localhost:8081/realms/delivery-system-realm
+
 eureka:
   client:
     service-url:

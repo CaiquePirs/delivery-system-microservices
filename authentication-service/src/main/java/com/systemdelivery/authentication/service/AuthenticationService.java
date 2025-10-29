@@ -11,14 +11,20 @@ import org.springframework.stereotype.Service;
 public class AuthenticationService {
 
     private final keycloakService keycloakService;
+    private final RedisService redisService;
 
     public LoginResponseDTO login(LoginRequestDTO loginRequest) {
-        LoginResponseDTO loginResponse = keycloakService.findUserInKeycloak(loginRequest);
+        LoginResponseDTO tokenInCache = redisService.findUserTokenInCache(loginRequest.email());
+        if(tokenInCache != null) {
+            return tokenInCache;
+        }
 
+        LoginResponseDTO loginResponse = keycloakService.findUserInKeycloak(loginRequest);
         if (loginResponse == null) {
             throw new ErrorLoginException("Email or Password Invalid.");
         }
 
+        redisService.insertUserTokenInCache(loginRequest.email(), loginResponse);
         return loginResponse;
     }
 

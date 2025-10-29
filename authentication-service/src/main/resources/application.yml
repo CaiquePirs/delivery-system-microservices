@@ -19,6 +19,13 @@ spring:
     host: localhost
     port: 5672
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  cache:
+    type: REDIS
+
   output:
     ansi:
       enabled: ALWAYS

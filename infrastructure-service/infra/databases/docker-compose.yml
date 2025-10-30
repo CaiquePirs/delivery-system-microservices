@@ -10,9 +10,9 @@ services:
     container_name: customers_database
     restart: always
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin123
-      POSTGRES_DB: customers_db
+      POSTGRES_USER: ${CUSTOMERS_DB_USER}
+      POSTGRES_PASSWORD: ${CUSTOMERS_DB_PASSWORD}
+      POSTGRES_DB: ${CUSTOMERS_DB_NAME}
     ports:
       - "5432:5432"
     networks:
@@ -25,9 +25,9 @@ services:
     container_name: restaurants_database
     restart: always
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin123
-      POSTGRES_DB: restaurants_db
+      POSTGRES_USER: ${RESTAURANTS_DB_USER}
+      POSTGRES_PASSWORD: ${RESTAURANTS_DB_PASSWORD}
+      POSTGRES_DB: ${RESTAURANTS_DB_NAME}
     ports:
       - "5433:5432"
     networks:
@@ -40,9 +40,9 @@ services:
     container_name: deliveries_database
     restart: always
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin123
-      POSTGRES_DB: delivery_db
+      POSTGRES_USER: ${DELIVERIES_DB_USER}
+      POSTGRES_PASSWORD: ${DELIVERIES_DB_PASSWORD}
+      POSTGRES_DB: ${DELIVERIES_DB_NAME}
     ports:
       - "5434:5432"
     networks:
@@ -55,8 +55,8 @@ services:
     container_name: orders_mongodb
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin123
+      MONGO_INITDB_ROOT_USERNAME: ${ORDERS_MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${ORDERS_MONGO_PASSWORD}
     ports:
       - "27017:27017"
     networks:
@@ -65,18 +65,18 @@ services:
       - ./infra/databases/mongodb_data:/data/db
 
   payments_mongodb:
-      image: mongo:7
-      container_name: payments_mongodb
-      restart: always
-      environment:
-        MONGO_INITDB_ROOT_USERNAME: admin
-        MONGO_INITDB_ROOT_PASSWORD: admin123
-      ports:
-        - "27018:27017"
-      networks:
-        - database-network
-      volumes:
-        - ./infra/databases/payments_data:/data/db
+    image: mongo:7
+    container_name: payments_mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${PAYMENTS_MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${PAYMENTS_MONGO_PASSWORD}
+    ports:
+      - "27018:27017"
+    networks:
+      - database-network
+    volumes:
+      - ./infra/databases/payments_data:/data/db
 
   redis:
     image: redis:8
@@ -93,8 +93,8 @@ services:
     container_name: pgadmin_admin
     restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
     ports:
       - "5050:80"
     networks:

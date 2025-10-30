@@ -7,7 +7,7 @@ spring:
       enabled: ALWAYS
 
 server:
-  port: 8761
+  port: ${EUREKA_SERVER_PORT}
 
 eureka:
   client:

@@ -7,33 +7,33 @@ spring:
       enabled: ALWAYS
 
   keycloak:
-    token-url: http://localhost:8081/realms/delivery-system-realm/protocol/openid-connect/token
-    client-id: api-gateway-systemdelivery
-    client-secret: JSgtF9WAQXPMGr8b5IqbELnwFNquJALx
+    token-url: ${KEYCLOAK_TOKEN_URL}
+    client-id: ${KEYCLOAK_CLIENT_ID}
+    client-secret: ${KEYCLOAK_CLIENT_SECRET}
 
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
   cache:
     type: REDIS
 
   rabbitmq:
-    username: admin
-    password: admin123
-    host: localhost
-    port: 5672
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+
+server:
+  port: 0
 
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_ZONE_URL}
   instance:
     instance-id: ${spring.application.name}:${random.value}
 
 logging:
   pattern:
     console: "%clr(%d{dd-MM-yyyy HH:mm:ss}){faint} %clr(%5p) %clr([%t]){faint} %clr(%-40.40logger){cyan} %clr(:){yellow} %m%n"
-
-server:
-  port: 0

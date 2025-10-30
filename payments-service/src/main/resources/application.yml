@@ -1,20 +1,20 @@
 spring:
   application:
-      name: payments-service
+    name: payments-service
 
   data:
     mongodb:
-      uri: mongodb://admin:admin123@localhost:27018/payments?authSource=admin
+      uri: mongodb://${PAYMENTS_MONGO_USER}:${PAYMENTS_MONGO_PASSWORD}@${PAYMENTS_MONGO_HOST}:${PAYMENTS_MONGO_PORT}/${PAYMENTS_MONGO_DB}?authSource=admin
 
   rabbitmq:
-    password: admin123
-    username: admin
-    host: localhost
-    port: 5672
+    host: ${PAYMENTS_RABBITMQ_HOST}
+    port: ${PAYMENTS_RABBITMQ_PORT}
+    username: ${PAYMENTS_RABBITMQ_USERNAME}
+    password: ${PAYMENTS_RABBITMQ_PASSWORD}
     subscriber:
-      payment-queue: verify-payment-queue
+      payment-queue: ${PAYMENTS_RABBITMQ_SUBSCRIBER_QUEUE}
     publisher:
-      payment-exchange: approved-payment-fanout
+      payment-exchange: ${PAYMENTS_RABBITMQ_PUBLISHER_EXCHANGE}
 
   output:
     ansi:
@@ -30,6 +30,6 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_ZONE_URL}
   instance:
-     instance-id: ${spring.application.name}:${server.port}
+    instance-id: ${spring.application.name}:${server.port}

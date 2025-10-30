@@ -4,16 +4,16 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://admin:admin123@localhost:27017/orders?authSource=admin
+      uri: mongodb://${ORDERS_MONGO_USER}:${ORDERS_MONGO_PASSWORD}@${ORDERS_MONGO_HOST}:${ORDERS_MONGO_PORT}/${ORDERS_MONGO_DB}?authSource=admin
 
   rabbitmq:
-    host: localhost
-    port: 5672
-    username: admin
-    password: admin123
-    exchange-verify-payment: verify-payment-fanout
-    exchange-approved-payment: payment-approved-order-queue
-    delivery-ready-update: delivery-shipped-update-queue
+    host: ${ORDERS_RABBITMQ_HOST}
+    port: ${ORDERS_RABBITMQ_PORT}
+    username: ${ORDERS_RABBITMQ_USERNAME}
+    password: ${ORDERS_RABBITMQ_PASSWORD}
+    exchange-verify-payment: ${ORDERS_RABBITMQ_EXCHANGE_VERIFY_PAYMENT}
+    exchange-approved-payment: ${ORDERS_RABBITMQ_EXCHANGE_APPROVED_PAYMENT}
+    delivery-ready-update: ${ORDERS_RABBITMQ_DELIVERY_READY_UPDATE}
 
   output:
     ansi:
@@ -29,6 +29,6 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_ZONE_URL}
   instance:
     instance-id: ${spring.application.name}:${random.value}

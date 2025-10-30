@@ -15,13 +15,13 @@ spring:
             enable: true
 
   rabbitmq:
-    password: admin123
-    username: admin
-    host: localhost
-    port: 5672
-    order-confirmation-queue: verify-payment-notify-queue
-    payment-approved-queue: payment-approved-notify-queue
-    delivery-ready-queue: delivery-ready-notify-queue
+    username: ${NOTIFICATIONS_RABBITMQ_USERNAME}
+    password: ${NOTIFICATIONS_RABBITMQ_PASSWORD}
+    host: ${NOTIFICATIONS_RABBITMQ_HOST}
+    port: ${NOTIFICATIONS_RABBITMQ_PORT}
+    order-confirmation-queue: ${NOTIFICATIONS_RABBITMQ_ORDER_CONFIRMATION_QUEUE}
+    payment-approved-queue: ${NOTIFICATIONS_RABBITMQ_PAYMENT_APPROVED_QUEUE}
+    delivery-ready-queue: ${NOTIFICATIONS_RABBITMQ_DELIVERY_READY_QUEUE}
 
   output:
     ansi:
@@ -37,6 +37,7 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_ZONE_URL}
   instance:
     instance-id: ${spring.application.name}:${random.value}
+

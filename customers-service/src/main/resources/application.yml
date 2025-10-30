@@ -8,13 +8,13 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/customers_db
-    username: admin
-    password: admin123
+    username: ${CUSTOMERS_DB_USERNAME}
+    password: ${CUSTOMERS_DB_PASSWORD}
 
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
   cache:
     type: REDIS
 
@@ -33,6 +33,6 @@ server:
 eureka:
   client:
     service-url:
-        defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_ZONE_URL}
   instance:
     instance-id: ${spring.application.name}:${random.value}

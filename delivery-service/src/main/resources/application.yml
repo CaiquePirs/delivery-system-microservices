@@ -4,16 +4,16 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5434/delivery_db
-    username: admin
-    password: admin123
+    username: ${DELIVERIES_DB_USERNAME}
+    password: ${DELIVERIES_DB_PASSWORD}
 
   rabbitmq:
-    port: 5672
-    host: localhost
-    username: admin
-    password: admin123
-    subscribe-payment-queue: payment-approved-delivery-queue
-    publisher-delivery-ready: delivery-ready-fanout
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+    subscribe-payment-queue: ${DELIVERIES_RABBITMQ_SUBSCRIBE_PAYMENT_QUEUE}
+    publisher-delivery-ready: ${DELIVERIES_RABBITMQ_PUBLISHER_DELIVERY_READY}
 
   output:
     ansi:
@@ -34,6 +34,7 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_ZONE_URL}
   instance:
-     instance-id: ${spring.application.name}:${server.port}
+    instance-id: ${spring.application.name}:${server.port}
+

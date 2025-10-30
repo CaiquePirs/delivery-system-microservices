@@ -11,7 +11,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableWebFluxSecurity
 public class GatewaySecurityConfig {
 
-    @Value("{spring.application.security.oauth2.resourceserver.jwk.set.uri}")
+    @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
     private String JWK_SET_URI;
 
     @Bean
@@ -22,9 +22,7 @@ public class GatewaySecurityConfig {
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwtSpec -> jwtSpec
-                                .jwkSetUri(JWK_SET_URI)
-                        )
+                        .jwt(jwtSpec -> jwtSpec.jwkSetUri(JWK_SET_URI))
                 );
         return http.build();
     }

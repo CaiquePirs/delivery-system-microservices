@@ -10,15 +10,15 @@ spring:
     gateway:
       discovery:
         locator:
-            enabled: true
-            lower-case-service-id: true
+          enabled: true
+          lower-case-service-id: true
 
   security:
     oauth2:
       resourceserver:
         jwt:
-         issuer-uri: http://localhost:8081/realms/delivery-system-realm
-         jwk-set-uri: http://localhost:8081/realms/delivery-system-realm/protocol/openid-connect/certs
+          issuer-uri: http://localhost:8081/realms/delivery-system-realm
+          jwk-set-uri: http://localhost:8081/realms/delivery-system-realm/protocol/openid-connect/certs
 
 eureka:
   client:
@@ -33,4 +33,3 @@ server:
 logging:
   pattern:
     console: "%clr(%d{dd-MM-yyyy HH:mm:ss}){faint} %clr(%5p) %clr([%t]){faint} %clr(%-40.40logger){cyan} %clr(:){yellow} %m%n"
-

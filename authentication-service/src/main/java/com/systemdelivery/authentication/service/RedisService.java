@@ -19,7 +19,7 @@ public class RedisService {
 
     public void insertUserTokenInCache(String email, LoginResponseDTO loginResponse) {
         String accessKey = String.format("access_token:%s", email);
-        redisTemplate.opsForValue().set(accessKey, loginResponse, Duration.ofMinutes(30));
+        redisTemplate.opsForValue().set(accessKey, loginResponse, Duration.ofMinutes(29));
     }
 
 }

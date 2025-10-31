@@ -1,6 +1,7 @@
 package com.systemdelivery.authentication.event.representation;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.systemdelivery.authentication.event.representation.enums.RegisterEventStatus;
 
 import java.util.UUID;
 

@@ -1,13 +1,13 @@
 package com.systemdelivery.authentication.service;
 
-import com.systemdelivery.authentication.controller.advice.exceptions.ErrorLoginException;
 import com.systemdelivery.authentication.controller.advice.exceptions.ErrorRegisterException;
 import com.systemdelivery.authentication.controller.dto.CreateCustomerRequestDTO;
 import com.systemdelivery.authentication.controller.dto.LoginRequestDTO;
 import com.systemdelivery.authentication.controller.dto.LoginResponseDTO;
 import com.systemdelivery.authentication.event.publisher.UserEventPublisher;
 import com.systemdelivery.authentication.event.representation.CustomerEventResponse;
-import com.systemdelivery.authentication.event.representation.RegisterEventStatus;
+import com.systemdelivery.authentication.event.representation.enums.RegisterEventStatus;
+import com.systemdelivery.authentication.event.representation.enums.UserType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,6 @@ public class AuthenticationService {
         }
 
         LoginResponseDTO loginResponse = keycloakService.login(loginRequest);
-
         redisService.insertUserTokenInCache(loginRequest.email(), loginResponse);
         return loginResponse;
     }
@@ -40,8 +39,7 @@ public class AuthenticationService {
             throw new ErrorRegisterException("This email already exists: " +  customerRequest.email());
         }
 
+        keycloakService.createUser(customerRequest.email(), customerRequest.password(), UserType.CUSTOMER);
         return customerResponse;
     }
-
-
 }

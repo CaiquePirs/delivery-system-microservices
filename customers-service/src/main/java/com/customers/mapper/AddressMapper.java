@@ -1,5 +1,6 @@
 package com.customers.mapper;
 
+import com.customers.controller.dto.AddressRequestDTO;
 import com.customers.controller.dto.AddressResponseDTO;
 import com.customers.model.Address;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,18 @@ public class AddressMapper {
                 .number(address.getNumber())
                 .street(address.getStreet())
                 .country(address.getCountry())
+                .build();
+    }
+
+    public Address mapToEntity(AddressRequestDTO dto) {
+        return Address.builder()
+                .zipcode(dto.zipcode())
+                .street(dto.street())
+                .country(dto.country())
+                .state(dto.state())
+                .number(dto.number())
+                .neighborhood(dto.neighborhood())
+                .city(dto.city())
                 .build();
     }
 

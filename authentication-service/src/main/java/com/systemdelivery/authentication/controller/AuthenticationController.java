@@ -1,10 +1,13 @@
 package com.systemdelivery.authentication.controller;
 
+import com.systemdelivery.authentication.controller.dto.CreateCustomerRequestDTO;
 import com.systemdelivery.authentication.controller.dto.LoginRequestDTO;
 import com.systemdelivery.authentication.controller.dto.LoginResponseDTO;
+import com.systemdelivery.authentication.event.representation.CustomerEventResponse;
 import com.systemdelivery.authentication.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +25,14 @@ public class AuthenticationController {
     public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginRequestDTO login){
         LoginResponseDTO response = authenticationService.login(login);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/register-customer")
+    public ResponseEntity<CustomerEventResponse> registerCustomer(
+            @RequestBody @Valid CreateCustomerRequestDTO customerRequest){
+
+        CustomerEventResponse customerResponse = authenticationService.registerCustomer(customerRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(customerResponse);
     }
 
 }

@@ -53,4 +53,33 @@ public class keycloakService {
             throw new ErrorLoginException("Email or Password Invalid.");
         }
     }
+
+    public LoginResponseDTO login(LoginRequestDTO loginRequest) {
+        try {
+            MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+            formData.add("grant_type", "password");
+            formData.add("client_id", CLIENT_ID);
+            formData.add("client_secret", CLIENT_SECRET);
+            formData.add("username", loginRequest.email());
+            formData.add("password", loginRequest.password());
+
+            return webClient.post()
+                    .uri(TOKEN_URL)
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .body(BodyInserters.fromFormData(formData))
+                    .retrieve()
+                    .onStatus(status -> status.is4xxClientError() || status.is5xxServerError(),
+                            clientResponse -> {
+                                log.error("Login failed with status: {}", clientResponse.statusCode());
+                                return Mono.error(new ErrorLoginException("Email or Password Invalid."));
+                            })
+                    .bodyToMono(LoginResponseDTO.class)
+                    .block();
+
+        } catch (Exception e) {
+            log.error("Error when trying to authenticate user in Keycloak: {}", e.getMessage());
+            throw new ErrorLoginException("Email or Password Invalid.");
+        }
+    }
+
 }

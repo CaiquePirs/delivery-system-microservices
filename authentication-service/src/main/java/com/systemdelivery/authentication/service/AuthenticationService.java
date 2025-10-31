@@ -27,10 +27,7 @@ public class AuthenticationService {
             return tokenInCache;
         }
 
-        LoginResponseDTO loginResponse = keycloakService.findUserInKeycloak(loginRequest);
-        if (loginResponse == null) {
-            throw new ErrorLoginException("Email or Password Invalid.");
-        }
+        LoginResponseDTO loginResponse = keycloakService.login(loginRequest);
 
         redisService.insertUserTokenInCache(loginRequest.email(), loginResponse);
         return loginResponse;

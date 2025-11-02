@@ -19,7 +19,7 @@ services:
       - security-network
 
   keycloak:
-    image: quay.io/keycloak/keycloak:26.4.2
+    image: quay.io/keycloak/keycloak:22.0.2
     container_name: keycloak_server
     restart: always
     environment:

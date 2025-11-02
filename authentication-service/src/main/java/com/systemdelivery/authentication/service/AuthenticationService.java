@@ -22,14 +22,19 @@ public class AuthenticationService {
     private final UserEventPublisher userEventPublisher;
 
     public LoginResponseDTO login(LoginRequestDTO loginRequest) {
-        LoginResponseDTO tokenInCache = redisService.findUserTokenInCache(loginRequest.email());
-        if(tokenInCache != null) {
-            return tokenInCache;
-        }
+        try {
+            LoginResponseDTO tokenInCache = redisService.findUserTokenInCache(loginRequest.email());
+            if(tokenInCache != null) {
+                return tokenInCache;
+            }
 
-        LoginResponseDTO loginResponse = keycloakService.login(loginRequest);
-        redisService.insertUserTokenInCache(loginRequest.email(), loginResponse);
-        return loginResponse;
+            LoginResponseDTO loginResponse = keycloakService.loginInKeycloak(loginRequest);
+            redisService.insertUserTokenInCache(loginRequest.email(), loginResponse);
+
+            return loginResponse;
+        } catch (Exception e){
+            throw new ErrorLoginException("Error when logging in with the error: " + e.getMessage());
+        }
     }
 
     public CustomerEventResponse registerCustomer(CreateCustomerRequestDTO customerRequest) {

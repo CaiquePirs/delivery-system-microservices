@@ -4,10 +4,14 @@ import com.systemdelivery.authentication.controller.advice.exceptions.ErrorLogin
 import com.systemdelivery.authentication.controller.advice.exceptions.ErrorRegisterException;
 import com.systemdelivery.authentication.controller.dto.LoginRequestDTO;
 import com.systemdelivery.authentication.controller.dto.LoginResponseDTO;
-import com.systemdelivery.authentication.event.representation.enums.UserType;
+import com.systemdelivery.authentication.controller.dto.UserKeycloakDTO;
+import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.RoleScopeResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
@@ -17,11 +21,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-
-import javax.ws.rs.core.Response;
+import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 @Service
@@ -29,12 +29,37 @@ import java.util.List;
 @Slf4j
 public class keycloakService {
 
-    @Value("${spring.keycloak.client-id}")  private String CLIENT_ID;
-    @Value("${spring.keycloak.client-secret}") private String CLIENT_SECRET;
-    @Value("${spring.keycloak.token-url}") private String TOKEN_URL;
-    @Value("${KEYCLOAK_REALM}") private String REALM;
-    private final Keycloak keycloakAdmin;
-    private final WebClient webClient = WebClient.builder().build();
+    @Value("${KEYCLOAK_CLIENT_ID}")
+    private String CLIENT_ID;
+
+    @Value("${KEYCLOAK_CLIENT_SECRET}")
+    private String CLIENT_SECRET;
+
+    @Value("${KEYCLOAK_TOKEN_URL}")
+    private String TOKEN_URL;
+
+    @Value("${KEYCLOAK_REALM}")
+    private String REALM;
+
+    private final Keycloak keycloak;
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    public LoginResponseDTO loginInKeycloak(LoginRequestDTO loginRequest) throws RuntimeException {
+            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+            params.add("grant_type", "password");
+            params.add("client_id", CLIENT_ID);
+            params.add("client_secret", CLIENT_SECRET);
+            params.add("username", loginRequest.email());
+            params.add("password", loginRequest.password());
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+            ResponseEntity<LoginResponseDTO> loginResponse = restTemplate.postForEntity(
+                    TOKEN_URL,
+                    new HttpEntity<>(params, headers),
+                    LoginResponseDTO.class
+            );
 
     public void createUser(String email, String password, UserType userType) {
         try {
@@ -42,6 +67,8 @@ public class keycloakService {
             user.setUsername(email);
             user.setEmail(email);
             user.setEnabled(true);
+            return loginResponse.getBody();
+    }
 
             CredentialRepresentation credential = new CredentialRepresentation();
             credential.setType(CredentialRepresentation.PASSWORD);

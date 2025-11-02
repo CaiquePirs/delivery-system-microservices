@@ -41,18 +41,18 @@ public class AuthenticationService {
     }
 
     public CustomerEventResponse signUpUser(CreateUserRequestDTO customerRequest) {
+        CustomerEventResponse customerResponse = userEventPublisher.publishInCreateNewCustomer(customerRequest);
+        if(customerResponse == null || customerResponse.status().equals(RegisterEventStatus.ERROR)) {
+            throw new ErrorRegisterException("This email already exists: " +  customerRequest.email());
+        }
+
         try {
-            CustomerEventResponse customerResponse = userEventPublisher.publishInCreateNewCustomer(customerRequest);
-
-            if(customerResponse == null || customerResponse.status().equals(RegisterEventStatus.ERROR)) {
-                throw new ErrorRegisterException("This email already exists: " +  customerRequest.email());
-            }
-
             UserKeycloakDTO userKeycloak = keycloakMapper.mapToKeycloakUser(customerRequest);
             keycloakService.registerUserInKeycloak(userKeycloak);
-
             return customerResponse;
+
         } catch (Exception e){
+            userEventPublisher.publishErrorCustomerCreated(customerResponse.id().toString());
             throw new ErrorRegisterException("Error registering the user with the error: " + e.getMessage());
         }
     }

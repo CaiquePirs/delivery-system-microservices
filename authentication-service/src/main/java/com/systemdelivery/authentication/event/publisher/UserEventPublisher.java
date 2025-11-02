@@ -21,6 +21,9 @@ public class UserEventPublisher {
     @Value("${CUSTOMERS_CREATE_QUEUE}")
     private String CUSTOMERS_CREATE_QUEUE;
 
+    @Value("${CUSTOMERS_ERROR_CREATE_QUEUE}")
+    private String CUSTOMERS_ERROR_CREATE_QUEUE;
+
     public CustomerEventResponse publishInCreateNewCustomer(CreateUserRequestDTO customerDTO) {
         try {
             String json = objectMapper.writeValueAsString(customerDTO);
@@ -35,4 +38,14 @@ public class UserEventPublisher {
             throw new ErrorRegisterException("Error registering customer");
         }
     }
+
+    public void publishErrorCustomerCreated(String customerId) {
+        try {
+            rabbitTemplate.convertAndSend(CUSTOMERS_ERROR_CREATE_QUEUE, "", customerId);
+
+        } catch (Exception e){
+            log.error("Error while publishing message created", e);
+        }
+    }
+
 }

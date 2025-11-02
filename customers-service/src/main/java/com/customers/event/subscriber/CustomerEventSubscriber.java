@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -41,6 +43,16 @@ public class CustomerEventSubscriber {
             } catch (Exception ex) {
                 return "{\"status\":\"ERROR\"}";
             }
+        }
+    }
+
+    @RabbitListener(queues = "${CUSTOMERS_ERROR_CREATE_QUEUE}")
+    public void subscriberInErrorCustomerCreated(String customerId) {
+        try {
+            customerService.deleteCustomerById(UUID.fromString(customerId));
+
+        } catch (Exception e){
+            log.error("Error when queuing to delete the customer with ID: {}", customerId);
         }
     }
 }

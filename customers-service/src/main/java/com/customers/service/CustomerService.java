@@ -43,4 +43,9 @@ public class CustomerService {
        return repository.findById(customerId)
                 .orElseThrow(() -> new NotFoundException("Customer ID not found"));
     }
+
+    public void deleteCustomerById(UUID uuid) {
+        Customer customer = findCustomerById(uuid);
+        repository.delete(customer);
+    }
 }

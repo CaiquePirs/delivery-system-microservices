@@ -1,6 +1,6 @@
 package com.systemdelivery.authentication.controller;
 
-import com.systemdelivery.authentication.controller.dto.CreateCustomerRequestDTO;
+import com.systemdelivery.authentication.controller.dto.CreateUserRequestDTO;
 import com.systemdelivery.authentication.controller.dto.LoginRequestDTO;
 import com.systemdelivery.authentication.controller.dto.LoginResponseDTO;
 import com.systemdelivery.authentication.event.representation.CustomerEventResponse;
@@ -27,11 +27,11 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/register-customer")
+    @PostMapping("/signUp")
     public ResponseEntity<CustomerEventResponse> registerCustomer(
-            @RequestBody @Valid CreateCustomerRequestDTO customerRequest){
+            @RequestBody @Valid CreateUserRequestDTO customerRequest){
 
-        CustomerEventResponse customerResponse = authenticationService.registerCustomer(customerRequest);
+        CustomerEventResponse customerResponse = authenticationService.signUpUser(customerRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(customerResponse);
     }
 

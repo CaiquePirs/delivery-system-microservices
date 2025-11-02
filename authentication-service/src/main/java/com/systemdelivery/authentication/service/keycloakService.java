@@ -1,7 +1,5 @@
 package com.systemdelivery.authentication.service;
 
-import com.systemdelivery.authentication.controller.advice.exceptions.ErrorLoginException;
-import com.systemdelivery.authentication.controller.advice.exceptions.ErrorRegisterException;
 import com.systemdelivery.authentication.controller.dto.LoginRequestDTO;
 import com.systemdelivery.authentication.controller.dto.LoginResponseDTO;
 import com.systemdelivery.authentication.controller.dto.UserKeycloakDTO;
@@ -61,68 +59,34 @@ public class keycloakService {
                     LoginResponseDTO.class
             );
 
-    public void createUser(String email, String password, UserType userType) {
-        try {
-            UserRepresentation user = new UserRepresentation();
-            user.setUsername(email);
-            user.setEmail(email);
-            user.setEnabled(true);
             return loginResponse.getBody();
     }
 
-            CredentialRepresentation credential = new CredentialRepresentation();
-            credential.setType(CredentialRepresentation.PASSWORD);
-            credential.setValue(password);
-            credential.setTemporary(false);
+    public void registerUserInKeycloak(UserKeycloakDTO userKeycloakDTO) throws RuntimeException {
+        UserRepresentation user = new UserRepresentation();
+        user.setEnabled(true);
+        user.setUsername(userKeycloakDTO.email());
+        user.setEmail(userKeycloakDTO.email());
+        user.setFirstName(userKeycloakDTO.firstName());
+        user.setLastName(userKeycloakDTO.lastName());
+        user.setEmailVerified(true);
 
-            user.setCredentials(List.of(credential));
+        CredentialRepresentation passwordCred = new CredentialRepresentation();
+        passwordCred.setType(CredentialRepresentation.PASSWORD);
+        passwordCred.setValue(userKeycloakDTO.password());
+        passwordCred.setTemporary(false);
+        user.setCredentials(List.of((passwordCred)));
 
-            UsersResource usersResource = keycloakAdmin.realm(REALM).users();
-            Response response = usersResource.create(user);
-            response.close();
+        UsersResource usersResource = keycloak.realm(REALM).users();
+        Response response = usersResource.create(user);
 
-            String userId = usersResource.search(email, true).get(0).getId();
+        if (response.getStatus() == HttpStatus.CREATED.value()) {
+            String userId = CreatedResponseUtil.getCreatedId(response);
 
-            String roleName = switch (userType) {
-                case CUSTOMER -> "ROLE_CUSTOMER";
-                case RESTAURANT -> "ROLE_RESTAURANT";
-            };
-
-            RoleRepresentation role = keycloakAdmin.realm(REALM).roles().get(roleName).toRepresentation();
-            usersResource.get(userId).roles().realmLevel().add(List.of(role));
-
-        } catch (Exception e) {
-            log.error("Exception while creating user in Keycloak for email: {}", email, e);
-            throw new ErrorRegisterException("Exception while creating user in Keycloak for email: " + email);
+            RealmResource realmResource = keycloak.realm(REALM);
+            RoleScopeResource rolesResource = usersResource.get(userId).roles().realmLevel();
+            RoleRepresentation roleRep = realmResource.roles().get(userKeycloakDTO.role().toString()).toRepresentation();
+            rolesResource.add(List.of(roleRep));
         }
     }
-
-    public LoginResponseDTO login(LoginRequestDTO loginRequest) {
-        try {
-            MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-            formData.add("grant_type", "password");
-            formData.add("client_id", CLIENT_ID);
-            formData.add("client_secret", CLIENT_SECRET);
-            formData.add("username", loginRequest.email());
-            formData.add("password", loginRequest.password());
-
-            return webClient.post()
-                    .uri(TOKEN_URL)
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                    .body(BodyInserters.fromFormData(formData))
-                    .retrieve()
-                    .onStatus(status -> status.is4xxClientError() || status.is5xxServerError(),
-                            clientResponse -> {
-                                log.error("Login failed with status: {}", clientResponse.statusCode());
-                                return Mono.error(new ErrorLoginException("Email or Password Invalid."));
-                            })
-                    .bodyToMono(LoginResponseDTO.class)
-                    .block();
-
-        } catch (Exception e) {
-            log.error("Error when trying to authenticate user in Keycloak: {}", e.getMessage());
-            throw new ErrorLoginException("Email or Password Invalid.");
-        }
-    }
-
 }

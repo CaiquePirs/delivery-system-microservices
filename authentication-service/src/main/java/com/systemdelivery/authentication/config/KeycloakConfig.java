@@ -1,5 +1,6 @@
 package com.systemdelivery.authentication.config;
 
+import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,29 +10,26 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class KeycloakConfig {
 
+    @Value("${KEYCLOAK_CLIENT_ID}")
+    private String CLIENT_ID;
+
+    @Value("${KEYCLOAK_CLIENT_SECRET}")
+    private String CLIENT_SECRET;
+
     @Value("${KEYCLOAK_SERVER_URL}")
-    private String serverUrl;
+    private String SERVER_URL;
 
     @Value("${KEYCLOAK_REALM}")
-    private String realm;
-
-    @Value("${KEYCLOAK_USERNAME}")
-    private String adminUsername;
-
-    @Value("${KEYCLOAK_PASSWORD}")
-    private String adminPassword;
-
-    @Value("${KEYCLOAK_CLIENT_ID}")
-    private String clientId;
+    private String REALM;
 
     @Bean
-    public Keycloak keycloakAdmin() {
+    public Keycloak keycloak() {
         return KeycloakBuilder.builder()
-                .serverUrl(serverUrl)
-                .realm(realm)
-                .username(adminUsername)
-                .password(adminPassword)
-                .clientId(clientId)
+                .serverUrl(SERVER_URL)
+                .realm(REALM)
+                .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
+                .clientId(CLIENT_ID)
+                .clientSecret(CLIENT_SECRET)
                 .build();
     }
 }

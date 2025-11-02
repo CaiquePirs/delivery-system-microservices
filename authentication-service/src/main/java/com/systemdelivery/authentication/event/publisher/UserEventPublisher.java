@@ -2,7 +2,7 @@ package com.systemdelivery.authentication.event.publisher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.systemdelivery.authentication.controller.advice.exceptions.ErrorRegisterException;
-import com.systemdelivery.authentication.controller.dto.CreateCustomerRequestDTO;
+import com.systemdelivery.authentication.controller.dto.CreateUserRequestDTO;
 import com.systemdelivery.authentication.event.representation.CustomerEventResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ public class UserEventPublisher {
     @Value("${CUSTOMERS_CREATE_QUEUE}")
     private String CUSTOMERS_CREATE_QUEUE;
 
-    public CustomerEventResponse publishCustomerCreate(CreateCustomerRequestDTO customerDTO) {
+    public CustomerEventResponse publishInCreateNewCustomer(CreateUserRequestDTO customerDTO) {
         try {
             String json = objectMapper.writeValueAsString(customerDTO);
             String jsonResponse = (String) rabbitTemplate.convertSendAndReceive(

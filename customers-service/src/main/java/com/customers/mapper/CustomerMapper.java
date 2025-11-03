@@ -1,8 +1,6 @@
 package com.customers.mapper;
 
 import com.customers.controller.dto.CustomerResponseDTO;
-import com.customers.event.representation.CustomerEventResponse;
-import com.customers.event.representation.RegisterEventStatus;
 import com.customers.model.Customer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,18 +17,8 @@ public class CustomerMapper {
                 .name(customer.getName())
                 .email(customer.getEmail())
                 .phone(customer.getPhone())
-                .address(addressMapper.mapCustomerAddress(customer.getAddresses()))
+                .address(!customer.getAddresses().isEmpty() ? addressMapper.mapCustomerAddress(customer.getAddresses()) : null)
                 .build();
     }
 
-    public CustomerEventResponse mapToEvent(Customer customer) {
-        return CustomerEventResponse.builder()
-                .id(customer.getId())
-                .email(customer.getEmail())
-                .name(customer.getName())
-                .phone(customer.getPhone())
-                .status(RegisterEventStatus.CREATED)
-                .build();
-
-    }
 }

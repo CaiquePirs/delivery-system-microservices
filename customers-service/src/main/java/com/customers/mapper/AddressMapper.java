@@ -4,7 +4,6 @@ import com.customers.controller.dto.AddressRequestDTO;
 import com.customers.controller.dto.AddressResponseDTO;
 import com.customers.model.Address;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 
 @Component

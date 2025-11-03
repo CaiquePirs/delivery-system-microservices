@@ -1,14 +1,9 @@
 package com.systemdelivery.authentication.service;
 
+import com.systemdelivery.authentication.client.service.ApiClientService;
 import com.systemdelivery.authentication.controller.advice.exceptions.ErrorLoginException;
 import com.systemdelivery.authentication.controller.advice.exceptions.ErrorRegisterException;
-import com.systemdelivery.authentication.controller.dto.CreateUserRequestDTO;
-import com.systemdelivery.authentication.controller.dto.LoginRequestDTO;
-import com.systemdelivery.authentication.controller.dto.LoginResponseDTO;
-import com.systemdelivery.authentication.controller.dto.UserKeycloakDTO;
-import com.systemdelivery.authentication.event.publisher.UserEventPublisher;
-import com.systemdelivery.authentication.event.representation.CustomerEventResponse;
-import com.systemdelivery.authentication.event.representation.enums.RegisterEventStatus;
+import com.systemdelivery.authentication.controller.dto.*;
 import com.systemdelivery.authentication.mapper.KeycloakMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,13 +16,13 @@ public class AuthenticationService {
 
     private final keycloakService keycloakService;
     private final RedisService redisService;
-    private final UserEventPublisher userEventPublisher;
+    private final ApiClientService apiClientService;
     private final KeycloakMapper keycloakMapper;
 
     public LoginResponseDTO login(LoginRequestDTO loginRequest) {
         try {
             LoginResponseDTO tokenInCache = redisService.findUserTokenInCache(loginRequest.email());
-            if(tokenInCache != null) {
+            if (tokenInCache != null) {
                 return tokenInCache;
             }
 
@@ -35,25 +30,43 @@ public class AuthenticationService {
             redisService.insertUserTokenInCache(loginRequest.email(), loginResponse);
 
             return loginResponse;
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new ErrorLoginException("Error when logging in with the error: " + e.getMessage());
         }
     }
 
-    public CustomerEventResponse signUpUser(CreateUserRequestDTO customerRequest) {
-        CustomerEventResponse customerResponse = userEventPublisher.publishInCreateNewCustomer(customerRequest);
-        if(customerResponse == null || customerResponse.status().equals(RegisterEventStatus.ERROR)) {
-            throw new ErrorRegisterException("This email already exists: " +  customerRequest.email());
+    public CustomerResponseDTO signUpCustomer(CreateCustomerRequestDTO customerRequest) {
+        CustomerResponseDTO customerResponse = apiClientService.createCustomer(customerRequest);
+        if(customerResponse == null) {
+            throw new ErrorRegisterException("Error creating customer");
         }
 
         try {
-            UserKeycloakDTO userKeycloak = keycloakMapper.mapToKeycloakUser(customerRequest);
+            UserKeycloakDTO userKeycloak = keycloakMapper.mapToKeycloakUserByCustomer(customerRequest);
             keycloakService.registerUserInKeycloak(userKeycloak);
             return customerResponse;
 
         } catch (Exception e){
-            userEventPublisher.publishErrorCustomerCreated(customerResponse.id().toString());
+            apiClientService.deleteCustomerById(customerResponse.id());
             throw new ErrorRegisterException("Error registering the user with the error: " + e.getMessage());
         }
     }
+
+    public RestaurantResponseDTO signUpRestaurant(CreateRestaurantRequestDTO restaurantRequest) {
+        RestaurantResponseDTO restaurantResponse = apiClientService.createRestaurant(restaurantRequest);
+        if(restaurantResponse == null) {
+            throw new ErrorRegisterException("Error creating restaurant");
+        }
+
+        try {
+            UserKeycloakDTO userKeycloak = keycloakMapper.mapToKeycloakUserByRestaurant(restaurantRequest);
+            keycloakService.registerUserInKeycloak(userKeycloak);
+            return restaurantResponse;
+
+        } catch (Exception e){
+            apiClientService.deleteRestaurantById(restaurantResponse.id());
+            throw new ErrorRegisterException("Error registering the user with the error: " + e.getMessage());
+        }
+    }
+
 }

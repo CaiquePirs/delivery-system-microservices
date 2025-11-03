@@ -6,12 +6,6 @@ spring:
     ansi:
       enabled: ALWAYS
 
-  rabbitmq:
-    username: ${RABBITMQ_USERNAME}
-    password: ${RABBITMQ_PASSWORD}
-    host: ${RABBITMQ_HOST}
-    port: ${RABBITMQ_PORT}
-
   datasource:
     url: jdbc:postgresql://localhost:5432/customers_db
     username: ${CUSTOMERS_DB_USER}

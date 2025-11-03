@@ -1,9 +1,6 @@
 package com.systemdelivery.authentication.controller;
 
-import com.systemdelivery.authentication.controller.dto.CreateUserRequestDTO;
-import com.systemdelivery.authentication.controller.dto.LoginRequestDTO;
-import com.systemdelivery.authentication.controller.dto.LoginResponseDTO;
-import com.systemdelivery.authentication.event.representation.CustomerEventResponse;
+import com.systemdelivery.authentication.controller.dto.*;
 import com.systemdelivery.authentication.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,12 +24,16 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/signUp")
-    public ResponseEntity<CustomerEventResponse> registerCustomer(
-            @RequestBody @Valid CreateUserRequestDTO customerRequest){
-
-        CustomerEventResponse customerResponse = authenticationService.signUpUser(customerRequest);
+    @PostMapping("/signUp-customers")
+    public ResponseEntity<CustomerResponseDTO> registerCustomer(@RequestBody @Valid CreateCustomerRequestDTO dto){
+        CustomerResponseDTO customerResponse = authenticationService.signUpCustomer(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(customerResponse);
+    }
+
+    @PostMapping("/signUp-restaurants")
+    public ResponseEntity<RestaurantResponseDTO> registerRestaurant(@RequestBody @Valid CreateRestaurantRequestDTO dto){
+        RestaurantResponseDTO restaurantResponse = authenticationService.signUpRestaurant(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(restaurantResponse);
     }
 
 }

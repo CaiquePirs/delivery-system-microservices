@@ -1,12 +1,10 @@
 package com.systemdelivery.authentication.controller.dto;
 
-import com.systemdelivery.authentication.event.representation.enums.UserType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record CreateUserRequestDTO(
-
+public record CreateCustomerRequestDTO(
         @NotBlank(message = "Name is required")
         String name,
 
@@ -19,9 +17,6 @@ public record CreateUserRequestDTO(
 
         @NotBlank(message = "Phone is required")
         String phone,
-
-        @NotNull(message = "User type is required")
-        UserType userType,
 
         @NotNull(message = "Address is required")
         CreateAddressRequestDTO address) {

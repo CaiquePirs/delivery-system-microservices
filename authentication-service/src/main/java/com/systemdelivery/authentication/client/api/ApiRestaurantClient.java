@@ -17,7 +17,7 @@ public interface ApiRestaurantClient {
     @PostMapping("/api/restaurants")
     ResponseEntity<RestaurantResponseDTO> createRestaurant(@RequestBody CreateRestaurantRequestDTO restaurantRequestDTO);
 
-    @DeleteMapping("/api/{id}")
+    @DeleteMapping("/api/restaurants/{id}")
     ResponseEntity<Void> deleteRestaurant(@PathVariable(name = "id") UUID restaurantId);
 
 }

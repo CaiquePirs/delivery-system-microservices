@@ -42,7 +42,7 @@ public class AuthenticationService {
         }
 
         try {
-            UserKeycloakDTO userKeycloak = keycloakMapper.mapToKeycloakUserByCustomer(customerRequest);
+            UserKeycloakDTO userKeycloak = keycloakMapper.mapToKeycloakUserByCustomer(customerRequest, customerResponse.id());
             keycloakService.registerUserInKeycloak(userKeycloak);
             return customerResponse;
 
@@ -59,7 +59,7 @@ public class AuthenticationService {
         }
 
         try {
-            UserKeycloakDTO userKeycloak = keycloakMapper.mapToKeycloakUserByRestaurant(restaurantRequest);
+            UserKeycloakDTO userKeycloak = keycloakMapper.mapToKeycloakUserByRestaurant(restaurantRequest, restaurantResponse.id());
             keycloakService.registerUserInKeycloak(userKeycloak);
             return restaurantResponse;
 

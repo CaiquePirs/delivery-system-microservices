@@ -3,6 +3,7 @@ package com.systemdelivery.authentication.service;
 import com.systemdelivery.authentication.controller.dto.LoginRequestDTO;
 import com.systemdelivery.authentication.controller.dto.LoginResponseDTO;
 import com.systemdelivery.authentication.controller.dto.UserKeycloakDTO;
+import com.systemdelivery.authentication.model.UserRoleType;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 
 @Service
 @RequiredArgsConstructor
@@ -76,6 +80,12 @@ public class keycloakService {
         passwordCred.setValue(userKeycloakDTO.password());
         passwordCred.setTemporary(false);
         user.setCredentials(List.of((passwordCred)));
+
+        if(userKeycloakDTO.role().equals(UserRoleType.RESTAURANT)){
+            user.setAttributes(Map.of("restaurant_id", List.of(userKeycloakDTO.userCreatedId().toString())));
+        } else {
+            user.setAttributes(Map.of("customer_id", List.of(userKeycloakDTO.userCreatedId().toString())));
+        }
 
         UsersResource usersResource = keycloak.realm(REALM).users();
         Response response = usersResource.create(user);

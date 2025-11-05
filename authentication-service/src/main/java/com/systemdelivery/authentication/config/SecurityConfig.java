@@ -1,5 +1,10 @@
 package com.systemdelivery.authentication.config;
 
+import com.systemdelivery.authentication.service.keycloakService;
+import feign.RequestInterceptor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,7 +14,11 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
+@Slf4j
 public class SecurityConfig {
+
+    private final keycloakService keycloakService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
@@ -20,6 +29,15 @@ public class SecurityConfig {
                             .anyRequest().authenticated();
                         })
                 .build();
+    }
+
+    @Bean
+    public RequestInterceptor requestInterceptor(){
+        return requestTemplate -> {
+            String token = keycloakService.getTokenAdminFromKeycloak();
+            requestTemplate.header("Authorization", "Bearer " + token);
+            log.info("token : {}", token);
+        };
     }
 
 }

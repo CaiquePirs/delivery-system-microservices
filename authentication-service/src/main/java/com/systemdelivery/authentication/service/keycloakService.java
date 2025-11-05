@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -99,4 +98,25 @@ public class keycloakService {
             rolesResource.add(List.of(roleRep));
         }
     }
+
+    public String getTokenAdminFromKeycloak(){
+        try {
+            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+            params.add("grant_type", "client_credentials");
+            params.add("client_id", CLIENT_ID);
+            params.add("client_secret", CLIENT_SECRET);
+
+            ResponseEntity<Map> response = restTemplate.postForEntity(
+                    TOKEN_URL,
+                    new HttpEntity<>(params, new HttpHeaders()),
+                    Map.class);
+
+            return (String) response.getBody().get("access_token");
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error when get token from keycloak", e);
+        }
+    }
+
+
 }

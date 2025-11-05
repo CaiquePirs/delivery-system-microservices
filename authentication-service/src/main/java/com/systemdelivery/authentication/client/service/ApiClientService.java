@@ -9,12 +9,14 @@ import com.systemdelivery.authentication.controller.dto.CustomerResponseDTO;
 import com.systemdelivery.authentication.controller.dto.RestaurantResponseDTO;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ApiClientService {
@@ -53,6 +55,7 @@ public class ApiClientService {
                 throw new ErrorRegisterException("Error when registering restaurant");
             }
         } catch (FeignException e) {
+            log.error("FeignException when creating restaurant: {}", e.getMessage());
             throw new ErrorRegisterException("Error when registering restaurant: " + e.getMessage());
         }
     }

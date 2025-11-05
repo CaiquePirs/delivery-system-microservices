@@ -7,12 +7,12 @@ import com.deliverysystem.restaurants.mapper.RestaurantMapper;
 import com.deliverysystem.restaurants.model.Restaurant;
 import com.deliverysystem.restaurants.service.RedisService;
 import com.deliverysystem.restaurants.service.RestaurantService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -27,12 +27,14 @@ public class RestaurantController {
     private final RedisService redisService;
 
     @PostMapping
-    public ResponseEntity<RestaurantResponseDTO> createRestaurant(@RequestBody @Valid RestaurantRequestDTO dto) {
+    @PreAuthorize("@tokenValidator.isInternalService(authentication)")
+    public ResponseEntity<RestaurantResponseDTO> createRestaurant(@RequestBody RestaurantRequestDTO dto) {
         Restaurant restaurant = service.createRestaurant(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(restaurantMapper.toResponse(restaurant));
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("@tokenValidator.isInternalService(authentication)")
     public ResponseEntity<RestaurantResponseDTO> findById(@PathVariable(name = "id") UUID restaurantId) {
         RestaurantResponseDTO cachedRestaurant = redisService.findRestaurantInCache(restaurantId);
         if (cachedRestaurant != null) {
@@ -41,32 +43,27 @@ public class RestaurantController {
 
         Restaurant restaurant = service.findById(restaurantId);
         redisService.insertRestaurantInCache(restaurant);
-
         return ResponseEntity.ok(restaurantMapper.toResponse(restaurant));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("@tokenValidator.isInternalService(authentication)")
     public ResponseEntity<Void> deleteRestaurant(@PathVariable(name = "id") UUID restaurantId) {
         service.deleteById(restaurantId);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Void> toggleRestaurantStatus(@PathVariable(name = "id") UUID restaurantId) {
-        service.toggleRestaurantStatus(restaurantId);
-        return ResponseEntity.noContent().build();
-    }
-
     @GetMapping
+    @PreAuthorize("hasAnyRole('CUSTOMER', 'RESTAURANT')")
     public ResponseEntity<Page<RestaurantResponseDTO>> findRestaurantsByQuery(
             @ModelAttribute RestaurantQueryFilter filter,
             @RequestParam(name = "page", defaultValue = "0") Integer page,
             @RequestParam(name = "page", defaultValue = "10") Integer size){
 
-        Page<RestaurantResponseDTO> responseDTOPage = service.findRestaurantsByFilter(
+        Page<RestaurantResponseDTO> restaurants = service.findRestaurantsByFilter(
                 filter, PageRequest.of(page, size));
 
-        return ResponseEntity.ok(responseDTOPage);
+        return ResponseEntity.ok(restaurants);
     }
 
 }

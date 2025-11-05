@@ -8,6 +8,7 @@ import com.deliverysystem.orders.controller.dto.OrderRequestDTO;
 import com.deliverysystem.orders.controller.dto.OrderResponseDTO;
 import com.deliverysystem.orders.controller.exception.OrderNotFoundException;
 import com.deliverysystem.orders.event.publisher.OrderEventPublisher;
+import com.deliverysystem.orders.event.representation.OrderResponseEvent;
 import com.deliverysystem.orders.mapper.OrderMapper;
 import com.deliverysystem.orders.model.ItemsOrder;
 import com.deliverysystem.orders.model.Order;
@@ -51,11 +52,8 @@ public class OrderService {
         Order createdOrder = orderRepository.save(orderEntity);
         createdOrder.setPaymentData(orderDTO.paymentData());
 
-        eventPublisher.publishVerifyPayment(mapper.mapToEventResponse(
-                createdOrder,
-                customer,
-                deliveryAddress)
-        );
+        OrderResponseEvent orderEvent = mapper.mapToEventResponse(createdOrder, customer, deliveryAddress);
+        eventPublisher.publishVerifyPayment(orderEvent);
     }
 
     public OrderResponseDTO findOrderResponseById(String orderId){

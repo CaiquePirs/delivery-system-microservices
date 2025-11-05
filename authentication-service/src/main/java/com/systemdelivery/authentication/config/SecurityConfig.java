@@ -36,7 +36,6 @@ public class SecurityConfig {
         return requestTemplate -> {
             String token = keycloakService.getTokenAdminFromKeycloak();
             requestTemplate.header("Authorization", "Bearer " + token);
-            log.info("token : {}", token);
         };
     }
 

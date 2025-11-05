@@ -30,7 +30,7 @@ public class SimulatedGateway {
 
         try {
             RestTemplate restTemplate = new RestTemplate();
-            restTemplate.postForEntity("http://localhost:8082/api/payments/webhook", webhook, Void.class);
+            restTemplate.postForEntity("http://localhost:8080/api/payments/webhook", webhook, Void.class);
 
         } catch (Exception e){
             log.error("Error when simulating payment callback: {}", e.getMessage());

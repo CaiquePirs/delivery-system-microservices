@@ -55,7 +55,6 @@ public class ApiClientService {
                 throw new ErrorRegisterException("Error when registering restaurant");
             }
         } catch (FeignException e) {
-            log.error("FeignException when creating restaurant: {}", e.getMessage());
             throw new ErrorRegisterException("Error when registering restaurant: " + e.getMessage());
         }
     }

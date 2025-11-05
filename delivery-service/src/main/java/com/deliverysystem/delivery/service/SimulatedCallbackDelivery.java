@@ -22,7 +22,7 @@ public class SimulatedCallbackDelivery {
 
         try {
             RestTemplate restTemplate = new RestTemplate();
-            restTemplate.postForEntity("http://localhost:8087/api/deliveries/webhook/" + deliveryId, null, Void.class);
+            restTemplate.postForEntity("http://localhost:8080/api/deliveries/webhook/" + deliveryId, null, Void.class);
 
         } catch (Exception e){
             log.error("Error during simulated webhook for delivery ID {}: {}", deliveryId, e.getMessage());

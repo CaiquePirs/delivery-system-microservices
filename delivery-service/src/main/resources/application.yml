@@ -4,7 +4,7 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5434/delivery_db
-    username: ${DELIVERIES_DB_USERNAME}
+    username: ${DELIVERIES_DB_USER}
     password: ${DELIVERIES_DB_PASSWORD}
 
   rabbitmq:
@@ -36,5 +36,5 @@ eureka:
     service-url:
       defaultZone: ${EUREKA_ZONE_URL}
   instance:
-    instance-id: ${spring.application.name}:${server.port}
+    instance-id: ${spring.application.name}:${random.value}
 

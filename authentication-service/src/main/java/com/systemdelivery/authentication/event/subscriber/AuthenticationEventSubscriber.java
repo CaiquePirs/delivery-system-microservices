@@ -1,6 +1,6 @@
 package com.systemdelivery.authentication.event.subscriber;
 
-import com.systemdelivery.authentication.event.CustomerDeletedEvent;
+import com.systemdelivery.authentication.event.representation.CustomerDeletedEvent;
 import com.systemdelivery.authentication.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

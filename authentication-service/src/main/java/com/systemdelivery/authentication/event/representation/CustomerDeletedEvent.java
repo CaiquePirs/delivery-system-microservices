@@ -1,4 +1,4 @@
-package com.systemdelivery.authentication.event;
+package com.systemdelivery.authentication.event.representation;
 
 import java.util.UUID;
 

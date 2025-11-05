@@ -53,7 +53,7 @@ public class PaymentService {
                     paymentEventPublisher.publisherInPaymentApproved(payment);
 
                 } else {
-                    Objects.requireNonNull(payment).setStatus(PaymentStatus.FAILED);
+                    payment.setStatus(PaymentStatus.FAILED);
                     payment.setUpdated_at(LocalDateTime.now());
                     paymentRepository.save(payment);
                 }

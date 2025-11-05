@@ -17,6 +17,6 @@ public interface ApiCustomerClient {
     @PostMapping("/api/customers")
     ResponseEntity<CustomerResponseDTO> createCustomer(@RequestBody CreateCustomerRequestDTO customerRequestDTO);
 
-    @DeleteMapping("/api/{id}")
+    @DeleteMapping("/api/customers/{id}")
     ResponseEntity<Void> deleteCustomer(@PathVariable(name = "id") UUID customerId);
 }

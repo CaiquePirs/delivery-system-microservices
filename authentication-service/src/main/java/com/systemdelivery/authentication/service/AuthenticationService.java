@@ -31,14 +31,14 @@ public class AuthenticationService {
 
             return loginResponse;
         } catch (Exception e) {
-            throw new ErrorLoginException("Error when logging in with the error: " + e.getMessage());
+            throw new ErrorLoginException("Email or Password invalid");
         }
     }
 
     public CustomerResponseDTO signUpCustomer(CreateCustomerRequestDTO customerRequest) {
         CustomerResponseDTO customerResponse = apiClientService.createCustomer(customerRequest);
         if(customerResponse == null) {
-            throw new ErrorRegisterException("Error creating customer");
+            throw new ErrorRegisterException("Error when creating the customer");
         }
 
         try {
@@ -48,7 +48,7 @@ public class AuthenticationService {
 
         } catch (Exception e){
             apiClientService.deleteCustomerById(customerResponse.id());
-            throw new ErrorRegisterException("Error registering the user with the error: " + e.getMessage());
+            throw new ErrorRegisterException("Error when creating the customer " + e.getMessage());
         }
     }
 
@@ -65,11 +65,12 @@ public class AuthenticationService {
 
         } catch (Exception e){
             apiClientService.deleteRestaurantById(restaurantResponse.id());
-            throw new ErrorRegisterException("Error registering the user with the error: " + e.getMessage());
+            throw new ErrorRegisterException("Error registering the user with error: " + e.getMessage());
         }
     }
 
     public void disableUserByEmail(String email){
         keycloakService.disableUserByEmail(email);
+        redisService.removerUserTokenFromCache(email);
     }
 }

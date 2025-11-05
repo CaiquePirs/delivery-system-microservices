@@ -32,7 +32,7 @@ public class CustomerController {
     @DeleteMapping("/{id}")
     @PreAuthorize("@tokenValidator.isInternalService(authentication)")
     public ResponseEntity<Void> deleteCustomer(@PathVariable(name = "id") UUID customerId) {
-        customerService.disableCustomerById(customerId);
+        customerService.deleteCustomerById(customerId);
         return ResponseEntity.noContent().build();
     }
 

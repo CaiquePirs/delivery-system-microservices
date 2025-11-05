@@ -22,4 +22,9 @@ public class RedisService {
         redisTemplate.opsForValue().set(accessKey, loginResponse, Duration.ofMinutes(29));
     }
 
+    public void removerUserTokenFromCache(String email){
+        String accessKey = String.format("access_token:%s", email);
+        redisTemplate.delete(accessKey);
+    }
+
 }

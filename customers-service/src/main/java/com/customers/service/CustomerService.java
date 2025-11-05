@@ -63,4 +63,10 @@ public class CustomerService {
 
         customerEventPublisher.publisherCustomerDeleted(event);
     }
+
+    public void deleteCustomerById(UUID customerId) {
+        Customer customer = findCustomerById(customerId);
+        repository.delete(customer);
+    }
+
 }

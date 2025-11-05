@@ -2,9 +2,12 @@ package com.customers.service;
 
 import com.customers.controller.advice.exceptions.NotFoundException;
 import com.customers.controller.dto.CustomerRequestDTO;
+import com.customers.event.publisher.CustomerEventPublisher;
+import com.customers.event.representation.CustomerDeletedEvent;
 import com.customers.mapper.AddressMapper;
 import com.customers.model.Address;
 import com.customers.model.Customer;
+import com.customers.model.enums.AuditStatus;
 import com.customers.repository.CustomerRepository;
 import com.customers.validator.CustomerValidator;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,7 @@ public class CustomerService {
     private final CustomerRepository repository;
     private final CustomerValidator validator;
     private final AddressMapper addressMapper;
+    private final CustomerEventPublisher customerEventPublisher;
 
     @Transactional
     public Customer createCustomer(CustomerRequestDTO dto) {
@@ -41,11 +45,22 @@ public class CustomerService {
 
     public Customer findCustomerById(UUID customerId) {
        return repository.findById(customerId)
+                .filter(c -> !c.getStatus().equals(AuditStatus.DELETED))
                 .orElseThrow(() -> new NotFoundException("Customer ID not found"));
     }
 
-    public void deleteCustomerById(UUID uuid) {
-        Customer customer = findCustomerById(uuid);
-        repository.delete(customer);
+    public void disableCustomerById(UUID customerId) {
+        Customer customer = findCustomerById(customerId);
+        customer.setStatus(AuditStatus.DELETED);
+
+        repository.save(customer);
+
+        CustomerDeletedEvent event = new CustomerDeletedEvent(
+                customer.getId(),
+                customer.getEmail(),
+                AuditStatus.DELETED.toString()
+        );
+
+        customerEventPublisher.publisherCustomerDeleted(event);
     }
 }

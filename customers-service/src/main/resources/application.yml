@@ -11,6 +11,12 @@ spring:
     username: ${CUSTOMERS_DB_USER}
     password: ${CUSTOMERS_DB_PASSWORD}
 
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+
   data:
     redis:
       host: ${REDIS_HOST}

@@ -69,4 +69,7 @@ public class AuthenticationService {
         }
     }
 
+    public void disableUserByEmail(String email){
+        keycloakService.disableUserByEmail(email);
+    }
 }

@@ -24,7 +24,6 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Map;
 
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -118,5 +117,13 @@ public class keycloakService {
         }
     }
 
+    public void disableUserByEmail(String email){
+        List<UserRepresentation> users = keycloak.realm(REALM).users().searchByEmail(email, true);
+        if (!users.isEmpty()) {
+            UserRepresentation user = users.get(0);
+            user.setEnabled(false);
+            keycloak.realm(REALM).users().get(user.getId()).update(user);
+        }
+    }
 
 }

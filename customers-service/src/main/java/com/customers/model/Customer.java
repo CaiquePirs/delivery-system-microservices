@@ -1,5 +1,6 @@
 package com.customers.model;
 
+import com.customers.model.enums.AuditStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,6 +37,10 @@ public class Customer {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Address> addresses = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AuditStatus status = AuditStatus.ACTIVE;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

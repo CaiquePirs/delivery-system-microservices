@@ -2,14 +2,12 @@ package com.customers.service;
 
 import com.customers.controller.advice.exceptions.NotFoundException;
 import com.customers.controller.dto.AddressRequestDTO;
+import com.customers.mapper.AddressMapper;
 import com.customers.model.Address;
 import com.customers.model.Customer;
 import com.customers.repository.AddressRepository;
-import com.customers.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -17,39 +15,15 @@ import java.util.UUID;
 public class AddressService {
 
     private final AddressRepository addressRepository;
-    private final CustomerRepository customerRepository;
     private final RedisService redisService;
+    private final AddressMapper addressMapper;
 
-    public Address createAddress(AddressRequestDTO dto){
-        Customer customer = customerRepository.findById(dto.customerId())
-                .orElseThrow(() -> new NotFoundException("Customer ID not found"));
-
-        Address address = Address.builder()
-                .zipcode(dto.zipcode())
-                .street(dto.street())
-                .country(dto.country())
-                .state(dto.state())
-                .number(dto.number())
-                .neighborhood(dto.neighborhood())
-                .city(dto.city())
-                .build();
-
+    public Address createAddress(AddressRequestDTO dto, Customer customer){
+        Address address = addressMapper.mapToEntity(dto);
         customer.getAddresses().add(address);
+
         redisService.insertCustomerInCache(customer);
         return addressRepository.save(address);
-    }
-
-    public List<Address> createAddressByList(List<AddressRequestDTO> requests){
-        return requests.stream().map(dto -> Address.builder()
-                        .street(dto.street())
-                        .zipcode(dto.zipcode())
-                        .city(dto.city())
-                        .number(dto.number())
-                        .neighborhood(dto.neighborhood())
-                        .state(dto.state())
-                        .country(dto.country())
-                        .build()
-        ).toList();
     }
 
     public Address findById(UUID addressId){

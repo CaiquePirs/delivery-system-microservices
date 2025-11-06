@@ -5,6 +5,7 @@ import com.deliverysystem.restaurants.controller.dto.MenuRequestDTO;
 import com.deliverysystem.restaurants.mapper.MenuMapper;
 import com.deliverysystem.restaurants.model.Menu;
 import com.deliverysystem.restaurants.model.Restaurant;
+import com.deliverysystem.restaurants.model.enums.AuditStatus;
 import com.deliverysystem.restaurants.model.enums.MenuStatus;
 import com.deliverysystem.restaurants.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class MenuService {
     private final MenuMapper menuMapper;
 
     public Menu createMenu(UUID restaurantId, MenuRequestDTO dto){
-        Restaurant restaurant = restaurantService.findById(restaurantId);
+        Restaurant restaurant = restaurantService.findRestaurantById(restaurantId);
 
         Menu menu = menuMapper.toEntity(dto);
         menu.setStatus(MenuStatus.AVAILABLE);
@@ -34,9 +35,10 @@ public class MenuService {
     public Menu findMenuById(UUID restaurantId, UUID menuId){
         Menu menu = menuRepository.findById(menuId)
                 .filter(m -> !m.getStatus().equals(MenuStatus.UNAVAILABLE))
+                .filter(s -> !s.getAuditStatus().equals(AuditStatus.DELETED))
                 .orElseThrow(() -> new MenuNotFoundException(String.format("Menu ID: %s not found", menuId)));
 
-        Restaurant restaurant = restaurantService.findById(restaurantId);
+        Restaurant restaurant = restaurantService.findRestaurantById(restaurantId);
 
         restaurant.getMenus()
                 .stream()

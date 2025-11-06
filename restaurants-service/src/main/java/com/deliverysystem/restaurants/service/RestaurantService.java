@@ -4,8 +4,11 @@ import com.deliverysystem.restaurants.controller.advice.exceptions.RestaurantNot
 import com.deliverysystem.restaurants.controller.dto.RestaurantQueryFilter;
 import com.deliverysystem.restaurants.controller.dto.RestaurantRequestDTO;
 import com.deliverysystem.restaurants.controller.dto.RestaurantResponseDTO;
+import com.deliverysystem.restaurants.event.publisher.RestaurantEventPublisher;
+import com.deliverysystem.restaurants.event.representation.RestaurantDeletedEvent;
 import com.deliverysystem.restaurants.mapper.RestaurantMapper;
 import com.deliverysystem.restaurants.model.Restaurant;
+import com.deliverysystem.restaurants.model.enums.AuditStatus;
 import com.deliverysystem.restaurants.model.enums.RestaurantStatus;
 import com.deliverysystem.restaurants.repository.RestaurantRepository;
 import com.deliverysystem.restaurants.repository.specification.RestaurantSpecification;
@@ -15,7 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -27,6 +29,7 @@ public class RestaurantService {
     private final RestaurantValidator validator;
     private final RedisService redisService;
     private final RestaurantMapper mapper;
+    private final RestaurantEventPublisher restaurantEventPublisher;
 
     public Restaurant createRestaurant(RestaurantRequestDTO dto){
         validator.checkIfExistRestaurantWithSameEmail(dto.email());
@@ -36,13 +39,15 @@ public class RestaurantService {
         return repository.save(restaurant);
     }
 
-    public Restaurant findById(UUID restaurantId){
-       return repository.findById(restaurantId).orElseThrow(() -> new RestaurantNotFoundException(
-                        String.format("Restaurant ID: %s not found", restaurantId)));
+    public Restaurant findRestaurantById(UUID restaurantId){
+       return repository.findById(restaurantId)
+               .filter(r -> !r.getAuditStatus().equals(AuditStatus.DELETED))
+               .orElseThrow(() -> new RestaurantNotFoundException(
+                       String.format("Restaurant ID: %s not found", restaurantId)));
     }
 
     public void toggleRestaurantStatus(UUID restaurantId){
-        Restaurant restaurant = findById(restaurantId);
+        Restaurant restaurant = findRestaurantById(restaurantId);
 
         if(restaurant.getStatus().equals(RestaurantStatus.OPEN)){
             restaurant.setStatus(RestaurantStatus.CLOSED);
@@ -61,8 +66,28 @@ public class RestaurantService {
         return new PageImpl<>(restaurantList, pageable, restaurantList.size());
     }
 
-    public void deleteById(UUID restaurantId) {
-        Restaurant restaurant = findById(restaurantId);
+    public void disableRestaurantById(UUID restaurantId) {
+        Restaurant restaurant = findRestaurantById(restaurantId);
+
+        if(!restaurant.getMenus().isEmpty()){
+            restaurant.getMenus().forEach(menu -> menu.setAuditStatus(AuditStatus.DELETED));
+        }
+
+        restaurant.setAuditStatus(AuditStatus.DELETED);
+        repository.save(restaurant);
+
+        RestaurantDeletedEvent restaurantEvent = new RestaurantDeletedEvent(
+                restaurant.getId(),
+                restaurant.getEmail(),
+                AuditStatus.DELETED.toString()
+        );
+
+        restaurantEventPublisher.publisherInRestaurantDeleted(restaurantEvent);
+    }
+
+    public void deleteRestaurantById(UUID restaurantId) {
+        Restaurant restaurant = findRestaurantById(restaurantId);
         repository.delete(restaurant);
     }
+
 }

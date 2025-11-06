@@ -41,7 +41,7 @@ public class RestaurantController {
             return ResponseEntity.ok(cachedRestaurant);
         }
 
-        Restaurant restaurant = service.findById(restaurantId);
+        Restaurant restaurant = service.findRestaurantById(restaurantId);
         redisService.insertRestaurantInCache(restaurant);
         return ResponseEntity.ok(restaurantMapper.toResponse(restaurant));
     }
@@ -49,7 +49,7 @@ public class RestaurantController {
     @DeleteMapping("/{id}")
     @PreAuthorize("@tokenValidator.isInternalService(authentication)")
     public ResponseEntity<Void> deleteRestaurant(@PathVariable(name = "id") UUID restaurantId) {
-        service.deleteById(restaurantId);
+        service.disableRestaurantById(restaurantId);
         return ResponseEntity.noContent().build();
     }
 

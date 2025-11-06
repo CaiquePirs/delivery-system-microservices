@@ -12,10 +12,10 @@ spring:
     password: ${RESTAURANTS_DB_PASSWORD}
 
   rabbitmq:
-    username: ${RABBITMQ_USERNAME}
-    password: ${RABBITMQ_PASSWORD}
     host: ${RABBITMQ_HOST}
     port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
 
   data:
     redis:

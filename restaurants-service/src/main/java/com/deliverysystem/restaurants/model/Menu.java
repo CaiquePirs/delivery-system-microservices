@@ -1,5 +1,6 @@
 package com.deliverysystem.restaurants.model;
 
+import com.deliverysystem.restaurants.model.enums.AuditStatus;
 import com.deliverysystem.restaurants.model.enums.MenuStatus;
 import com.deliverysystem.restaurants.model.enums.MenuType;
 import jakarta.persistence.*;
@@ -41,6 +42,9 @@ public class Menu {
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
+
+    @Enumerated(EnumType.STRING)
+    private AuditStatus auditStatus = AuditStatus.ACTIVE;
 
     @CreationTimestamp
     private LocalDateTime created_at;

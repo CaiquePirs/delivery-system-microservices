@@ -71,6 +71,9 @@ public class AuthenticationService {
 
     public void disableUserByEmail(String email){
         keycloakService.disableUserByEmail(email);
+
+        log.info("User deleted successfully: {}", email);
+
         redisService.removerUserTokenFromCache(email);
     }
 }

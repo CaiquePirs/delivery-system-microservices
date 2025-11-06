@@ -1,5 +1,6 @@
 package com.deliverysystem.restaurants.model;
 
+import com.deliverysystem.restaurants.model.enums.AuditStatus;
 import com.deliverysystem.restaurants.model.enums.RestaurantStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -38,6 +39,9 @@ public class Restaurant {
 
     @Column(nullable = false)
     private RestaurantStatus status;
+
+    @Enumerated(EnumType.STRING)
+    private AuditStatus auditStatus = AuditStatus.ACTIVE;
 
     @Embedded
     private Address address;

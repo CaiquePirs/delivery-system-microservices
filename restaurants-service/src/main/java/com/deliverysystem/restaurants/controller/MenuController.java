@@ -20,6 +20,8 @@ public class MenuController {
     private final MenuService menuService;
     private final MenuMapper menuMapper;
 
+    // Add authentication
+
     @PostMapping
     public ResponseEntity<MenuResponseDTO> createMenu(
             @PathVariable UUID restaurantId,

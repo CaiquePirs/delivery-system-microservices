@@ -33,8 +33,21 @@ public class RestaurantProfileController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        Restaurant restaurant = restaurantService.findById(restaurantId);
+        Restaurant restaurant = restaurantService.findRestaurantById(restaurantId);
         return ResponseEntity.ok(restaurantMapper.toResponse(restaurant));
+    }
+
+    @DeleteMapping
+    @PreAuthorize("hasRole('RESTAURANT')")
+    public ResponseEntity<Void> disableRestaurantById(@AuthenticationPrincipal Jwt auth){
+        UUID restaurantId = restaurantValidator.getRestaurantIdLogged(auth);
+
+        if(restaurantId == null) {
+            return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        restaurantService.disableRestaurantById(restaurantId);
+        return ResponseEntity.noContent().build();
     }
 
 

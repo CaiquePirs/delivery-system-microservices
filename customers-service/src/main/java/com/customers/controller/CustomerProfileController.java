@@ -7,17 +7,11 @@ import com.customers.service.CustomerService;
 import com.customers.validator.CustomerValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.UUID;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -32,25 +26,15 @@ public class CustomerProfileController {
     @GetMapping
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<CustomerResponseDTO> getMyProfile(@AuthenticationPrincipal Jwt auth) {
-        UUID customerLoggedId = customerValidator.getCustomerIdLogged(auth);
-
-        if(customerLoggedId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        Customer customer = customerService.findCustomerById(customerLoggedId);
+        Customer customer = customerValidator.resolverAndFindCustomerLogged(auth);
         return ResponseEntity.ok(customerMapper.mapToResponse(customer));
     }
 
     @DeleteMapping
+    @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<Void> disableMyProfile(@AuthenticationPrincipal Jwt auth) {
-        UUID customerLoggedId = customerValidator.getCustomerIdLogged(auth);
-
-        if(customerLoggedId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        customerService.disableCustomerById(customerLoggedId);
+        Customer customer = customerValidator.resolverAndFindCustomerLogged(auth);
+        customerService.disableCustomerById(customer.getId());
         return ResponseEntity.noContent().build();
     }
 }

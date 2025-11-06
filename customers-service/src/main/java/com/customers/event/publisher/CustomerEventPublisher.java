@@ -17,7 +17,7 @@ public class CustomerEventPublisher {
     @Value("${CUSTOMERS_DELETED_QUEUE}")
     private String customerDeletedQueue;
 
-    public void publisherCustomerDeleted(CustomerDeletedEvent event){
+    public void publisherInCustomerDeleted(CustomerDeletedEvent event){
         try {
             rabbitTemplate.convertAndSend(customerDeletedQueue, event);
 

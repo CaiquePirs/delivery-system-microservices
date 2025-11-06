@@ -61,7 +61,7 @@ public class CustomerService {
                 AuditStatus.DELETED.toString()
         );
 
-        customerEventPublisher.publisherCustomerDeleted(event);
+        customerEventPublisher.publisherInCustomerDeleted(event);
     }
 
     public void deleteCustomerById(UUID customerId) {

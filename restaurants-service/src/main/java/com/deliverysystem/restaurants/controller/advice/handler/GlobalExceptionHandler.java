@@ -4,6 +4,7 @@ import com.deliverysystem.restaurants.controller.advice.dto.ErrorMessageDTO;
 import com.deliverysystem.restaurants.controller.advice.dto.ErrorResponseDTO;
 import com.deliverysystem.restaurants.controller.advice.exceptions.MenuNotFoundException;
 import com.deliverysystem.restaurants.controller.advice.exceptions.RestaurantFoundException;
+import com.deliverysystem.restaurants.controller.advice.exceptions.RestaurantNotAuthorizedException;
 import com.deliverysystem.restaurants.controller.advice.exceptions.RestaurantNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +50,15 @@ public class GlobalExceptionHandler {
                 HttpStatus.CONFLICT.value(),
                 e.getMessage(),
                 List.of(new ErrorMessageDTO("Menu not found", e.getMessage()))
+        ));
+    }
+
+    @ExceptionHandler(RestaurantNotAuthorizedException.class)
+    public ResponseEntity<ErrorResponseDTO> handlerRestaurantNotAuthorized(RestaurantNotAuthorizedException e){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse(
+                HttpStatus.UNAUTHORIZED.value(),
+                e.getMessage(),
+                List.of(new ErrorMessageDTO("Unauthorized", e.getMessage()))
         ));
     }
 }

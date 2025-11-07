@@ -21,6 +21,12 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/internal-login")
+    public ResponseEntity<LoginResponseDTO> getInternalAccessToken(@RequestBody InternalLoginDTO internalLoginDTO){
+        LoginResponseDTO response = authenticationService.authenticateInternalClient(internalLoginDTO);
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/signUp-customers")
     public ResponseEntity<CustomerResponseDTO> registerCustomer(@RequestBody @Valid CreateCustomerRequestDTO dto){
         CustomerResponseDTO customerResponse = authenticationService.signUpCustomer(dto);

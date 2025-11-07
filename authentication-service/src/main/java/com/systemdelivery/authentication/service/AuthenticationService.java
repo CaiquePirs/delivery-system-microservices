@@ -5,6 +5,7 @@ import com.systemdelivery.authentication.controller.advice.exceptions.ErrorLogin
 import com.systemdelivery.authentication.controller.advice.exceptions.ErrorRegisterException;
 import com.systemdelivery.authentication.controller.dto.*;
 import com.systemdelivery.authentication.mapper.KeycloakMapper;
+import com.systemdelivery.authentication.validator.AuthenticationValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ public class AuthenticationService {
     private final RedisService redisService;
     private final ApiClientService apiClientService;
     private final KeycloakMapper keycloakMapper;
+    private final AuthenticationValidator authenticationValidator;
 
     public LoginResponseDTO login(LoginRequestDTO loginRequest) {
         try {
@@ -37,9 +39,7 @@ public class AuthenticationService {
 
     public CustomerResponseDTO signUpCustomer(CreateCustomerRequestDTO customerRequest) {
         CustomerResponseDTO customerResponse = apiClientService.createCustomer(customerRequest);
-        if(customerResponse == null) {
-            throw new ErrorRegisterException("Error when creating the customer");
-        }
+        authenticationValidator.validateIfUserIsNull(customerRequest);
 
         try {
             UserKeycloakDTO userKeycloak = keycloakMapper.mapToKeycloakUserByCustomer(customerRequest, customerResponse.id());
@@ -54,9 +54,7 @@ public class AuthenticationService {
 
     public RestaurantResponseDTO signUpRestaurant(CreateRestaurantRequestDTO restaurantRequest) {
         RestaurantResponseDTO restaurantResponse = apiClientService.createRestaurant(restaurantRequest);
-        if(restaurantResponse == null) {
-            throw new ErrorRegisterException("Error creating restaurant");
-        }
+        authenticationValidator.validateIfUserIsNull(restaurantRequest);
 
         try {
             UserKeycloakDTO userKeycloak = keycloakMapper.mapToKeycloakUserByRestaurant(restaurantRequest, restaurantResponse.id());
@@ -72,5 +70,20 @@ public class AuthenticationService {
     public void disableUserByEmail(String email){
         keycloakService.disableUserByEmail(email);
         redisService.removerUserTokenFromCache(email);
+    }
+
+    public LoginResponseDTO authenticateInternalClient(InternalLoginDTO internalLoginDTO) {
+        try {
+            authenticationValidator.validateInternalServiceLogin(internalLoginDTO);
+
+            return keycloakService.getTokenAdminFromKeycloak(
+                    internalLoginDTO.clientId(),
+                    internalLoginDTO.clientSecret()
+            );
+
+        } catch (Exception e){
+            log.error("Error when trying to authenticate internal service and get access token: {}", e.getMessage());
+            throw new ErrorLoginException("Error retrieving token for internal service");
+        }
     }
 }

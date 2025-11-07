@@ -98,31 +98,31 @@ public class keycloakService {
         }
     }
 
-    public String getTokenAdminFromKeycloak(){
-        try {
-            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-            params.add("grant_type", "client_credentials");
-            params.add("client_id", CLIENT_ID);
-            params.add("client_secret", CLIENT_SECRET);
+    public LoginResponseDTO getTokenAdminFromKeycloak(String clientId, String clientSecret) throws RuntimeException {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("grant_type", "client_credentials");
+        params.add("client_id", clientId);
+        params.add("client_secret", clientSecret);
 
-            ResponseEntity<Map> response = restTemplate.postForEntity(
-                    TOKEN_URL,
-                    new HttpEntity<>(params, new HttpHeaders()),
-                    Map.class);
+        ResponseEntity<LoginResponseDTO> response = restTemplate.postForEntity(
+                TOKEN_URL,
+                new HttpEntity<>(params, new HttpHeaders()),
+                LoginResponseDTO.class);
 
-            return (String) response.getBody().get("access_token");
-
-        } catch (Exception e) {
-            throw new RuntimeException("Error when get token from keycloak", e);
-        }
+        return response.getBody();
     }
 
     public void disableUserByEmail(String email){
-        List<UserRepresentation> users = keycloak.realm(REALM).users().searchByEmail(email, true);
-        if (!users.isEmpty()) {
-            UserRepresentation user = users.get(0);
-            user.setEnabled(false);
-            keycloak.realm(REALM).users().get(user.getId()).update(user);
+        try {
+            List<UserRepresentation> users = keycloak.realm(REALM).users().searchByEmail(email, true);
+            if (!users.isEmpty()) {
+                UserRepresentation user = users.get(0);
+                user.setEnabled(false);
+                keycloak.realm(REALM).users().get(user.getId()).update(user);
+            }
+
+        } catch (Exception e){
+            log.error("Error when attempting to deactivate user via email: {} with the error: {}", email, e.getMessage());
         }
     }
 

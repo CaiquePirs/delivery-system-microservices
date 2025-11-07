@@ -30,10 +30,7 @@ public class CustomerValidator {
     public void validateAuthenticatedCustomerOwnership(Jwt auth, UUID addressId){
         Customer customer = resolverAndFindCustomerLogged(auth);
 
-        boolean isCustomerOwner = customer.getAddresses().stream()
-                .anyMatch(address ->  address.getId().equals(addressId));
-
-        if(!isCustomerOwner && !isInternalService()){
+        if(!isCustomerOwner(addressId, customer) && !isInternalService()){
             throw new CustomerNotAuthorizedException("Customer not authorized to perform this request");
         }
     }
@@ -46,9 +43,20 @@ public class CustomerValidator {
         return findCustomerById(customerIdLogged);
     }
 
+    public Customer findCustomerById(UUID customerId) {
+        return customerRepository.findById(customerId)
+                .filter(c -> !c.getStatus().equals(AuditStatus.DELETED))
+                .orElseThrow(() -> new NotFoundException("Customer ID not found"));
+    }
+
     private UUID getCustomerIdLogged(Jwt authJwt) {
         String customerId = authJwt.getClaimAsString("customer_id");
         return customerId != null ? UUID.fromString(customerId) : null;
+    }
+
+    private boolean isCustomerOwner(UUID addressId, Customer customer) {
+        return customer.getAddresses().stream()
+                .anyMatch(address ->  address.getId().equals(addressId));
     }
 
     private boolean isInternalService() {
@@ -60,11 +68,5 @@ public class CustomerValidator {
             return scope != null && scope.contains("internal-service");
         }
         return false;
-    }
-
-    public Customer findCustomerById(UUID customerId) {
-        return customerRepository.findById(customerId)
-                .filter(c -> !c.getStatus().equals(AuditStatus.DELETED))
-                .orElseThrow(() -> new NotFoundException("Customer ID not found"));
     }
 }

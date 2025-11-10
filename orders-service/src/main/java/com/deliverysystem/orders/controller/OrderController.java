@@ -2,12 +2,12 @@ package com.deliverysystem.orders.controller;
 
 import com.deliverysystem.orders.controller.dto.OrderRequestDTO;
 import com.deliverysystem.orders.controller.dto.OrderResponseDTO;
-import com.deliverysystem.orders.mapper.OrderMapper;
 import com.deliverysystem.orders.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,12 +18,14 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
+    @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<Void> createOrder(@RequestBody @Valid OrderRequestDTO dto){
         orderService.createOrder(dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<OrderResponseDTO> findOrderById(@PathVariable(name = "id") String orderId){
         OrderResponseDTO orderResponse = orderService.findOrderResponseById(orderId);
         return ResponseEntity.ok(orderResponse);

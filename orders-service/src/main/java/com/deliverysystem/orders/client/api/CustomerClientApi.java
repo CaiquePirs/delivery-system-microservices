@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface CustomerClientApi {
 
     @GetMapping("/api/customers/{id}")
-    ResponseEntity<CustomerDTO> findCustomerById(@PathVariable(name = "id" ) UUID customerId);
+    ResponseEntity<CustomerDTO> findCustomerById(@PathVariable(name = "id") UUID customerId);
 
     @GetMapping("/my-addresses/{id}")
     ResponseEntity<DeliveryAddressDTO> findAddressById(@PathVariable("id") UUID addressId);

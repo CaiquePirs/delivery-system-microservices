@@ -4,6 +4,7 @@ import com.deliverysystem.orders.controller.advice.dto.ErrorMessageDTO;
 import com.deliverysystem.orders.controller.advice.dto.ErrorResponseDTO;
 import com.deliverysystem.orders.controller.exception.ClientNotFoundException;
 import com.deliverysystem.orders.controller.exception.OrderNotFoundException;
+import com.deliverysystem.orders.controller.exception.OrderProcessingFailure;
 import com.deliverysystem.orders.controller.exception.RestaurantClosedException;
 import feign.FeignException;
 import org.springframework.http.HttpStatus;
@@ -71,6 +72,17 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RestaurantClosedException.class)
     public ResponseEntity<ErrorResponseDTO> handleOrderNotFound(RestaurantClosedException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponseDTO(
+                        HttpStatus.BAD_REQUEST.value(),
+                        e.getMessage(),
+                        LocalDateTime.now(),
+                        List.of(new ErrorMessageDTO("Restaurant Closed", e.getMessage()))
+                ));
+    }
+
+    @ExceptionHandler(OrderProcessingFailure.class)
+    public ResponseEntity<ErrorResponseDTO> handleOrderProcessingFailure(OrderProcessingFailure e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponseDTO(
                         HttpStatus.BAD_REQUEST.value(),

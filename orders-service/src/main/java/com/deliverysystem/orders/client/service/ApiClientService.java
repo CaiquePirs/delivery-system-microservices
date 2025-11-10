@@ -2,10 +2,7 @@ package com.deliverysystem.orders.client.service;
 
 import com.deliverysystem.orders.client.api.CustomerClientApi;
 import com.deliverysystem.orders.client.api.RestaurantClientApi;
-import com.deliverysystem.orders.client.representation.DeliveryAddressDTO;
-import com.deliverysystem.orders.client.representation.CustomerDTO;
-import com.deliverysystem.orders.client.representation.MenuDTO;
-import com.deliverysystem.orders.client.representation.RestaurantDTO;
+import com.deliverysystem.orders.client.representation.*;
 import com.deliverysystem.orders.controller.exception.ClientNotFoundException;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +26,8 @@ public class ApiClientService {
             var customerResponse = customerClientApi.findCustomerById(customerId);
             return CompletableFuture.completedFuture(customerResponse.getBody());
 
-        } catch (FeignException.NotFound e) {
-            throw new ClientNotFoundException("Customer not found. Please enter the ID correctly.");
+        } catch (FeignException e) {
+            throw new ClientNotFoundException(String.format("Customer ID: %s not found", customerId));
         }
     }
 
@@ -40,8 +37,8 @@ public class ApiClientService {
             var restaurantResponse = restaurantClientApi.findRestaurantById(restaurantId);
             return CompletableFuture.completedFuture(restaurantResponse.getBody());
 
-        } catch (FeignException.NotFound e) {
-            throw new ClientNotFoundException("Restaurant not found. Please enter the ID correctly.");
+        } catch (FeignException e) {
+            throw new ClientNotFoundException(String.format("Restaurant ID: %s not found", restaurantId));
         }
     }
 
@@ -51,7 +48,7 @@ public class ApiClientService {
             return menuResponse.getBody();
 
         } catch (FeignException e){
-            throw new ClientNotFoundException("Menu not found. Please enter the ID correctly.");
+            throw new ClientNotFoundException(String.format("Menu ID: %s not found", menuId));
         }
     }
 
@@ -61,8 +58,7 @@ public class ApiClientService {
             return address.getBody();
 
         } catch (FeignException e) {
-            throw new ClientNotFoundException("Address not found. Please enter the ID correctly.");
+            throw new ClientNotFoundException(String.format("Address ID: %s not found", addressId));
         }
     }
-
 }

@@ -15,6 +15,12 @@ spring:
     exchange-approved-payment: ${ORDERS_RABBITMQ_EXCHANGE_APPROVED_PAYMENT}
     delivery-ready-update: ${ORDERS_RABBITMQ_DELIVERY_READY_UPDATE}
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${KEYCLOAK_JWK_URI}
+
   output:
     ansi:
       enabled: ALWAYS
@@ -32,3 +38,4 @@ eureka:
       defaultZone: ${EUREKA_ZONE_URL}
   instance:
     instance-id: ${spring.application.name}:${random.value}
+

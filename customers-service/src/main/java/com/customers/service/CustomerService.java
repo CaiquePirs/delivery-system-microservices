@@ -36,6 +36,7 @@ public class CustomerService {
                 .phone(dto.phone())
                 .email(dto.email())
                 .addresses(new ArrayList<>())
+                .status(AuditStatus.ACTIVE)
                 .build();
 
         customer.getAddresses().add(address);

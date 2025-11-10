@@ -40,7 +40,7 @@ public class Customer {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private AuditStatus status = AuditStatus.ACTIVE;
+    private AuditStatus status;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

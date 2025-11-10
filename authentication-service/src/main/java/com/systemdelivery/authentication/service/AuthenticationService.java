@@ -76,13 +76,20 @@ public class AuthenticationService {
         try {
             authenticationValidator.validateInternalServiceLogin(internalLoginDTO);
 
-            return keycloakService.getTokenAdminFromKeycloak(
+            LoginResponseDTO tokenInCache = redisService.findUserTokenInCache(internalLoginDTO.clientId());
+            if (tokenInCache != null) {
+                return tokenInCache;
+            }
+
+            LoginResponseDTO loginResponse =  keycloakService.getTokenAdminFromKeycloak(
                     internalLoginDTO.clientId(),
                     internalLoginDTO.clientSecret()
             );
 
+            redisService.insertUserTokenInCache(internalLoginDTO.clientId(), loginResponse);
+            return loginResponse;
+
         } catch (Exception e){
-            log.error("Error when trying to authenticate internal service and get access token: {}", e.getMessage());
             throw new ErrorLoginException("Error retrieving token for internal service");
         }
     }

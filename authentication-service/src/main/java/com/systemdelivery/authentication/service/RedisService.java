@@ -12,13 +12,13 @@ public class RedisService {
 
     private final RedisTemplate<String, Object> redisTemplate;
 
-    public LoginResponseDTO findUserTokenInCache(String email) {
-        String accessKey = String.format("access_token:%s", email);
+    public LoginResponseDTO findUserTokenInCache(String key) {
+        String accessKey = String.format("access_token:%s", key);
         return (LoginResponseDTO) redisTemplate.opsForValue().get(accessKey);
     }
 
-    public void insertUserTokenInCache(String email, LoginResponseDTO loginResponse) {
-        String accessKey = String.format("access_token:%s", email);
+    public void insertUserTokenInCache(String key, LoginResponseDTO loginResponse) {
+        String accessKey = String.format("access_token:%s", key);
         redisTemplate.opsForValue().set(accessKey, loginResponse, Duration.ofMinutes(29));
     }
 

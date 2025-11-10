@@ -1,6 +1,6 @@
 spring:
   application:
-    name: te
+    name: restaurants-service
 
   output:
     ansi:

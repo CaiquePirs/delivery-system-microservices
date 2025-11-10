@@ -14,10 +14,10 @@ public class TokenClientService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${KEYCLOAK_CLIENT_SECRET}")
+    @Value("${KEYCLOAK_CLIENT_ID}")
     private String CLIENT_ID;
 
-    @Value("${KEYCLOAK_CLIENT_ID}")
+    @Value("${KEYCLOAK_CLIENT_SECRET}")
     private String CLIENT_SECRET;
 
     @Value("${SERVICE_TOKEN_URL}")

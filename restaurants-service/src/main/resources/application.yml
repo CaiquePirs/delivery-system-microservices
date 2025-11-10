@@ -1,6 +1,6 @@
 spring:
   application:
-    name: restaurants-service
+    name: te
 
   output:
     ansi:
@@ -16,6 +16,12 @@ spring:
     port: ${RABBITMQ_PORT}
     username: ${RABBITMQ_USERNAME}
     password: ${RABBITMQ_PASSWORD}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI}
 
   data:
     redis:
@@ -42,10 +48,3 @@ eureka:
       defaultZone: ${EUREKA_ZONE_URL}
   instance:
     instance-id: ${spring.application.name}:${random.value}
-
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${KEYCLOAK_ISSUER_URI}
-

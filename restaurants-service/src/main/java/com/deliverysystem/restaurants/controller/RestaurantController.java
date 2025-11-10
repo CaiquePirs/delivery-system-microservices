@@ -49,7 +49,7 @@ public class RestaurantController {
     @DeleteMapping("/{id}")
     @PreAuthorize("@tokenValidator.isInternalService(authentication)")
     public ResponseEntity<Void> deleteRestaurant(@PathVariable(name = "id") UUID restaurantId) {
-        service.disableRestaurantById(restaurantId);
+        service.deleteRestaurantById(restaurantId);
         return ResponseEntity.noContent().build();
     }
 

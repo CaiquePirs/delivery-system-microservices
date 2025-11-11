@@ -6,6 +6,12 @@ spring:
     mongodb:
       uri: mongodb://${PAYMENTS_MONGO_USER}:${PAYMENTS_MONGO_PASSWORD}@${PAYMENTS_MONGO_HOST}:${PAYMENTS_MONGO_PORT}/${PAYMENTS_MONGO_DB}?authSource=admin
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${KEYCLOAK_JWK_URI}
+
   rabbitmq:
     host: ${PAYMENTS_RABBITMQ_HOST}
     port: ${PAYMENTS_RABBITMQ_PORT}

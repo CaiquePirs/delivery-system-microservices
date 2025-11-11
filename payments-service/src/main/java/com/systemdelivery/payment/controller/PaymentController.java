@@ -4,6 +4,7 @@ import com.systemdelivery.payment.gateway.dto.PaymentWebhookDTO;
 import com.systemdelivery.payment.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,9 +18,9 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @PostMapping
+    @PreAuthorize("@tokenClientService.isInternalService(authentication)")
     public ResponseEntity<Void> receivePayment(@RequestBody PaymentWebhookDTO webhookDTO){
         paymentService.callbackPayment(webhookDTO);
         return ResponseEntity.noContent().build();
     }
-
 }

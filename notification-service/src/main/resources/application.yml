@@ -14,6 +14,12 @@ spring:
           starttls:
             enable: true
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${KEYCLOAK_JWK_URI}
+
   rabbitmq:
     username: ${NOTIFICATIONS_RABBITMQ_USERNAME}
     password: ${NOTIFICATIONS_RABBITMQ_PASSWORD}

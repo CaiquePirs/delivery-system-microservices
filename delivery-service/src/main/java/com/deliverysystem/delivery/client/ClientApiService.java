@@ -16,11 +16,11 @@ public class ClientApiService {
 
     public OrderDTO findById(String orderId) {
         try {
-            var orderResponse = orderClientApi.findById(orderId);
+            var orderResponse = orderClientApi.findOrderById(orderId);
             return orderResponse.getBody();
 
-        } catch (FeignException e){
-            log.error("Error fetching order with ID {}: {}", orderId, e.getMessage());
+        } catch (FeignException e) {
+            log.error("Error fetching order with ID {}: with error: {}", orderId, e.getMessage());
             return null;
         }
     }

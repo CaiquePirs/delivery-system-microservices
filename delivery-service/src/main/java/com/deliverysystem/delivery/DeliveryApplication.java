@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
-@EnableFeignClients(basePackages = "com.deliverysystem.delivery.client.api")
+@EnableFeignClients(basePackages = "com.deliverysystem")
 public class DeliveryApplication {
 
     public static void main(String[] args) {

@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface OrderClientApi {
 
     @GetMapping("/api/orders/{id}")
-    ResponseEntity<OrderDTO> findById(@PathVariable(name = "id") String orderId);
+    ResponseEntity<OrderDTO> findOrderById(@PathVariable("id") String orderId);
 }

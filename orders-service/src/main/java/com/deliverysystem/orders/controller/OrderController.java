@@ -25,7 +25,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('CUSTOMER')")
+    @PreAuthorize("@accessValidator.isInternalService(authentication)")
     public ResponseEntity<OrderResponseDTO> findOrderById(@PathVariable(name = "id") String orderId){
         OrderResponseDTO orderResponse = orderService.findOrderResponseById(orderId);
         return ResponseEntity.ok(orderResponse);

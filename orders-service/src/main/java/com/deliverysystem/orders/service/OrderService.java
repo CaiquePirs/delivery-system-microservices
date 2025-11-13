@@ -14,12 +14,14 @@ import com.deliverysystem.orders.model.ItemsOrder;
 import com.deliverysystem.orders.model.Order;
 import com.deliverysystem.orders.repository.OrderRepository;
 import com.deliverysystem.orders.service.calculator.OrderCalculator;
+import com.deliverysystem.orders.service.validator.AccessValidator;
 import com.deliverysystem.orders.service.validator.OrderValidator;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -33,9 +35,12 @@ public class OrderService {
     private final OrderMapper mapper;
     private final OrderEventPublisher eventPublisher;
     private final OrderValidator validator;
+    private final AccessValidator accessValidator;
 
     public void createOrder(OrderRequestDTO orderDTO){
-        CompletableFuture<CustomerDTO> customerFuture = apiClientService.findCustomerById(orderDTO.customerId());
+        UUID customerLoggedId = accessValidator.getCustomerIdLogged();
+
+        CompletableFuture<CustomerDTO> customerFuture = apiClientService.findCustomerById(customerLoggedId);
         CompletableFuture<RestaurantDTO> restaurantFuture = apiClientService.findRestaurantById(orderDTO.restaurantId());
         CompletableFuture.allOf(customerFuture, restaurantFuture).join();
 
@@ -49,6 +54,8 @@ public class OrderService {
         BigDecimal totalOrder = calculator.calculateTotalOrder(items);
 
         Order orderEntity = mapper.mapToEntity(orderDTO, items, totalOrder);
+        orderEntity.setCustomerId(customerLoggedId);
+
         Order createdOrder = orderRepository.save(orderEntity);
         createdOrder.setPaymentData(orderDTO.paymentData());
 

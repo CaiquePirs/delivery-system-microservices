@@ -7,9 +7,6 @@ import java.util.List;
 import java.util.UUID;
 
 public record OrderRequestDTO(
-        @NotNull(message = "Customer ID is required")
-        UUID customerId,
-
         @NotNull(message = "Delivery Address ID is required")
         UUID deliveryAddressId,
 

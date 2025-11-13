@@ -28,7 +28,6 @@ public class OrderMapper {
                 .itemsOrder(items)
                 .total(totalOrder)
                 .restaurantId(orderDTO.restaurantId())
-                .customerId(orderDTO.customerId())
                 .deliveryAddressId(orderDTO.deliveryAddressId())
                 .estimatedDelivery(LocalDateTime.now().plusHours(2))
                 .auditStatus(AuditStatus.ACTIVE)

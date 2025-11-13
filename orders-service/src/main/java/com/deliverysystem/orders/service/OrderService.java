@@ -18,6 +18,9 @@ import com.deliverysystem.orders.service.validator.AccessValidator;
 import com.deliverysystem.orders.service.validator.OrderValidator;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
@@ -83,5 +86,19 @@ public class OrderService {
     public Order findOrderById(String orderId){
         return orderRepository.findById(new ObjectId(orderId))
                 .orElseThrow(() -> new OrderNotFoundException("Order ID not found"));
+    }
+
+    public Page<OrderResponseDTO> findAllOrdersByCustomerID(UUID customerId, Pageable pageable) {
+        CustomerDTO customer = apiClientService.findCustomerById(customerId).join();
+
+        List<OrderResponseDTO> ordersPage = orderRepository.findAllByCustomerId(customerId, pageable)
+                .stream()
+                .map(order -> {
+                    DeliveryAddressDTO deliveryAddress = validator.resolveDeliveryAddress(order.getDeliveryAddressId(), customer);
+                    return mapper.mapToResponse(order, customer, deliveryAddress);
+                })
+                .toList();
+
+        return new PageImpl<>(ordersPage, pageable, ordersPage.size());
     }
 }

@@ -46,7 +46,7 @@ public class OrderMapper {
                 .orderDate(order.getOrderDate())
                 .estimated_delivery(order.getEstimatedDelivery())
                 .notes(order.getNotes())
-                .customer(mapToCustomerResponse(customer, deliveryAddress))
+                .customer(mapToCustomerEventResponse(customer, deliveryAddress))
                 .build();
     }
 
@@ -60,12 +60,12 @@ public class OrderMapper {
                 .orderDate(order.getOrderDate())
                 .estimated_delivery(order.getEstimatedDelivery())
                 .notes(order.getNotes())
-                .customer(mapToCustomerResponse(customer, deliveryAddress))
+                .customer(mapToCustomerEventResponse(customer, deliveryAddress))
                 .paymentData(order.getPaymentData())
                 .build();
     }
 
-    private CustomerResponseEvent mapToCustomerResponse(CustomerDTO customer, DeliveryAddressDTO deliveryAddress){
+    private CustomerResponseEvent mapToCustomerEventResponse(CustomerDTO customer, DeliveryAddressDTO deliveryAddress){
         return CustomerResponseEvent.builder()
                 .id(customer.id())
                 .name(customer.name())

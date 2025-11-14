@@ -2,10 +2,7 @@ package com.deliverysystem.orders.controller.advice.handler;
 
 import com.deliverysystem.orders.controller.advice.dto.ErrorMessageDTO;
 import com.deliverysystem.orders.controller.advice.dto.ErrorResponseDTO;
-import com.deliverysystem.orders.controller.exception.ClientNotFoundException;
-import com.deliverysystem.orders.controller.exception.OrderNotFoundException;
-import com.deliverysystem.orders.controller.exception.OrderProcessingFailure;
-import com.deliverysystem.orders.controller.exception.RestaurantClosedException;
+import com.deliverysystem.orders.controller.exception.*;
 import feign.FeignException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -81,15 +78,25 @@ public class GlobalExceptionHandler {
                 ));
     }
 
-    @ExceptionHandler(OrderProcessingFailure.class)
-    public ResponseEntity<ErrorResponseDTO> handleOrderProcessingFailure(OrderProcessingFailure e) {
+    @ExceptionHandler(OrderProcessingFailureException.class)
+    public ResponseEntity<ErrorResponseDTO> handleOrderProcessingFailure(OrderProcessingFailureException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponseDTO(
                         HttpStatus.BAD_REQUEST.value(),
                         e.getMessage(),
                         LocalDateTime.now(),
-                        List.of(new ErrorMessageDTO("Restaurant Closed", e.getMessage()))
+                        List.of(new ErrorMessageDTO("Order Fail", e.getMessage()))
                 ));
     }
 
+    @ExceptionHandler(UserNotAuthorizedException.class)
+    public ResponseEntity<ErrorResponseDTO> handleUserNotAuthorized(UserNotAuthorizedException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponseDTO(
+                        HttpStatus.UNAUTHORIZED.value(),
+                        e.getMessage(),
+                        LocalDateTime.now(),
+                        List.of(new ErrorMessageDTO("Unauthorized", e.getMessage()))
+                ));
+    }
 }

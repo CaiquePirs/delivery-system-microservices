@@ -9,4 +9,5 @@ import java.util.UUID;
 
 public interface OrderRepository extends MongoRepository<Order, ObjectId>{
     Page<Order> findAllByCustomerId(UUID customerId, Pageable pageable);
+    Page<Order> findAllByRestaurantId(UUID restaurantId, Pageable pageable);
 }

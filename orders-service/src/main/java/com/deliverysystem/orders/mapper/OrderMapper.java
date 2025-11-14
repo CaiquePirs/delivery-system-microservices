@@ -2,6 +2,7 @@ package com.deliverysystem.orders.mapper;
 
 import com.deliverysystem.orders.client.representation.DeliveryAddressDTO;
 import com.deliverysystem.orders.client.representation.CustomerDTO;
+import com.deliverysystem.orders.controller.dto.OrderHistoryResponseDTO;
 import com.deliverysystem.orders.event.representation.CustomerResponseEvent;
 import com.deliverysystem.orders.controller.dto.OrderRequestDTO;
 import com.deliverysystem.orders.controller.dto.OrderResponseDTO;
@@ -62,6 +63,21 @@ public class OrderMapper {
                 .notes(order.getNotes())
                 .customer(mapToCustomerEventResponse(customer, deliveryAddress))
                 .paymentData(order.getPaymentData())
+                .build();
+    }
+
+    public OrderHistoryResponseDTO mapToOrderHistoryResponse(Order order){
+        return OrderHistoryResponseDTO.builder()
+                .id(order.getId().toString())
+                .restaurantId(order.getRestaurantId())
+                .items(order.getItemsOrder())
+                .status(order.getStatus())
+                .total(order.getTotal())
+                .orderDate(order.getOrderDate())
+                .estimated_delivery(order.getEstimatedDelivery())
+                .notes(order.getNotes())
+                .customerId(order.getCustomerId())
+                .deliveryAddressId(order.getDeliveryAddressId())
                 .build();
     }
 

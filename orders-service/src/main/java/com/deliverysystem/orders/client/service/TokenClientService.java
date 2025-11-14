@@ -2,7 +2,7 @@ package com.deliverysystem.orders.client.service;
 
 import com.deliverysystem.orders.client.representation.AccessTokenRequest;
 import com.deliverysystem.orders.client.representation.AccessTokenResponse;
-import com.deliverysystem.orders.controller.exception.OrderProcessingFailure;
+import com.deliverysystem.orders.controller.exception.OrderProcessingFailureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class TokenClientService {
             return tokenResponse.getBody().accessToken();
 
         } else {
-            throw new OrderProcessingFailure("Error processing the request. Invalid token");
+            throw new OrderProcessingFailureException("Error processing the request. Invalid token");
         }
     }
 }

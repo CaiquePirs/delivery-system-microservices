@@ -1,6 +1,6 @@
 package com.deliverysystem.orders.service.validator;
 
-import com.deliverysystem.orders.controller.exception.OrderProcessingFailure;
+import com.deliverysystem.orders.controller.exception.UserNotAuthorizedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -30,7 +30,30 @@ public class AccessValidator {
                 return UUID.fromString(currentCustomerId);
             }
         }
-        throw new OrderProcessingFailure("Customer is not authorized for perform this request");
+        throw new UserNotAuthorizedException("Customer is not authorized for perform this request");
+    }
+
+    public UUID getRestaurantIdLogged() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof JwtAuthenticationToken jwtAuth) {
+            Jwt token = jwtAuth.getToken();
+            String currentRestaurantId = token.getClaimAsString("restaurant_id");
+
+            if(currentRestaurantId != null) {
+                return UUID.fromString(currentRestaurantId);
+            }
+        }
+        throw new UserNotAuthorizedException("Restaurant is not authorized for perform this request");
+    }
+
+    public boolean isRestaurantOwner(UUID requestRestaurantId) {
+        UUID loggedRestaurantId = getRestaurantIdLogged();
+        return loggedRestaurantId.equals(requestRestaurantId);
+    }
+
+    public boolean isCustomerOwner(UUID requestCustomerId) {
+        UUID loggedCustomerId = getCustomerIdLogged();
+        return loggedCustomerId.equals(requestCustomerId);
     }
 
 }

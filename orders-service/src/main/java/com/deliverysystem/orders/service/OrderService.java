@@ -4,9 +4,11 @@ import com.deliverysystem.orders.client.representation.DeliveryAddressDTO;
 import com.deliverysystem.orders.client.representation.CustomerDTO;
 import com.deliverysystem.orders.client.representation.RestaurantDTO;
 import com.deliverysystem.orders.client.service.ApiClientService;
+import com.deliverysystem.orders.controller.dto.OrderHistoryResponseDTO;
 import com.deliverysystem.orders.controller.dto.OrderRequestDTO;
 import com.deliverysystem.orders.controller.dto.OrderResponseDTO;
 import com.deliverysystem.orders.controller.exception.OrderNotFoundException;
+import com.deliverysystem.orders.controller.exception.UserNotAuthorizedException;
 import com.deliverysystem.orders.event.publisher.OrderEventPublisher;
 import com.deliverysystem.orders.event.representation.OrderResponseEvent;
 import com.deliverysystem.orders.mapper.OrderMapper;
@@ -88,17 +90,30 @@ public class OrderService {
                 .orElseThrow(() -> new OrderNotFoundException("Order ID not found"));
     }
 
-    public Page<OrderResponseDTO> findAllOrdersByCustomerID(UUID customerId, Pageable pageable) {
-        CustomerDTO customer = apiClientService.findCustomerById(customerId).join();
+    public Page<OrderHistoryResponseDTO> findAllOrdersByCustomerID(UUID customerId, Pageable pageable) {
+        if(!accessValidator.isCustomerOwner(customerId)){
+            throw new UserNotAuthorizedException("Customer is not authorized for perform this request");
+        }
 
-        List<OrderResponseDTO> ordersPage = orderRepository.findAllByCustomerId(customerId, pageable)
+        List<OrderHistoryResponseDTO> ordersPage = orderRepository.findAllByCustomerId(customerId, pageable)
                 .stream()
-                .map(order -> {
-                    DeliveryAddressDTO deliveryAddress = validator.resolveDeliveryAddress(order.getDeliveryAddressId(), customer);
-                    return mapper.mapToResponse(order, customer, deliveryAddress);
-                })
+                .map(mapper::mapToOrderHistoryResponse)
                 .toList();
 
         return new PageImpl<>(ordersPage, pageable, ordersPage.size());
     }
+
+    public Page<OrderHistoryResponseDTO> findAllOrdersByRestaurantID(UUID restaurantId, Pageable pageable) {
+        if(!accessValidator.isRestaurantOwner(restaurantId)){
+            throw new UserNotAuthorizedException("Restaurant is not authorized for perform this request");
+        }
+
+        List<OrderHistoryResponseDTO> ordersPage = orderRepository.findAllByRestaurantId(restaurantId, pageable)
+                .stream()
+                .map(mapper::mapToOrderHistoryResponse)
+                .toList();
+
+        return new PageImpl<>(ordersPage, pageable, ordersPage.size());
+    }
+
 }

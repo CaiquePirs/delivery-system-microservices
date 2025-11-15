@@ -17,7 +17,7 @@ public class OrderEventPublisher {
     @Value("${spring.rabbitmq.exchange-verify-payment}")
     private String exchangeKey;
 
-    public void publishVerifyPayment(OrderResponseEvent event){
+    public void publishInVerifyPayment(OrderResponseEvent event){
         try {
             rabbitTemplate.convertAndSend(exchangeKey, "", event);
 

@@ -21,7 +21,6 @@ import java.util.UUID;
 public class OrderController {
 
     private final OrderService orderService;
-    private final AccessValidator accessValidator;
 
     @PostMapping
     @PreAuthorize("hasRole('CUSTOMER')")

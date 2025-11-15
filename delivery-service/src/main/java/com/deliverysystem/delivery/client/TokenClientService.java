@@ -21,10 +21,13 @@ public class TokenClientService {
     @Value("${KEYCLOAK_CLIENT_SECRET}")
     private String CLIENT_SECRET;
 
+    @Value("${KEYCLOAK_CLIENT_URL}")
+    private String CLIENT_URL;
+
     public String getAccessToken() {
         try {
             var tokenResponse = restTemplate.postForEntity(
-                    "http://localhost:8080/api/auth/internal-login",
+                    CLIENT_URL,
                     new AccessTokenRequest(CLIENT_ID, CLIENT_SECRET),
                     AccessTokenResponse.class
             );

@@ -27,9 +27,10 @@ public class MenuController {
 
     @PostMapping
     @PreAuthorize("hasRole('RESTAURANT')")
-    public ResponseEntity<MenuResponseDTO> createMenu(@AuthenticationPrincipal Jwt auth,
-                                                      @PathVariable UUID restaurantId,
-                                                      @RequestBody @Valid MenuRequestDTO menuRequestDTO) {
+    public ResponseEntity<MenuResponseDTO> createMenu(
+            @AuthenticationPrincipal Jwt auth,
+            @PathVariable UUID restaurantId,
+            @RequestBody @Valid MenuRequestDTO menuRequestDTO) {
 
         restaurantValidator.validateIfIsSameRestaurant(restaurantId, auth);
         Menu menu = menuService.createMenu(restaurantId, menuRequestDTO);
@@ -38,9 +39,10 @@ public class MenuController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('RESTAURANT')")
-    public ResponseEntity<MenuResponseDTO> findAvailableMenuById(@AuthenticationPrincipal Jwt auth,
-                                                                 @PathVariable UUID restaurantId,
-                                                                 @PathVariable(name = "id") UUID menuId) {
+    public ResponseEntity<MenuResponseDTO> findAvailableMenuById(
+            @AuthenticationPrincipal Jwt auth,
+            @PathVariable UUID restaurantId,
+            @PathVariable(name = "id") UUID menuId) {
 
         restaurantValidator.validateIfIsRestaurantOrInternalService(restaurantId, auth);
         Menu menu = menuService.findAvailableMenuById(restaurantId, menuId);
@@ -49,9 +51,10 @@ public class MenuController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('RESTAURANT')")
-    public ResponseEntity<Void> disableMenuById(@AuthenticationPrincipal Jwt auth,
-                                                @PathVariable UUID restaurantId,
-                                                @PathVariable(name = "id") UUID menuId){
+    public ResponseEntity<Void> disableMenuById(
+            @AuthenticationPrincipal Jwt auth,
+            @PathVariable UUID restaurantId,
+            @PathVariable(name = "id") UUID menuId){
 
         restaurantValidator.validateIfIsSameRestaurant(restaurantId, auth);
         menuService.disableMenuById(menuId);
@@ -60,9 +63,10 @@ public class MenuController {
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('RESTAURANT')")
-    public ResponseEntity<Void> toggleMenuStatus(@AuthenticationPrincipal Jwt auth,
-                                                 @PathVariable UUID restaurantId,
-                                                 @PathVariable(name = "id") UUID menuId) {
+    public ResponseEntity<Void> toggleMenuStatus(
+            @AuthenticationPrincipal Jwt auth,
+            @PathVariable UUID restaurantId,
+            @PathVariable(name = "id") UUID menuId) {
 
         restaurantValidator.validateIfIsSameRestaurant(restaurantId, auth);
         menuService.toggleMenuStatus(menuId);

@@ -34,7 +34,7 @@ public class AddressMapper {
                 .build();
     }
 
-    public List<AddressResponseDTO> mapCustomerAddress(List<Address> addresses){
+    public List<AddressResponseDTO> mapAddressToResponse(List<Address> addresses){
         return addresses.stream().map(this::mapToResponse).toList();
     }
 

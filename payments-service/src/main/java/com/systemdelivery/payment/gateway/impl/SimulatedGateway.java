@@ -28,7 +28,6 @@ public class SimulatedGateway {
 
         PaymentWebhookDTO webhook = PaymentWebhookDTO.builder()
                 .paymentKey(UUID.randomUUID().toString())
-                .notes(String.format("SIMULATED-KEY-%s", paymentId))
                 .status(PaymentStatus.AUTHORIZED)
                 .paymentId(paymentId)
                 .notes("Order Authorized Successfully")
@@ -42,7 +41,7 @@ public class SimulatedGateway {
 
             HttpEntity<PaymentWebhookDTO> request = new HttpEntity<>(webhook, headers);
 
-            ResponseEntity<Void> callbackWebhook = restTemplate.exchange(
+            restTemplate.exchange(
                     "http://localhost:8080/api/payments/webhook",
                     HttpMethod.POST,
                     request,

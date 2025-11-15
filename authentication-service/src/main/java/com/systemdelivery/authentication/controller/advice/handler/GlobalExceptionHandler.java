@@ -1,5 +1,6 @@
 package com.systemdelivery.authentication.controller.advice.handler;
 
+import com.systemdelivery.authentication.controller.advice.dto.ErrorMessageDTO;
 import com.systemdelivery.authentication.controller.advice.dto.ErrorResponseDTO;
 import com.systemdelivery.authentication.controller.advice.exceptions.ErrorLoginException;
 import com.systemdelivery.authentication.controller.advice.exceptions.ErrorRegisterException;
@@ -19,10 +20,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponseDTO> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        List<Map<String, String>> listErrors = e.getBindingResult()
+        List<ErrorMessageDTO> listErrors = e.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(fe -> Map.of(fe.getField(), fe.getDefaultMessage()))
+                .map(fe -> new ErrorMessageDTO(fe.getField(), fe.getDefaultMessage()))
                 .collect(Collectors.toList());
 
         ErrorResponseDTO error = new ErrorResponseDTO(
@@ -41,8 +42,8 @@ public class GlobalExceptionHandler {
                         HttpStatus.UNAUTHORIZED.value(),
                         e.getMessage(),
                         LocalDateTime.now(),
-                        List.of(Map.of("Login Error", e.getMessage()))
-                ));
+                        List.of(new ErrorMessageDTO("Login Error", e.getMessage())))
+                );
     }
 
     @ExceptionHandler(ErrorRegisterException.class)
@@ -52,8 +53,8 @@ public class GlobalExceptionHandler {
                         HttpStatus.CONFLICT.value(),
                         e.getMessage(),
                         LocalDateTime.now(),
-                        List.of(Map.of("Login Error", e.getMessage()))
-                ));
+                        List.of(new ErrorMessageDTO("Register Error", e.getMessage())))
+                );
     }
 
 }

@@ -17,7 +17,7 @@ public class EventSubscriber {
     private final NotificationService notificationService;
 
     @RabbitListener(queues = "${spring.rabbitmq.order-confirmation-queue}")
-    public void subscriberOrderConfirmation(OrderEvent event){
+    public void subscriberInOrderConfirmation(OrderEvent event){
         try {
             notificationService.sendNotificationOrderConfirmed(event);
 
@@ -27,7 +27,7 @@ public class EventSubscriber {
     }
 
     @RabbitListener(queues = "${spring.rabbitmq.payment-approved-queue}")
-    public void subscriberPaymentApproved(PaymentConfirmedEvent event){
+    public void subscriberInPaymentApproved(PaymentConfirmedEvent event){
         try {
             notificationService.sendNotificationPaymentApproved(event);
 
@@ -37,7 +37,7 @@ public class EventSubscriber {
     }
 
     @RabbitListener(queues = "${spring.rabbitmq.delivery-ready-queue}")
-    public void subscriberDeliveryReady(DeliveryReadyEvent event){
+    public void subscriberInDeliveryReady(DeliveryReadyEvent event){
         try {
             notificationService.sendNotificationDeliveryReady(event);
 

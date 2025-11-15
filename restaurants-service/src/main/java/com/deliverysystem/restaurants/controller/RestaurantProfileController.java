@@ -43,7 +43,7 @@ public class RestaurantProfileController {
         UUID restaurantId = restaurantValidator.getRestaurantIdLogged(auth);
 
         if(restaurantId == null) {
-            return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         restaurantService.disableRestaurantById(restaurantId);

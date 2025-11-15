@@ -28,10 +28,7 @@ public class AuthenticationEventSubscriber {
     @RabbitListener(queues = "${RESTAURANT_DELETED_QUEUE}")
     public void subscriberInRestaurantDeletedEvent(RestaurantDeletedEvent event) {
         try {
-            log.info("Received event: {}", event.restaurantId());
             authenticationService.disableUserByEmail(event.email());
-
-            log.info("Event send for deletion: {}", event.restaurantId());
 
         } catch (Exception e){
             log.error("Error when subscriber in Restaurant deleted event: {}", event + "with error: " + e);

@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
                         HttpStatus.NO_CONTENT.value(),
                         e.getMessage(),
                         LocalDateTime.now(),
-                        List.of(new ErrorMessageDTO("Not Found", e.getMessage()))
+                        List.of(new ErrorMessageDTO("Client Not Found", e.getMessage()))
                 ));
     }
 

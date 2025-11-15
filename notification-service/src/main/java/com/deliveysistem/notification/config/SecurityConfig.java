@@ -33,7 +33,6 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Primary
     public RequestInterceptor requestInterceptor(){
         return requestTemplate -> {
             String token = tokenClientService.getAccessToken();

@@ -19,7 +19,7 @@
 	</properties>
 
 	<groupId>com.deliverysistem</groupId>
-	<artifactId>cloud-gateway</artifactId>
+	<artifactId>gateway</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>cloud-gateway</name>
 	<description>Cloud Gateway Infra</description>

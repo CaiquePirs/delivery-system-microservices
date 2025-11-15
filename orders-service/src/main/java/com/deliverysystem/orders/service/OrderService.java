@@ -65,7 +65,7 @@ public class OrderService {
         createdOrder.setPaymentData(orderDTO.paymentData());
 
         OrderResponseEvent orderEvent = mapper.mapToEventResponse(createdOrder, customer, deliveryAddress);
-        eventPublisher.publishVerifyPayment(orderEvent);
+        eventPublisher.publishInVerifyPayment(orderEvent);
     }
 
     public OrderResponseDTO findOrderResponseById(String orderId){

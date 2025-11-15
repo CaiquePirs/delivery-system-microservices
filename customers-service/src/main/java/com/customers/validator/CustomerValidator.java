@@ -29,7 +29,6 @@ public class CustomerValidator {
 
     public void validateAuthenticatedCustomerOwnership(Jwt auth, UUID addressId){
         Customer customer = resolverAndFindCustomerLogged(auth);
-
         if(!isCustomerOwner(addressId, customer) && !isInternalService()){
             throw new CustomerNotAuthorizedException("Customer not authorized to perform this request");
         }

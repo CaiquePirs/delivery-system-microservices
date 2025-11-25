@@ -3,7 +3,9 @@ package com.systemdelivery.authentication.controller.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 
+@Builder
 public record CreateCustomerRequestDTO(
         @NotBlank(message = "Name is required")
         String name,

@@ -39,7 +39,6 @@ public class AuthenticationService {
 
     public CustomerResponseDTO signUpCustomer(CreateCustomerRequestDTO customerRequest) {
         CustomerResponseDTO customerResponse = apiClientService.createCustomer(customerRequest);
-        authenticationValidator.validateIfUserIsNull(customerRequest);
 
         try {
             UserKeycloakDTO userKeycloak = keycloakMapper.mapToKeycloakUserByCustomer(customerRequest, customerResponse.id());
@@ -54,7 +53,6 @@ public class AuthenticationService {
 
     public RestaurantResponseDTO signUpRestaurant(CreateRestaurantRequestDTO restaurantRequest) {
         RestaurantResponseDTO restaurantResponse = apiClientService.createRestaurant(restaurantRequest);
-        authenticationValidator.validateIfUserIsNull(restaurantRequest);
 
         try {
             UserKeycloakDTO userKeycloak = keycloakMapper.mapToKeycloakUserByRestaurant(restaurantRequest, restaurantResponse.id());
@@ -90,7 +88,7 @@ public class AuthenticationService {
             return loginResponse;
 
         } catch (Exception e){
-            throw new ErrorLoginException("Error retrieving token for internal service");
+            throw new ErrorLoginException("Error retrieving token for internal service: " + e.getMessage());
         }
     }
 }

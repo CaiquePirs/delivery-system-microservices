@@ -19,5 +19,4 @@ public interface ApiRestaurantClient {
 
     @DeleteMapping("/api/restaurants/{id}")
     ResponseEntity<Void> deleteRestaurant(@PathVariable(name = "id") UUID restaurantId);
-
 }

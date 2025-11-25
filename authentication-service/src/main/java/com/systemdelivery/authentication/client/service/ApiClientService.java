@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.util.UUID;
 
 @Slf4j
@@ -31,12 +30,11 @@ public class ApiClientService {
                 return responseEntity.getBody();
 
             } else if (responseEntity.getStatusCode().equals(HttpStatus.CONFLICT)) {
-                throw new ErrorRegisterException("This email already exists: " +  customerRequestDTO.email());
+                throw new ErrorRegisterException("This email already exists: " + customerRequestDTO.email());
 
             } else {
-                throw new ErrorRegisterException("Error when registering customer");
+                throw new ErrorRegisterException("Error when registering customer with status: " + responseEntity.getStatusCode());
             }
-
         } catch (FeignException e) {
             throw new ErrorRegisterException("Error when create customer: " + e.getMessage());
         }
@@ -52,7 +50,7 @@ public class ApiClientService {
                 throw new ErrorRegisterException("This email already exists: " + restaurantRequestDTO.email());
 
             } else {
-                throw new ErrorRegisterException("Error when registering restaurant");
+                throw new ErrorRegisterException("Error when registering restaurant with status: " + responseEntity.getStatusCode());
             }
         } catch (FeignException e) {
             throw new ErrorRegisterException("Error when registering restaurant: " + e.getMessage());
@@ -76,6 +74,4 @@ public class ApiClientService {
             throw new ErrorRegisterException("Error when deleting customer: " + e.getMessage());
         }
     }
-
-
 }

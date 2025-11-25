@@ -3,7 +3,9 @@ package com.systemdelivery.authentication.controller.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 
+@Builder
 public record CreateRestaurantRequestDTO(
         @NotBlank(message = "Name is required")
         String name,
@@ -22,6 +24,5 @@ public record CreateRestaurantRequestDTO(
         String description,
 
         @NotNull(message = "Address is required")
-        CreateAddressRequestDTO address
-) {
+        CreateAddressRequestDTO address) {
 }

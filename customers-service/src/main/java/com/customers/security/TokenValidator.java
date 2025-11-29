@@ -12,7 +12,6 @@ public class TokenValidator {
         if (authentication instanceof JwtAuthenticationToken jwtAuth) {
             Jwt token = jwtAuth.getToken();
             String scope = token.getClaimAsString("scope");
-
             return scope != null && scope.contains("internal-service");
         }
         return false;

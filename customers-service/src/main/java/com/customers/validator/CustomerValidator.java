@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -27,10 +28,21 @@ public class CustomerValidator {
         });
     }
 
-    public void validateAuthenticatedCustomerOwnership(Jwt auth, UUID addressId){
-        Customer customer = resolverAndFindCustomerLogged(auth);
-        if(!isCustomerOwner(addressId, customer) && !isInternalService()){
-            throw new CustomerNotAuthorizedException("Customer not authorized to perform this request");
+    public void validateAuthenticatedCustomerOwnership(Jwt auth, UUID addressId) {
+        UUID customerIdLogged = getCustomerIdLogged(auth);
+        if (customerIdLogged != null) {
+            Optional<Customer> customer = customerRepository.findById(customerIdLogged);
+
+            if (customer.isPresent()) {
+                boolean isCustomerOwner = isCustomerOwner(addressId, customer.get());
+                if (!isCustomerOwner) {
+                    throw new CustomerNotAuthorizedException("Customer not authorized to perform this request");
+                }
+            }
+        } else {
+            if (!isInternalService()) {
+                throw new CustomerNotAuthorizedException("Customer not authorized to perform this request");
+            }
         }
     }
 

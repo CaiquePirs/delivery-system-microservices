@@ -59,6 +59,7 @@ public class DeliveryService {
         if (order == null) {
             throw new NotFoundException("error processing delivery with ID: " + deliveryId + "order information is not found");
         }
+
         deliveryValidator.validateAuthenticatedRestaurantOwnership(order.restaurantId());
 
         if (delivery.getStatus().equals(DeliveryStatus.ASSIGNED)) {

@@ -1,10 +1,12 @@
 package com.deliverysystem.delivery.model;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Embeddable
+@Builder
 public class Address {
     private String street;
     private String number;

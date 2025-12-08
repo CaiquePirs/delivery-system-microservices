@@ -5,7 +5,6 @@ import com.deliveysistem.notification.model.Notification;
 import com.deliveysistem.notification.model.Recipient;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
-
 import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 

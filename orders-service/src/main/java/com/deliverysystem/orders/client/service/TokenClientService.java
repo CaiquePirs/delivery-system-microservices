@@ -2,7 +2,6 @@ package com.deliverysystem.orders.client.service;
 
 import com.deliverysystem.orders.client.representation.AccessTokenRequest;
 import com.deliverysystem.orders.client.representation.AccessTokenResponse;
-import com.deliverysystem.orders.controller.exception.OrderProcessingFailureException;
 import com.deliverysystem.orders.controller.exception.UserNotAuthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

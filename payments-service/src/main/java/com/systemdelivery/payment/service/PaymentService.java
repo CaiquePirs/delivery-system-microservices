@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -23,12 +22,12 @@ public class PaymentService {
     private final PaymentEventPublisher paymentEventPublisher;
     private final PaymentGateway paymentGateway;
 
-    public void processPayment(ProcessOrderPaymentEvent orderDTO){
+    public void processPayment(ProcessOrderPaymentEvent paymentEvent){
         Payment payment = Payment.builder()
-                .orderId(orderDTO.id())
-                .paymentData(orderDTO.paymentData())
+                .orderId(paymentEvent.id())
+                .paymentData(paymentEvent.paymentData())
                 .status(PaymentStatus.PENDING)
-                .amount(orderDTO.total())
+                .amount(paymentEvent.total())
                 .created_at(LocalDateTime.now())
                 .updated_at(LocalDateTime.now())
                 .build();

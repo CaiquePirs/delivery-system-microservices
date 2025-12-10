@@ -16,7 +16,7 @@ import java.util.UUID;
 @Slf4j
 public class SimulatedGateway {
 
-    private final TokenClientService tokenClientService;;
+    private final TokenClientService tokenClientService;
 
     public void simulateCallback(String paymentId){
         // Simulate a delay for payment processing

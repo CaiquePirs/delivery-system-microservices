@@ -5,6 +5,7 @@ import com.deliverysystem.restaurants.model.enums.MenuStatus;
 import com.deliverysystem.restaurants.model.enums.MenuType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class Menu {
 
     @Id

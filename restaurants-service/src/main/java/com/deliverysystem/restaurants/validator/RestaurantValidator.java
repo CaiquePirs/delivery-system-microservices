@@ -43,7 +43,6 @@ public class RestaurantValidator {
 
     public void validateIfIsRestaurantOrInternalService(UUID restaurantIdRequest, Jwt auth) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         boolean isInternalService = tokenValidator.isInternalService(authentication);
         if (!isInternalService && !isSameRestaurant(restaurantIdRequest, auth)) {
             throw new RestaurantNotAuthorizedException("User not authorized to perform this action");

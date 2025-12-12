@@ -42,8 +42,7 @@ public class RestaurantService {
     public Restaurant findRestaurantById(UUID restaurantId){
        return repository.findById(restaurantId)
                .filter(r -> !r.getAuditStatus().equals(AuditStatus.DELETED))
-               .orElseThrow(() -> new RestaurantNotFoundException(
-                       String.format("Restaurant ID: %s not found", restaurantId)));
+               .orElseThrow(() -> new RestaurantNotFoundException(String.format("Restaurant ID: %s not found", restaurantId)));
     }
 
     public void toggleRestaurantStatus(UUID restaurantId){
@@ -61,7 +60,6 @@ public class RestaurantService {
 
     public Page<RestaurantResponseDTO> findRestaurantsByFilter(RestaurantQueryFilter filter, Pageable pageable){
         Page<Restaurant> restaurantsPage = repository.findAll(RestaurantSpecification.specification(filter), pageable);
-
         List<RestaurantResponseDTO> restaurantList = restaurantsPage.map(mapper::toResponse).toList();
         return new PageImpl<>(restaurantList, pageable, restaurantList.size());
     }

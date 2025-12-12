@@ -4,6 +4,7 @@ import com.deliverysystem.restaurants.model.enums.AuditStatus;
 import com.deliverysystem.restaurants.model.enums.RestaurantStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class Restaurant {
 
     @Id

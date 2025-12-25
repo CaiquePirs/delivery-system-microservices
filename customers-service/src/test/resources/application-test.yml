@@ -1,0 +1,78 @@
+spring:
+  application:
+    name: customers-service
+
+  output:
+    ansi:
+      enabled: ALWAYS
+
+  # ===============================
+  # DATABASE (H2 - TEST)
+  # ===============================
+  datasource:
+    url: jdbc:h2:mem:customers_db_test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+
+  # ===============================
+  # CACHE (DISABLED FOR TESTS)
+  # ===============================
+  cache:
+    type: NONE
+
+  # ===============================
+  # RABBITMQ (TEST / MOCKABLE)
+  # ===============================
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+customers:
+  deleted-queue: customers_deleted_queue
+
+  # ===============================
+  # REDIS (TEST / FIXED VALUES)
+  # ===============================
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: ""
+
+  # ===============================
+  # SECURITY (TEST)
+  # ===============================
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081/realms/master
+
+# ===============================
+# LOGGING
+# ===============================
+logging:
+  pattern:
+    console: "%clr(%d{dd-MM-yyyy HH:mm:ss}){faint} %clr(%5p) %clr([%t]){faint} %clr(%-40.40logger){cyan} %clr(:){yellow} %m%n"
+
+# ===============================
+# SERVER
+# ===============================
+server:
+  port: 0
+
+# ===============================
+# EUREKA (TEST)
+# ===============================
+eureka:
+  client:
+    enabled: false

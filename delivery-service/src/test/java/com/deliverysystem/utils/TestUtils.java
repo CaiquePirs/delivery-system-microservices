@@ -7,6 +7,8 @@ import com.deliverysystem.delivery.model.Currier;
 import com.deliverysystem.delivery.model.Delivery;
 import com.deliverysystem.delivery.model.enums.DeliveryStatus;
 import com.deliverysystem.delivery.model.enums.VehicleType;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -58,6 +60,8 @@ public class TestUtils {
                 .status(DeliveryStatus.ASSIGNED)
                 .deliveryAddress(customerDTO().deliveryAddress())
                 .estimatedDeliveryTime(LocalDateTime.now().plusHours(2))
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .build();
     }
 

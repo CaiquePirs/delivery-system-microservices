@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: deliveries-service
+
+  datasource:
+    url: jdbc:h2:mem:delivery_db_test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    subscribe-payment-queue: ${DELIVERIES_RABBITMQ_SUBSCRIBE_PAYMENT_QUEUE:deliveries.subscribe.payment.test}
+    publisher-delivery-ready: ${DELIVERIES_RABBITMQ_PUBLISHER_DELIVERY_READY:deliveries.publisher.ready.test}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${KEYCLOAK_JWK_URI:http://localhost:8081/realms/master/protocol/openid-connect/certs}
+
+  output:
+    ansi:
+      enabled: ALWAYS
+
+logging:
+  pattern:
+    console: "%clr(%d{dd-MM-yyyy HH:mm:ss}){faint} %clr(%5p) %clr([%t]){faint} %clr(%-40.40logger){cyan} %clr(:){yellow} %m%n"
+
+server:
+  port: 0
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_ZONE_URL:http://localhost:8761/eureka}
+  instance:
+    instance-id: ${spring.application.name}:${random.value}

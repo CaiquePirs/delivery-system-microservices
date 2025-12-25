@@ -1,18 +1,20 @@
 package com.deliverysystem.delivery.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
 @Embeddable
+@Getter
+@Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Address {
     private String street;
     private String number;
-    private String zipcode;
     private String neighborhood;
     private String city;
     private String state;
     private String country;
+    private String zipcode;
 }

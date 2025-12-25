@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: authentication-service-test
+
+  output:
+    ansi:
+      enabled: NEVER
+
+  # 🔐 Mock do Keycloak
+  keycloak:
+    token-url: http://localhost:9999/realms/test/protocol/openid-connect/token
+    client-id: test-client
+    client-secret: test-secret
+
+  # 🧠 Redis mockado (não conecta)
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  cache:
+    type: NONE
+
+  # 🐰 RabbitMQ mockado (não conecta)
+  rabbitmq:
+    username: guest
+    password: guest
+    host: localhost
+    port: 5672
+
+server:
+  port: 0
+
+# 🌍 Eureka desabilitado para testes
+eureka:
+  client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
+
+logging:
+  level:
+    root: WARN

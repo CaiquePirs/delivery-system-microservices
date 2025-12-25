@@ -21,7 +21,7 @@ public class TokenClientService {
     @Value("${KEYCLOAK_CLIENT_SECRET}")
     private String CLIENT_SECRET;
 
-    @Value("${KEYCLOAK_CLIENT_URL}")
+    @Value("${SERVICE_TOKEN_URL}")
     private String CLIENT_URL;
 
     public String getAccessToken() {

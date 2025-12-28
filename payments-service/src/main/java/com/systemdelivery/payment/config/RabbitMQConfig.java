@@ -1,5 +1,9 @@
 package com.systemdelivery.payment.config;
 
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -27,5 +31,75 @@ public class RabbitMQConfig {
             return message;
         });
         return template;
+    }
+
+    @Bean
+    Queue verifyPaymentQueue(){
+        return new Queue("verify-payment-queue", true);
+    }
+
+    @Bean
+    Queue verifyPaymentNotifyQueue(){
+        return new Queue("verify-payment-notify-queue", true);
+    }
+
+    @Bean
+    FanoutExchange verifyPaymentFanout(){
+        return new FanoutExchange("verify-payment-fanout");
+    }
+
+    @Bean
+    Binding bindingVerifyPaymentQueue(){
+        return BindingBuilder
+                .bind(verifyPaymentQueue())
+                .to(verifyPaymentFanout());
+    }
+
+    @Bean
+    Binding bindingVerifyPaymentNotifyQueue(){
+        return BindingBuilder
+                .bind(verifyPaymentNotifyQueue())
+                .to(verifyPaymentFanout());
+    }
+
+    @Bean
+    FanoutExchange approvedPaymentFanout(){
+        return new FanoutExchange("approved-payment-fanout");
+    }
+
+    @Bean
+    Queue paymentApprovedDeliveryQueue(){
+        return new Queue("payment-approved-delivery-queue", true);
+    }
+
+    @Bean
+    Queue paymentApprovedNotifyQueue(){
+        return new Queue("payment-approved-notify-queue", true);
+    }
+
+    @Bean
+    Queue paymentApprovedOrderQueue(){
+        return new Queue("payment-approved-order-queue", true);
+    }
+
+    @Bean
+    Binding bindingPaymentApprovedDeliveryQueue(){
+        return BindingBuilder
+                .bind(paymentApprovedDeliveryQueue())
+                .to(approvedPaymentFanout());
+    }
+
+    @Bean
+    Binding bindingPaymentApprovedNotifyQueue(){
+        return BindingBuilder
+                .bind(paymentApprovedNotifyQueue())
+                .to(approvedPaymentFanout());
+    }
+
+    @Bean
+    Binding bindingPaymentApprovedOrderQueue(){
+      return BindingBuilder
+                .bind(paymentApprovedOrderQueue())
+                .to(approvedPaymentFanout());
     }
 }

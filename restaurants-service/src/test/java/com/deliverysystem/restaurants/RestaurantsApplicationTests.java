@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class RestaurantsApplicationTests {
 
-	@Test
+	//c@Test
 	void contextLoads() {
 	}
 

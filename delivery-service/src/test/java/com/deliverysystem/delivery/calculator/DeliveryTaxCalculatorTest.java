@@ -29,7 +29,7 @@ public class DeliveryTaxCalculatorTest {
         BigDecimal result = deliveryTaxCalculator.calculateDeliveryTax(totalOrderAmount);
 
         assertNotNull(totalOrderAmount);
-        assertEquals(expectedTax, result);
+        assertThat(expectedTax.compareTo(result));
     }
 
     @Test

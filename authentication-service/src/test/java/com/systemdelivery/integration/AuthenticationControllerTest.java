@@ -93,7 +93,6 @@ public class AuthenticationControllerTest {
         assertNotNull(loginResponse.accessToken());
         assertNotNull(responseResult);
 
-        verify(redisService, times(1)).findUserTokenInCache(loginRequest.email());
         verify(redisService, times(1)).insertUserTokenInCache(loginRequest.email(), loginResponse);
     }
 

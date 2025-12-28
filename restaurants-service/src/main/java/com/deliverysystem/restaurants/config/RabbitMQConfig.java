@@ -6,6 +6,7 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.amqp.core.Queue;
 
 @Configuration
 public class RabbitMQConfig {
@@ -28,4 +29,10 @@ public class RabbitMQConfig {
         });
         return template;
     }
+
+    @Bean
+    Queue restaurantDeletedQueue(){
+        return new Queue("restaurant-deleted-queue", true);
+    }
+
 }

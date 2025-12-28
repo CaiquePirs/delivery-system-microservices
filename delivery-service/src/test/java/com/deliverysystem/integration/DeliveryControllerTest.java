@@ -62,6 +62,7 @@ public class DeliveryControllerTest {
         registry.add("KEYCLOAK_CLIENT_ID", () -> "test-client");
         registry.add("KEYCLOAK_CLIENT_SECRET", () -> "test-secret");
         registry.add("KEYCLOAK_CLIENT_URL", () -> "http://localhost:8081");
+        registry.add("SERVICE_TOKEN_URL", () -> "http://localhost:9090/service-token");
     }
 
     @BeforeEach

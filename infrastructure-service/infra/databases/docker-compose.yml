@@ -72,7 +72,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${PAYMENTS_MONGO_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${PAYMENTS_MONGO_PASSWORD}
     ports:
-      - "27018:27017"
+      - "27019:27017"
     networks:
       - database-network
     volumes:

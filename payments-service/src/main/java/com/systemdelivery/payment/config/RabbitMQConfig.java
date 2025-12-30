@@ -102,4 +102,34 @@ public class RabbitMQConfig {
                 .bind(paymentApprovedOrderQueue())
                 .to(approvedPaymentFanout());
     }
+
+    @Bean
+    Queue deliveryShippedUpdateQueue(){
+        return new Queue("delivery-shipped-update-queue", true);
+    }
+
+    @Bean
+    Queue deliveryReadyNotifyQueue(){
+        return new Queue("delivery-ready-notify-queue", true);
+    }
+
+
+    @Bean
+    FanoutExchange deliveryReadyFanout(){
+        return new FanoutExchange("delivery-ready-fanout");
+    }
+
+    @Bean
+    Binding bindingDeliveryReadyNotifyQueue(){
+        return BindingBuilder
+                .bind(deliveryReadyNotifyQueue())
+                .to(deliveryReadyFanout());
+    }
+
+    @Bean
+    Binding bindingDeliveryShippedUpdateQueue(){
+        return BindingBuilder
+                .bind(deliveryShippedUpdateQueue())
+                .to(deliveryReadyFanout());
+    }
 }

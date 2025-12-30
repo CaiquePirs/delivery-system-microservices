@@ -4,7 +4,7 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://admin:admin123@localhost:27018/payments?authSource=admin
+        uri: mongodb://admin:admin123@localhost:27019/payments?authSource=admin
 
   security:
     oauth2:

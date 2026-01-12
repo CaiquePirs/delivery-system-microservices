@@ -14,10 +14,13 @@ spring:
       ddl-auto: create-drop
 
   rabbitmq:
-    host: ${RABBITMQ_HOST:localhost}
-    port: ${RABBITMQ_PORT:5672}
-    username: ${RABBITMQ_USERNAME:guest}
-    password: ${RABBITMQ_PASSWORD:guest}
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    listener:
+      simple:
+        auto-startup: false
     subscribe-payment-queue: ${DELIVERIES_RABBITMQ_SUBSCRIBE_PAYMENT_QUEUE:deliveries.subscribe.payment.test}
     publisher-delivery-ready: ${DELIVERIES_RABBITMQ_PUBLISHER_DELIVERY_READY:deliveries.publisher.ready.test}
 

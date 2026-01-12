@@ -36,6 +36,7 @@ public class RestaurantService {
 
         Restaurant restaurant = mapper.toEntity(dto);
         restaurant.setStatus(RestaurantStatus.OPEN);
+        restaurant.setAuditStatus(AuditStatus.ACTIVE);
         return repository.save(restaurant);
     }
 

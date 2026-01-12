@@ -40,10 +40,11 @@ public class Restaurant {
     private String description;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private RestaurantStatus status;
 
     @Enumerated(EnumType.STRING)
-    private AuditStatus auditStatus = AuditStatus.ACTIVE;
+    private AuditStatus auditStatus;
 
     @Embedded
     private Address address;

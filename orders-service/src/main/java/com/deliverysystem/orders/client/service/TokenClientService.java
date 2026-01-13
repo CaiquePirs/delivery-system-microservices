@@ -3,6 +3,7 @@ package com.deliverysystem.orders.client.service;
 import com.deliverysystem.orders.client.representation.AccessTokenRequest;
 import com.deliverysystem.orders.client.representation.AccessTokenResponse;
 import com.deliverysystem.orders.controller.exception.UserNotAuthorizedException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -10,9 +11,10 @@ import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class TokenClientService {
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
     @Value("${KEYCLOAK_CLIENT_ID}")
     private String CLIENT_ID;
@@ -24,17 +26,21 @@ public class TokenClientService {
     private String SERVICE_TOKEN_URL;
 
     public String getAccessToken() {
-        var tokenResponse = restTemplate.postForEntity(
-                SERVICE_TOKEN_URL,
-                new AccessTokenRequest(CLIENT_ID, CLIENT_SECRET),
-                AccessTokenResponse.class
-        );
+        try {
+            var request = new AccessTokenRequest(CLIENT_ID, CLIENT_SECRET);
+            var tokenResponse = restTemplate.postForEntity(
+                    SERVICE_TOKEN_URL,
+                    request,
+                    AccessTokenResponse.class
+            );
 
-        if (tokenResponse.getBody() != null) {
-            return tokenResponse.getBody().accessToken();
+            if (tokenResponse.getBody() != null && tokenResponse.getStatusCode().is2xxSuccessful()) {
+                return tokenResponse.getBody().accessToken();
+            }
+            throw new UserNotAuthorizedException("Response failed: " + tokenResponse.getStatusCode());
 
-        } else {
-            throw new UserNotAuthorizedException("Error processing the request. Invalid token");
+        } catch (Exception e) {
+            throw new UserNotAuthorizedException("The service token could not be obtained. " + e.getMessage());
         }
     }
 }

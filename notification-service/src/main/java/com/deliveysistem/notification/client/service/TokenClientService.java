@@ -2,6 +2,7 @@ package com.deliveysistem.notification.client.service;
 
 import com.deliveysistem.notification.client.representation.AccessTokenRequest;
 import com.deliveysistem.notification.client.representation.AccessTokenResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -9,9 +10,10 @@ import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class TokenClientService {
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
     @Value("${KEYCLOAK_CLIENT_ID}")
     private String CLIENT_ID;

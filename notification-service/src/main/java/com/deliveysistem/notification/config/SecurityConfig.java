@@ -36,8 +36,9 @@ public class SecurityConfig {
     public RequestInterceptor requestInterceptor(){
         return requestTemplate -> {
             String token = tokenClientService.getAccessToken();
-            if(token != null) {
+            if(token == null) {
                 log.error("It was not possible to process the request and obtain the access token");
+                return;
             }
             requestTemplate.header("Authorization", "Bearer " + token);
         };

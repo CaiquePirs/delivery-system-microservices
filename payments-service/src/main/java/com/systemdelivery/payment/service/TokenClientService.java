@@ -16,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class TokenClientService {
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
     @Value("${KEYCLOAK_CLIENT_ID}")
     private String CLIENT_ID;
@@ -41,14 +41,4 @@ public class TokenClientService {
             return null;
         }
     }
-
-    public boolean isInternalService(Authentication authentication) {
-        if(authentication instanceof JwtAuthenticationToken authenticationToken){
-            Jwt token = authenticationToken.getToken();
-            String scope = token.getClaimAsString("scope");
-            return scope != null && scope.contains("internal-service");
-        }
-        return false;
-    }
-
 }

@@ -1,0 +1,385 @@
+networks:
+  system-delivery-net:
+    driver: bridge
+
+volumes:
+  customers_pg:
+  restaurants_pg:
+  deliveries_pg:
+  orders_mongo:
+  payments_mongo:
+  rabbitmq_data:
+  redis_data:
+  keycloak_pg:
+  keycloak_data:
+  pg_admin:
+
+services:
+  # ----------------------------
+  # Eureka Server
+  # ----------------------------
+  eureka-service:
+    image: eureka-service:latest
+    container_name: eureka-service
+    ports:
+      - "${EUREKA_SERVER_PORT}:${EUREKA_SERVER_PORT}"
+    environment:
+      EUREKA_SERVER_PORT: "${EUREKA_SERVER_PORT}"
+    networks:
+      - system-delivery-net
+
+  # ----------------------------
+  # API Gateway Service
+  # ----------------------------
+  gateway-service:
+    image: gateway-service:latest
+    container_name: gateway-service
+    ports:
+      - "${GATEWAY_PORT}:${GATEWAY_PORT}"
+    environment:
+      KEYCLOAK_ISSUER_URI: "${KEYCLOAK_ISSUER_URI}"
+      KEYCLOAK_JWK_URI: "${KEYCLOAK_JWK_URI}"
+      EUREKA_ZONE_URL: "${EUREKA_ZONE_URL}"
+      GATEWAY_PORT: ${GATEWAY_PORT}
+    depends_on:
+      - eureka-service
+      - keycloak
+    networks:
+      - system-delivery-net
+
+  # ----------------------------
+  # Keycloak Server + Postgres Database
+  # ----------------------------
+  keycloak-postgres:
+    image: postgres:16
+    container_name: keycloak-postgres
+    environment:
+      POSTGRES_DB: "${KC_POSTGRES_DB}"
+      POSTGRES_USER: "${KC_POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${KC_POSTGRES_PASSWORD}"
+    ports:
+      - "${KC_POSTGRES_PORTS}:${KC_POSTGRES_PORTS}"
+    volumes:
+      - keycloak_pg:/var/lib/postgresql/data
+    networks:
+      - system-delivery-net
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:22.0.2
+    container_name: keycloak
+    command: start-dev
+    ports:
+      - "${KEYCLOAK_PORT_O1}:${KEYCLOAK_PORT_O2}"
+    environment:
+      KEYCLOAK_ADMIN: "${KEYCLOAK_ADMIN}"
+      KEYCLOAK_ADMIN_PASSWORD: "${KEYCLOAK_ADMIN_PASSWORD}"
+      KC_DB: "${KC_DB}"
+      KC_DB_URL_HOST: "${KC_DB_URL_HOST}"
+      KC_DB_URL_DATABASE: "${KC_POSTGRES_DB}"
+      KC_DB_USERNAME: "${KC_POSTGRES_USER}"
+      KC_DB_PASSWORD: "${KC_POSTGRES_PASSWORD}"
+    depends_on:
+      - keycloak-postgres
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+    networks:
+      - system-delivery-net
+
+  # ----------------------------
+  # RabbitMQ Broker
+  # ----------------------------
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: rabbitmq-broker
+    ports:
+      - "${RABBITMQ_SERVER_PORT}:${RABBITMQ_SERVER_PORT}"
+      - "${RABBITMQ_WEB_PORT}:${RABBITMQ_WEB_PORT}"
+    environment:
+      RABBITMQ_DEFAULT_USER: "${RABBITMQ_USERNAME}"
+      RABBITMQ_DEFAULT_PASS: "${RABBITMQ_PASSWORD}"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - system-delivery-net
+
+  # ----------------------------
+  # Redis Database
+  # ----------------------------
+  redis:
+    image: redis:8
+    container_name: redis
+    restart: always
+    ports:
+      - "${REDIS_PORTS}:${REDIS_PORTS}"
+    volumes:
+      - redis_data:/data
+    networks:
+      - system-delivery-net
+
+  # ----------------------------
+  # Postgres Databases
+  # ----------------------------
+  customers-postgres:
+    image: postgres:16
+    container_name: customers-postgres
+    environment:
+      POSTGRES_DB: "${CUSTOMER_POSTGRES_DB}"
+      POSTGRES_USER: "${CUSTOMER_POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${CUSTOMER_POSTGRES_PASSWORD}"
+    ports:
+      - "${CUSTOMER_POSTGRES_PORT}:${DB_POSTGRES_PORT}"
+    volumes:
+      - customers_pg:/var/lib/postgresql/data
+    networks:
+      - system-delivery-net
+
+  restaurants-postgres:
+    image: postgres:16
+    container_name: restaurants-postgres
+    environment:
+      POSTGRES_DB: "${RESTAURANTS_POSTGRES_DB}"
+      POSTGRES_USER: "${RESTAURANTS_POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${RESTAURANTS_POSTGRES_PASSWORD}"
+    ports:
+      - "${RESTAURANTS_DB_PORT}:${DB_POSTGRES_PORT}"
+    volumes:
+      - restaurants_pg:/var/lib/postgresql/data
+    networks:
+      - system-delivery-net
+
+  deliveries-postgres:
+    image: postgres:16
+    container_name: deliveries-postgres
+    environment:
+      POSTGRES_DB: "${DELIVERY_POSTGRES_DB}"
+      POSTGRES_USER: "${DELIVERY_POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${DELIVERY_POSTGRES_PASSWORD}"
+    ports:
+      - "${DELIVERY_DB_PORT}:${DB_POSTGRES_PORT}"
+    volumes:
+      - deliveries_pg:/var/lib/postgresql/data
+    networks:
+      - system-delivery-net
+
+  # ----------------------------
+  # MongoDB Databases
+  # ----------------------------
+  orders-mongo:
+    image: mongo:7
+    container_name: orders-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "${ORDERS_MONGO_USERNAME}"
+      MONGO_INITDB_ROOT_PASSWORD: "${ORDERS_MONGO_PASSWORD}"
+    volumes:
+      - orders_mongo:/data/db
+    ports:
+      - "${ORDERS_MONGO_PORTS}:${ORDERS_MONGO_PORTS}"
+    networks:
+      - system-delivery-net
+
+  payments-mongo:
+    image: mongo:7
+    container_name: payments-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "${PAYMENTS_MONGO_USERNAME}"
+      MONGO_INITDB_ROOT_PASSWORD: "${PAYMENTS_MONGO_PASSWORD}"
+    ports:
+      - "${PAYMENTS_MONGO_PORT_02}:${PAYMENTS_MONGO_PORT_01}"
+    volumes:
+      - payments_mongo:/data/db
+    networks:
+      - system-delivery-net
+
+  # ----------------------------
+  # Spring Boot Microservices
+  # ----------------------------
+  payments-service:
+    container_name: payments-service
+    image: payments-service:latest
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "${EUREKA_ZONE_URL}"
+      PAYMENTS_MONGO_USER: "${PAYMENTS_MONGO_USERNAME}"
+      PAYMENTS_MONGO_PASSWORD: "${PAYMENTS_MONGO_PASSWORD}"
+      PAYMENTS_MONGO_HOST: "${PAYMENTS_MONGO_HOST}"
+      PAYMENTS_MONGO_PORT: "${PAYMENTS_MONGO_PORT_01}"
+      PAYMENTS_MONGO_DB: "${PAYMENTS_MONGO_DB}"
+      PAYMENTS_RABBITMQ_HOST: "${RABBITMQ_HOST}"
+      PAYMENTS_RABBITMQ_PORT: "${RABBITMQ_SERVER_PORT}"
+      PAYMENTS_RABBITMQ_USERNAME: "${RABBITMQ_USERNAME}"
+      PAYMENTS_RABBITMQ_PASSWORD: "${RABBITMQ_PASSWORD}"
+      KEYCLOAK_JWK_URI: "${KEYCLOAK_JWK_URI}"
+      PAYMENTS_RABBITMQ_SUBSCRIBER_QUEUE: "${PAYMENTS_RABBITMQ_SUBSCRIBER_QUEUE}"
+      PAYMENTS_RABBITMQ_PUBLISHER_EXCHANGE: "${PAYMENTS_RABBITMQ_PUBLISHER_EXCHANGE}"
+      KEYCLOAK_CLIENT_ID: "${KEYCLOAK_CLIENT_ID}"
+      KEYCLOAK_CLIENT_SECRET: "${KEYCLOAK_CLIENT_SECRET}"
+      SERVICE_TOKEN_URL: "${SERVICE_TOKEN_URL}"
+    depends_on:
+      - eureka-service
+      - payments-mongo
+      - rabbitmq
+    networks:
+      - system-delivery-net
+
+  customers-service:
+    container_name: customers-service
+    image: customers-service:latest
+    environment:
+      EUREKA_ZONE_URL: "${EUREKA_ZONE_URL}"
+      SPRING_DATASOURCE_URL: "${CUSTOMER_POSTGRES_URL}"
+      CUSTOMERS_DB_USER: "${CUSTOMER_POSTGRES_USER}"
+      CUSTOMERS_DB_PASSWORD: "${CUSTOMER_POSTGRES_PASSWORD}"
+      REDIS_HOST: "${REDIS_HOST}"
+      REDIS_PORT: "${REDIS_PORTS}"
+      RABBITMQ_HOST: "${RABBITMQ_HOST}"
+      RABBITMQ_PORT: "${RABBITMQ_SERVER_PORT}"
+      RABBITMQ_USERNAME: "${RABBITMQ_USERNAME}"
+      RABBITMQ_PASSWORD: "${RABBITMQ_PASSWORD}"
+      KEYCLOAK_JWK_URI: "${KEYCLOAK_JWK_URI}"
+      KEYCLOAK_ISSUER_URI: "${KEYCLOAK_ISSUER_URI}"
+      CUSTOMERS_DELETED_QUEUE: "${CUSTOMERS_DELETED_QUEUE}"
+    depends_on:
+      - eureka-service
+      - customers-postgres
+      - redis
+      - rabbitmq
+    networks:
+      - system-delivery-net
+
+  restaurants-service:
+    container_name: restaurants-service
+    image: restaurants-service:latest
+    environment:
+      EUREKA_ZONE_URL: "${EUREKA_ZONE_URL}"
+      SPRING_DATASOURCE_URL: "${RESTAURANTS_POSTGRES_URL}"
+      SPRING_DATASOURCE_USERNAME: "${RESTAURANTS_POSTGRES_USER}"
+      SPRING_DATASOURCE_PASSWORD: "${RESTAURANTS_POSTGRES_PASSWORD}"
+      KEYCLOAK_ISSUER_URI: "${KEYCLOAK_ISSUER_URI}"
+      KEYCLOAK_TOKEN_URL: "${KEYCLOAK_TOKEN_URL}"
+      KEYCLOAK_JWK_URI: "${KEYCLOAK_JWK_URI}"
+      RESTAURANTS_DB_HOST: "${RESTAURANTS_DB_HOST}"
+      RESTAURANTS_DB_PORT: "${RESTAURANTS_DB_PORT}"
+      RESTAURANTS_DB_NAME: "${RESTAURANTS_POSTGRES_DB}"
+      RESTAURANTS_DB_USER: "${RESTAURANTS_DB_USER}"
+      RESTAURANTS_DB_PASSWORD: "${RESTAURANTS_DB_PASSWORD}"
+      RABBITMQ_HOST: "${RABBITMQ_HOST}"
+      RABBITMQ_PORT: "${RABBITMQ_PORT}"
+      RABBITMQ_USERNAME: "${RABBITMQ_USERNAME}"
+      RABBITMQ_PASSWORD: "${RABBITMQ_PASSWORD}"
+      REDIS_HOST: "${REDIS_HOST}"
+      REDIS_PORT: "${REDIS_PORTS}"
+      RESTAURANT_DELETED_QUEUE: "${RESTAURANT_DELETED_QUEUE}"
+    depends_on:
+      - eureka-service
+      - restaurants-postgres
+      - rabbitmq
+    networks:
+      - system-delivery-net
+
+  authentication-service:
+    container_name: authentication-service
+    image: authentication-service:latest
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "${EUREKA_ZONE_URL}"
+      REDIS_HOST: "${REDIS_HOST}"
+      REDIS_PORT: "${REDIS_PORTS}"
+      RABBITMQ_HOST: "${RABBITMQ_HOST}"
+      RABBITMQ_PORT: "${RABBITMQ_SERVER_PORT}"
+      RABBITMQ_USERNAME: "${RABBITMQ_USERNAME}"
+      RABBITMQ_PASSWORD: "${RABBITMQ_PASSWORD}"
+      KEYCLOAK_SERVER_URL: "${KEYCLOAK_SERVER_URL}"
+      KEYCLOAK_REALM: "${KEYCLOAK_REALM}"
+      KEYCLOAK_CLIENT_ID: "${KEYCLOAK_CLIENT_ID}"
+      KEYCLOAK_CLIENT_SECRET: "${KEYCLOAK_CLIENT_SECRET}"
+      KEYCLOAK_TOKEN_URL: "${KEYCLOAK_TOKEN_URL}"
+      RESTAURANT_DELETED_QUEUE: "${RESTAURANT_DELETED_QUEUE}"
+      CUSTOMERS_DELETED_QUEUE: "${CUSTOMERS_DELETED_QUEUE}"
+    depends_on:
+      - eureka-service
+      - keycloak
+      - redis
+      - rabbitmq
+    networks:
+      - system-delivery-net
+
+  orders-service:
+    container_name: orders-service
+    image: orders-service:latest
+    environment:
+      ORDERS_MONGO_USER: "${ORDERS_MONGO_USERNAME}"
+      ORDERS_MONGO_PASSWORD: "${ORDERS_MONGO_PASSWORD}"
+      ORDERS_MONGO_HOST: "${ORDERS_MONGO_HOST}"
+      ORDERS_MONGO_PORT: "${ORDERS_MONGO_PORTS}"
+      ORDERS_MONGO_DB: "${ORDERS_MONGO_DB}"
+      ORDERS_RABBITMQ_HOST: "${RABBITMQ_HOST}"
+      ORDERS_RABBITMQ_PORT: "${RABBITMQ_SERVER_PORT}"
+      ORDERS_RABBITMQ_USERNAME: "${RABBITMQ_USERNAME}"
+      ORDERS_RABBITMQ_PASSWORD: "${RABBITMQ_PASSWORD}"
+      ORDERS_RABBITMQ_EXCHANGE_VERIFY_PAYMENT: "${ORDERS_RABBITMQ_EXCHANGE_VERIFY_PAYMENT}"
+      ORDERS_RABBITMQ_EXCHANGE_APPROVED_PAYMENT: "${ORDERS_RABBITMQ_EXCHANGE_APPROVED_PAYMENT}"
+      ORDERS_RABBITMQ_DELIVERY_READY_UPDATE: "${ORDERS_RABBITMQ_DELIVERY_READY_UPDATE}"
+      KEYCLOAK_CLIENT_ID: "${KEYCLOAK_CLIENT_ID}"
+      KEYCLOAK_CLIENT_SECRET: "${KEYCLOAK_CLIENT_SECRET}"
+      SERVICE_TOKEN_URL: "${SERVICE_TOKEN_URL}"
+      EUREKA_ZONE_URL: "${EUREKA_ZONE_URL}"
+      KEYCLOAK_JWK_URI: "${KEYCLOAK_JWK_URI}"
+    depends_on:
+      - eureka-service
+      - orders-mongo
+      - rabbitmq
+      - authentication-service
+    networks:
+      - system-delivery-net
+
+  notification-service:
+    container_name: notification-service
+    image: notification-service:latest
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "${EUREKA_ZONE_URL}"
+      SPRING_RABBITMQ_HOST: "${RABBITMQ_HOST}"
+      SPRING_RABBITMQ_PORT: "${SPRING_RABBITMQ_PORT}"
+      EMAIL_ADDRESS: "${EMAIL_ADDRESS}"
+      EMAIL_PASSWORD: "${EMAIL_PASSWORD}"
+      NOTIFICATIONS_RABBITMQ_USERNAME: "${RABBITMQ_USERNAME}"
+      NOTIFICATIONS_RABBITMQ_PASSWORD: "${RABBITMQ_PASSWORD}"
+      NOTIFICATIONS_RABBITMQ_HOST: "${RABBITMQ_HOST}"
+      NOTIFICATIONS_RABBITMQ_PORT: "${RABBITMQ_SERVER_PORT}"
+      NOTIFICATIONS_RABBITMQ_ORDER_CONFIRMATION_QUEUE: "${NOTIFICATIONS_RABBITMQ_ORDER_CONFIRMATION_QUEUE}"
+      NOTIFICATIONS_RABBITMQ_PAYMENT_APPROVED_QUEUE: "${NOTIFICATIONS_RABBITMQ_PAYMENT_APPROVED_QUEUE}"
+      NOTIFICATIONS_RABBITMQ_DELIVERY_READY_QUEUE: "${NOTIFICATIONS_RABBITMQ_DELIVERY_READY_QUEUE}"
+      EUREKA_ZONE_URL: "${EUREKA_ZONE_URL}"
+      KEYCLOAK_JWK_URI: "${KEYCLOAK_JWK_URI}"
+      KEYCLOAK_CLIENT_ID: "${KEYCLOAK_CLIENT_ID}"
+      KEYCLOAK_CLIENT_SECRET: "${KEYCLOAK_CLIENT_SECRET}"
+      SERVICE_TOKEN_URL: "${SERVICE_TOKEN_URL_AUTH}"
+    depends_on:
+      - eureka-service
+      - rabbitmq
+      - authentication-service
+    networks:
+      - system-delivery-net
+
+  delivery-service:
+    container_name: delivery-service
+    image: delivery-service:latest
+    environment:
+      EUREKA_ZONE_URL: "${EUREKA_ZONE_URL}"
+      SPRING_DATASOURCE_URL: "${DELIVERY_POSTGRES_URL}"
+      DELIVERIES_DB_USER: "${DELIVERY_POSTGRES_USER}"
+      DELIVERIES_DB_PASSWORD: "${DELIVERY_POSTGRES_PASSWORD}"
+      RABBITMQ_HOST: "${RABBITMQ_HOST}"
+      RABBITMQ_PORT: "${RABBITMQ_SERVER_PORT}"
+      RABBITMQ_USERNAME: "${RABBITMQ_USERNAME}"
+      RABBITMQ_PASSWORD: "${RABBITMQ_PASSWORD}"
+      DELIVERIES_RABBITMQ_SUBSCRIBE_PAYMENT_QUEUE: "${DELIVERIES_RABBITMQ_SUBSCRIBE_PAYMENT_QUEUE}"
+      DELIVERIES_RABBITMQ_PUBLISHER_DELIVERY_READY: "${DELIVERIES_RABBITMQ_PUBLISHER_DELIVERY_READY}"
+      KEYCLOAK_JWK_URI: "${KEYCLOAK_JWK_URI}"
+      KEYCLOAK_CLIENT_ID: "${KEYCLOAK_CLIENT_ID}"
+      KEYCLOAK_CLIENT_SECRET: "${KEYCLOAK_CLIENT_SECRET}"
+      SERVICE_TOKEN_URL: "${SERVICE_TOKEN_URL_AUTH}"
+    depends_on:
+      - eureka-service
+      - deliveries-postgres
+      - rabbitmq
+      - authentication-service
+    networks:
+      - system-delivery-net

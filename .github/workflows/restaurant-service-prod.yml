@@ -34,7 +34,7 @@ jobs:
         working-directory: .
 
       - name: Build docker image
-        run: docker build -t caiquepirs/restaurants-service
+        run: docker build -t caiquepirs/restaurants-service .
 
       - name: Publish image
         run: docker push caiquepirs/restaurants-service

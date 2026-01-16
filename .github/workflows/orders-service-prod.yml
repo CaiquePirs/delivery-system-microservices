@@ -1,0 +1,55 @@
+name: System Delivery Orders Service
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'orders-service/**'
+      - '.github/workflows/orders-service-prod.yml'
+
+jobs:
+    build:
+      runs-on: ubuntu:latest
+      defaults:
+        run:
+          working-directory: ./orders-service
+
+      services:
+        mongodb:
+          image: mongo:7
+          env:
+            MONGO_INITDB_ROOT_USERNAME: ${{secrets.MONGODB_USERNAME}}
+            MONGO_INITDB_ROOT_PASSWORD: ${{secrets.MONGODB_PASSWORD}}
+          ports:
+            - ${{secrets.ORDERS_MONGODB_PORT}}:${{secrets.ORDERS_MONGODB_PORT}}
+
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+
+        - name: Setup java
+          uses: actions/setup-java@v3
+          with:
+            distribution: temurin
+            java-version: '21'
+            cache: 'maven'
+
+        - name: Build project
+          run: mvn clean install
+          env:
+            ORDERS_MONGO_USER: ${{secrets.MONGODB_USERNAME}}
+            ORDERS_MONGO_PASSWORD: ${{secrets.MONGODB_PASSWORD}}
+            ORDERS_MONGO_HOST: mongodb
+            ORDERS_MONGO_DB: orders
+            ORDERS_MONGO_PORT: ${{secrets.ORDERS_MONGODB_PORT}}
+
+        - name: Login docker
+          run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          working-directory: .
+
+        - name: Build docker image
+          run: docker build -t caiquepirs/orders-service .
+
+        - name: Publish image
+          run: docker push caiquepirs/orders-service

@@ -12,15 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      mongodb:
-        image: mongo:7
-        env:
-          MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGODB_USERNAME }}
-          MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
-        ports:
-          - 27017:27017
-
     defaults:
       run:
         working-directory: ./payments-service
@@ -38,12 +29,6 @@ jobs:
 
       - name: Build project
         run: mvn clean install
-        env:
-          PAYMENTS_MONGO_USERNAME: ${{ secrets.MONGODB_USERNAME }}
-          PAYMENTS_MONGO_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
-          PAYMENTS_MONGO_HOST: mongodb
-          PAYMENTS_MONGO_DB: payments
-          PAYMENTS_MONGO_PORT: 27017
 
       - name: Login docker
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin

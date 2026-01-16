@@ -22,7 +22,7 @@ jobs:
             MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGODB_USERNAME }}
             MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
           ports:
-            - ${{ secrets.ORDERS_MONGODB_PORT }}:${{ secrets.ORDERS_MONGODB_PORT }}
+            - 27017:27017
 
       steps:
         - name: Checkout code
@@ -42,7 +42,7 @@ jobs:
             ORDERS_MONGO_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
             ORDERS_MONGO_HOST: mongodb
             ORDERS_MONGO_DB: orders
-            ORDERS_MONGO_PORT: ${{ secrets.ORDERS_MONGODB_PORT }}
+            ORDERS_MONGO_PORT: 27017
 
         - name: Login docker
           run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin

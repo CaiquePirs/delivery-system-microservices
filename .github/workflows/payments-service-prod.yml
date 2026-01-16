@@ -19,7 +19,7 @@ jobs:
           MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGODB_USERNAME }}
           MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
         ports:
-          - ${{ secrets.PAYMENTS_MONGODB_PORT }}:${{ secrets.PAYMENTS_MONGODB_PORT }}
+          - 27018:27017
 
     defaults:
       run:
@@ -39,11 +39,11 @@ jobs:
       - name: Build project
         run: mvn clean install
         env:
-          PAYMENTS_MONGO_USERNAME: "${{ secrets.MONGODB_USERNAME }}"
-          PAYMENTS_MONGO_PASSWORD: "${{ secrets.MONGODB_PASSWORD }}"
+          PAYMENTS_MONGO_USERNAME: ${{ secrets.MONGODB_USERNAME }}
+          PAYMENTS_MONGO_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
           PAYMENTS_MONGO_HOST: mongodb
           PAYMENTS_MONGO_DB: payments
-          PAYMENTS_MONGO_PORT: "${{ secrets.PAYMENTS_MONGODB_PORT }}"
+          PAYMENTS_MONGO_PORT: 27018
 
       - name: Login docker
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin

@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu:latest
+    runs-on: ubuntu-latest
 
     services:
       mongodb:
@@ -19,7 +19,7 @@ jobs:
           MONGO_INITDB_ROOT_USERNAME: ${{secrets.MONGODB_USERNAME}}
           MONGO_INITDB_ROOT_PASSWORD: ${{secrets.MONGODB_PASSWORD}}
         ports:
-          - ${{secrets.PAYMENTS_MONGODB_PORT}}:${{secrets.ORDERS_MONGODB_PORT}}
+          - ${{secrets.PAYMENTS_MONGODB_PORT}}:${{secrets.PAYMENTS_MONGODB_PORT}}
 
     defaults:
       run:

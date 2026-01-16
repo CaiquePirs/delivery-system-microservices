@@ -19,7 +19,7 @@ jobs:
           MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGODB_USERNAME }}
           MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
         ports:
-          - 27018:27017
+          - 27017:27017
 
     defaults:
       run:

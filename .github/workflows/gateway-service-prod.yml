@@ -1,0 +1,40 @@
+name: System Delivery Gateway Service
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'infrastructure-service/gateway/**'
+      - '.github/workflows/gateway-service-prod.yml'
+
+jobs:
+    build:
+      runs-on: ubuntu:latest
+      defaults:
+        run:
+          working-directory: .infrastructure-service/gateway
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+
+        - name: Setup java
+          uses: actions/setup-java@v3
+          with:
+            distribution: temurin
+            java-version: '21'
+            cache: 'maven'
+
+        - name: Build project
+          run: mvn clean install
+
+        - name: Login docker
+          run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          working-directory: .
+
+        - name: Build docker image
+          run: docker build -t caiquepirs/gateway-service .
+
+        - name: Publish image
+          run: docker push caiquepirs/gateway-service
+

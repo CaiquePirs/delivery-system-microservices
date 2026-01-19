@@ -10,7 +10,7 @@ on:
 
 jobs:
     build:
-      runs-on: ubuntu-latest
+      runs-on: self-hosted
       defaults:
         run:
           working-directory: ./authentication-service
@@ -38,3 +38,12 @@ jobs:
         - name: Publish image
           run: docker push caiquepirs/authentication-service
 
+    deploy:
+      needs: build
+      runs-on: self-hosted
+      steps:
+        - name: Pull image docker
+          run: docker compose pull authentication-service
+
+        - name: Run docker container
+          run: docker compose up -d --no-deps authentication-service

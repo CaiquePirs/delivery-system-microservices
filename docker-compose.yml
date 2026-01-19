@@ -12,7 +12,6 @@ volumes:
   redis_data:
   keycloak_pg:
   keycloak_data:
-  pg_admin:
 
 services:
   # ----------------------------
@@ -32,7 +31,7 @@ services:
   # API Gateway Service
   # ----------------------------
   gateway-service:
-    image: gateway-service:latest
+    image: caiquepirs/gateway-service:latest
     container_name: gateway-service
     ports:
       - "${GATEWAY_PORT}:${GATEWAY_PORT}"
@@ -195,7 +194,7 @@ services:
   # ----------------------------
   payments-service:
     container_name: payments-service
-    image: payments-service:latest
+    image: caiquepirs/payments-service:latest
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "${EUREKA_ZONE_URL}"
       PAYMENTS_MONGO_USER: "${PAYMENTS_MONGO_USERNAME}"
@@ -222,7 +221,7 @@ services:
 
   customers-service:
     container_name: customers-service
-    image: customers-service:latest
+    image: caiquepirs/customers-service:latest
     environment:
       EUREKA_ZONE_URL: "${EUREKA_ZONE_URL}"
       SPRING_DATASOURCE_URL: "${CUSTOMER_POSTGRES_URL}"
@@ -247,7 +246,7 @@ services:
 
   restaurants-service:
     container_name: restaurants-service
-    image: restaurants-service:latest
+    image: caiquepirs/restaurants-service:latest
     environment:
       EUREKA_ZONE_URL: "${EUREKA_ZONE_URL}"
       SPRING_DATASOURCE_URL: "${RESTAURANTS_POSTGRES_URL}"
@@ -277,7 +276,7 @@ services:
 
   authentication-service:
     container_name: authentication-service
-    image: authentication-service:latest
+    image: caiquepirs/authentication-service:latest
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "${EUREKA_ZONE_URL}"
       REDIS_HOST: "${REDIS_HOST}"
@@ -303,7 +302,7 @@ services:
 
   orders-service:
     container_name: orders-service
-    image: orders-service:latest
+    image: caiquepirs/orders-service:latest
     environment:
       ORDERS_MONGO_USER: "${ORDERS_MONGO_USERNAME}"
       ORDERS_MONGO_PASSWORD: "${ORDERS_MONGO_PASSWORD}"
@@ -332,7 +331,7 @@ services:
 
   notification-service:
     container_name: notification-service
-    image: notification-service:latest
+    image: caiquepirs/notification-service:latest
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "${EUREKA_ZONE_URL}"
       SPRING_RABBITMQ_HOST: "${RABBITMQ_HOST}"
@@ -360,7 +359,7 @@ services:
 
   delivery-service:
     container_name: delivery-service
-    image: delivery-service:latest
+    image: caiquepirs/delivery-service:latest
     environment:
       EUREKA_ZONE_URL: "${EUREKA_ZONE_URL}"
       SPRING_DATASOURCE_URL: "${DELIVERY_POSTGRES_URL}"

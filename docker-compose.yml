@@ -18,7 +18,7 @@ services:
   # Eureka Server
   # ----------------------------
   eureka-service:
-    image: eureka-service:latest
+    image: caiquepirs/eureka-service:latest
     container_name: eureka-service
     ports:
       - "${EUREKA_SERVER_PORT}:${EUREKA_SERVER_PORT}"

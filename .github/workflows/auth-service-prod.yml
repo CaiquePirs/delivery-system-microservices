@@ -53,5 +53,6 @@ jobs:
           run: docker pull caiquepirs/authentication-service
 
         - name: Run docker compose
-          run: docker compose up -d --no-deps authentication-service
-               docker image prune -f
+          run: |
+              docker compose up -d --no-deps authentication-service
+              docker image prune -f

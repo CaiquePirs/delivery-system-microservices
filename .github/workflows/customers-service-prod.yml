@@ -37,3 +37,22 @@ jobs:
 
         - name: Publish image
           run: docker push caiquepirs/customer-service
+
+    deploy:
+      needs: build
+      runs-on: self-hosted
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+
+        - name: Create .env file
+          run: |
+            echo "${{ secrets.DOCKER_ENV_FILE }}" > .env
+
+        - name: Pull image docker
+          run: docker pull caiquepirs/customer-service
+
+        - name: Run docker compose
+          run: |
+            docker compose up -d --no-deps customers-service
+            docker image prune -f

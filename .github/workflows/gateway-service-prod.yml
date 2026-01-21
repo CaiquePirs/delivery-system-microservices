@@ -38,3 +38,22 @@ jobs:
         - name: Publish image
           run: docker push caiquepirs/gateway-service
 
+    deploy:
+      needs: build
+      runs-on: self-hosted
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+
+        - name: Pull image docker
+          run: docker pull caiquepirs/gateway-service
+
+        - name: Create docker file
+          run: |
+            echo "${{ secrets.DOCKER_ENV_FILE }}" > .env
+
+        - name: Run docker compose
+          run: |
+            docker compose up -d --no-deps gateway-service
+            docker image prune -f
+

@@ -43,7 +43,7 @@ jobs:
       runs-on: self-hosted
       steps:
         - name: Checkout code
-          uses: actions@checkout@v3
+          uses: actions/checkout@v3
 
         - name: Pull image docker
           run: docker pull caiquepirs/eureka-service

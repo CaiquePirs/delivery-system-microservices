@@ -102,22 +102,6 @@ services:
       - system-delivery-net
 
   # ----------------------------
-  # Redis Database
-  # ----------------------------
-  redis:
-    image: redis:8
-    container_name: redis
-    restart: always
-    ports:
-      - "${REDIS_PORTS}:${REDIS_PORTS}"
-    environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-    volumes:
-      - redis_data:/data
-    networks:
-      - system-delivery-net
-
-  # ----------------------------
   # Postgres Databases
   # ----------------------------
   customers-postgres:
@@ -163,35 +147,6 @@ services:
       - system-delivery-net
 
   # ----------------------------
-  # MongoDB Databases
-  # ----------------------------
-  orders-mongo:
-    image: mongo:7
-    container_name: orders-mongo
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: "${ORDERS_MONGO_USERNAME}"
-      MONGO_INITDB_ROOT_PASSWORD: "${ORDERS_MONGO_PASSWORD}"
-    volumes:
-      - orders_mongo:/data/db
-    ports:
-      - "${ORDERS_MONGO_PORTS}:${ORDERS_MONGO_PORTS}"
-    networks:
-      - system-delivery-net
-
-  payments-mongo:
-    image: mongo:7
-    container_name: payments-mongo
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: "${PAYMENTS_MONGO_USERNAME}"
-      MONGO_INITDB_ROOT_PASSWORD: "${PAYMENTS_MONGO_PASSWORD}"
-    ports:
-      - "${PAYMENTS_MONGO_PORT_02}:${PAYMENTS_MONGO_PORT_01}"
-    volumes:
-      - payments_mongo:/data/db
-    networks:
-      - system-delivery-net
-
-  # ----------------------------
   # Spring Boot Microservices
   # ----------------------------
   payments-service:
@@ -212,7 +167,6 @@ services:
       SERVICE_TOKEN_URL: "${SERVICE_TOKEN_URL}"
     depends_on:
       - eureka-service
-      - payments-mongo
       - rabbitmq
     networks:
       - system-delivery-net
@@ -238,7 +192,6 @@ services:
     depends_on:
       - eureka-service
       - customers-postgres
-      - redis
       - rabbitmq
     networks:
       - system-delivery-net
@@ -296,7 +249,6 @@ services:
     depends_on:
       - eureka-service
       - keycloak
-      - redis
       - rabbitmq
     networks:
       - system-delivery-net
@@ -320,7 +272,6 @@ services:
       KEYCLOAK_JWK_URI: "${KEYCLOAK_JWK_URI}"
     depends_on:
       - eureka-service
-      - orders-mongo
       - rabbitmq
       - authentication-service
     networks:

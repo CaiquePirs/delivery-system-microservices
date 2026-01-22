@@ -37,3 +37,22 @@ jobs:
 
       - name: Publish image
         run: docker push caiquepirs/notification-service
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Code checkout
+        uses: actions/checkout@v3
+
+      - name: Create file .env
+        run: |
+          echo "${{ secrets.DOCKER_ENV_FILE }}" > .env
+
+      - name: Docker pull image
+        run: caiquepirs/notification-service
+
+      - name: Run docker compose
+        run: |
+          docker compose up -d --no-deps notification-service
+          docker image prune -f

@@ -117,7 +117,7 @@ services:
 
   customers-service:
     container_name: customers-service
-    image: caiquepirs/customers-service:latest
+    image: caiquepirs/customer-service
     environment:
       EUREKA_ZONE_URL: "${EUREKA_ZONE_URL}"
       SPRING_DATASOURCE_URL: "${CUSTOMER_POSTGRES_URL}"

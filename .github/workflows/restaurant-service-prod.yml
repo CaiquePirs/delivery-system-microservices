@@ -38,3 +38,22 @@ jobs:
 
       - name: Publish image
         run: docker push caiquepirs/restaurants-service
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create file .env
+        run: |
+          echo "${{ secrets.DOCKER_ENV_FILE }}" > .env
+
+      - name: Pull docker image
+        run: docker pull caiquepirs/restaurants-service
+
+      - name: Run docker container
+        run: |
+          docker compose up -d --no-deps restaurants-service
+          docker image prune -f

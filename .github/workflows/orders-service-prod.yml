@@ -69,6 +69,6 @@ jobs:
           run: docker pull caiquepirs/orders-service
 
         - name: Run docker container
-          run: | 
-            docker compose up -d --no-dps orders-service
+          run: |
+            docker compose up -d --no-deps orders-service
             docker image prune -f 

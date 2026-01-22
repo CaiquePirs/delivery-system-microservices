@@ -3,51 +3,14 @@ networks:
     driver: bridge
 
 volumes:
-  customers_pg:
-  restaurants_pg:
-  deliveries_pg:
-  orders_mongo:
-  payments_mongo:
   rabbitmq_data:
-  redis_data:
   keycloak_pg:
   keycloak_data:
 
 services:
-  # ----------------------------
-  # Eureka Server
-  # ----------------------------
-  eureka-service:
-    image: caiquepirs/eureka-service:latest
-    container_name: eureka-service
-    ports:
-      - "${EUREKA_SERVER_PORT}:${EUREKA_SERVER_PORT}"
-    environment:
-      EUREKA_SERVER_PORT: "${EUREKA_SERVER_PORT}"
-    networks:
-      - system-delivery-net
 
   # ----------------------------
-  # API Gateway Service
-  # ----------------------------
-  gateway-service:
-    image: caiquepirs/gateway-service:latest
-    container_name: gateway-service
-    ports:
-      - "${GATEWAY_PORT}:${GATEWAY_PORT}"
-    environment:
-      KEYCLOAK_ISSUER_URI: "${KEYCLOAK_ISSUER_URI}"
-      KEYCLOAK_JWK_URI: "${KEYCLOAK_JWK_URI}"
-      EUREKA_ZONE_URL: "${EUREKA_ZONE_URL}"
-      GATEWAY_PORT: ${GATEWAY_PORT}
-    depends_on:
-      - eureka-service
-      - keycloak
-    networks:
-      - system-delivery-net
-
-  # ----------------------------
-  # Keycloak Server + Postgres Database
+  # Keycloak Server + Keycloak Postgres Database
   # ----------------------------
   keycloak-postgres:
     image: postgres:16
@@ -102,53 +65,34 @@ services:
       - system-delivery-net
 
   # ----------------------------
-  # Postgres Databases
-  # ----------------------------
-  customers-postgres:
-    image: postgres:16
-    container_name: customers-postgres
-    environment:
-      POSTGRES_DB: "${CUSTOMER_POSTGRES_DB}"
-      POSTGRES_USER: "${CUSTOMER_POSTGRES_USER}"
-      POSTGRES_PASSWORD: "${CUSTOMER_POSTGRES_PASSWORD}"
-    ports:
-      - "${CUSTOMER_POSTGRES_PORT}:${DB_POSTGRES_PORT}"
-    volumes:
-      - customers_pg:/var/lib/postgresql/data
-    networks:
-      - system-delivery-net
-
-  restaurants-postgres:
-    image: postgres:16
-    container_name: restaurants-postgres
-    environment:
-      POSTGRES_DB: "${RESTAURANTS_POSTGRES_DB}"
-      POSTGRES_USER: "${RESTAURANTS_POSTGRES_USER}"
-      POSTGRES_PASSWORD: "${RESTAURANTS_POSTGRES_PASSWORD}"
-    ports:
-      - "${RESTAURANTS_DB_PORT}:${DB_POSTGRES_PORT}"
-    volumes:
-      - restaurants_pg:/var/lib/postgresql/data
-    networks:
-      - system-delivery-net
-
-  deliveries-postgres:
-    image: postgres:16
-    container_name: deliveries-postgres
-    environment:
-      POSTGRES_DB: "${DELIVERY_POSTGRES_DB}"
-      POSTGRES_USER: "${DELIVERY_POSTGRES_USER}"
-      POSTGRES_PASSWORD: "${DELIVERY_POSTGRES_PASSWORD}"
-    ports:
-      - "${DELIVERY_DB_PORT}:${DB_POSTGRES_PORT}"
-    volumes:
-      - deliveries_pg:/var/lib/postgresql/data
-    networks:
-      - system-delivery-net
-
-  # ----------------------------
   # Spring Boot Microservices
   # ----------------------------
+  eureka-service:
+    image: caiquepirs/eureka-service:latest
+    container_name: eureka-service
+    ports:
+      - "${EUREKA_SERVER_PORT}:${EUREKA_SERVER_PORT}"
+    environment:
+      EUREKA_SERVER_PORT: "${EUREKA_SERVER_PORT}"
+    networks:
+      - system-delivery-net
+
+  gateway-service:
+    image: caiquepirs/gateway-service:latest
+    container_name: gateway-service
+    ports:
+      - "${GATEWAY_PORT}:${GATEWAY_PORT}"
+    environment:
+      KEYCLOAK_ISSUER_URI: "${KEYCLOAK_ISSUER_URI}"
+      KEYCLOAK_JWK_URI: "${KEYCLOAK_JWK_URI}"
+      EUREKA_ZONE_URL: "${EUREKA_ZONE_URL}"
+      GATEWAY_PORT: ${GATEWAY_PORT}
+    depends_on:
+      - eureka-service
+      - keycloak
+    networks:
+      - system-delivery-net
+
   payments-service:
     container_name: payments-service
     image: caiquepirs/payments-service:latest
@@ -191,7 +135,6 @@ services:
       CUSTOMERS_DELETED_QUEUE: "${CUSTOMERS_DELETED_QUEUE}"
     depends_on:
       - eureka-service
-      - customers-postgres
       - rabbitmq
     networks:
       - system-delivery-net
@@ -222,7 +165,6 @@ services:
       RESTAURANT_DELETED_QUEUE: "${RESTAURANT_DELETED_QUEUE}"
     depends_on:
       - eureka-service
-      - restaurants-postgres
       - rabbitmq
     networks:
       - system-delivery-net
@@ -325,7 +267,6 @@ services:
       SERVICE_TOKEN_URL: "${SERVICE_TOKEN_URL_AUTH}"
     depends_on:
       - eureka-service
-      - deliveries-postgres
       - rabbitmq
       - authentication-service
     networks:

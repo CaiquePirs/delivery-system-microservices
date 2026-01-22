@@ -50,7 +50,7 @@ jobs:
           echo "${{ secrets.DOCKER_ENV_FILE }}" > .env
 
       - name: Docker pull image
-        run: caiquepirs/notification-service
+        run: docker pull caiquepirs/notification-service
 
       - name: Run docker compose
         run: |

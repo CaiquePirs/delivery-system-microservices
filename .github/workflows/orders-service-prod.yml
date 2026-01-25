@@ -1,4 +1,4 @@
-name: System Delivery Orders Service
+name: Orders Service CI/CD Build and Deploy
 
 on:
   push:
@@ -9,66 +9,66 @@ on:
       - '.github/workflows/orders-service-prod.yml'
 
 jobs:
-    build:
-      runs-on: self-hosted
-      defaults:
-        run:
-          working-directory: ./orders-service
+  build:
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: ./orders-service
 
-      services:
-        mongodb:
-          image: mongo:7
-          env:
-            MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGODB_USERNAME }}
-            MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
-          ports:
-            - 27017:27017
+    services:
+      mongodb:
+        image: mongo:7
+        env:
+          MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGODB_USERNAME }}
+          MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+        ports:
+          - 27017:27017
 
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-        - name: Setup java
-          uses: actions/setup-java@v3
-          with:
-            distribution: temurin
-            java-version: '21'
-            cache: 'maven'
+      - name: Setup java
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: 'maven'
 
-        - name: Build project
-          run: mvn clean install
-          env:
-            ORDERS_MONGO_USER: ${{ secrets.MONGODB_USERNAME }}
-            ORDERS_MONGO_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
-            ORDERS_MONGO_HOST: mongodb
-            ORDERS_MONGO_DB: orders
-            ORDERS_MONGO_PORT: 27017
+      - name: Build project
+        run: mvn clean install
+        env:
+          ORDERS_MONGO_USER: ${{ secrets.MONGODB_USERNAME }}
+          ORDERS_MONGO_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+          ORDERS_MONGO_HOST: mongodb
+          ORDERS_MONGO_DB: orders
+          ORDERS_MONGO_PORT: 27017
 
-        - name: Login docker
-          run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          working-directory: .
+      - name: Login docker
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        working-directory: .
 
-        - name: Build docker image
-          run: docker build -t caiquepirs/orders-service .
+      - name: Build docker image
+        run: docker build -t caiquepirs/orders-service .
 
-        - name: Publish image
-          run: docker push caiquepirs/orders-service
+      - name: Publish image
+        run: docker push caiquepirs/orders-service
 
-    deploy:
-      needs: build
-      runs-on: self-hosted
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v3
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-        - name: Create file .env
-          run: |
-            echo "${{ secrets.DOCKER_ENV_FILE }}" > .env
+      - name: Create file .env
+        run: |
+          echo "${{ secrets.DOCKER_ENV_FILE }}" > .env
 
-        - name: Pull docker image
-          run: docker pull caiquepirs/orders-service
+      - name: Pull docker image
+        run: docker pull caiquepirs/orders-service
 
-        - name: Run docker container
-          run: |
-            docker compose up -d --no-deps orders-service
-            docker image prune -f 
+      - name: Run docker container
+        run: |
+          docker compose up -d --no-deps orders-service
+          docker image prune -f

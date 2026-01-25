@@ -1,4 +1,4 @@
-name: System Delivery Notification Service
+name: Notification Service CI/CD Build and Deploy
 
 on:
   push:

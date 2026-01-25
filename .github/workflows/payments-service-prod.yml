@@ -1,4 +1,4 @@
-name: System Delivery Payments Service
+name: Payments Service CI/CD Build and Deploy
 
 on:
   push:

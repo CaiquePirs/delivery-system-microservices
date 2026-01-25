@@ -1,4 +1,4 @@
-name: System Delivery Restaurants Service
+name: Restaurants Service CI/CD Build and Deploy
 
 on:
   push:

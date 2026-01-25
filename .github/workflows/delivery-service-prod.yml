@@ -1,4 +1,4 @@
-name: System Delivery Delivery Service
+name: Delivery Service CI/CD Build and Deploy
 
 on:
   push:
@@ -9,51 +9,50 @@ on:
       - '.github/workflows/delivery-service-prod.yml'
 
 jobs:
-    build:
-      runs-on: self-hosted
-      defaults:
-        run:
-          working-directory: ./delivery-service
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v3
+  build:
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: ./delivery-service
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-        - name: Setup java
-          uses: actions/setup-java@v3
-          with:
-            distribution: temurin
-            java-version: '21'
-            cache: 'maven'
+      - name: Setup java
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: 'maven'
 
-        - name: Build project
-          run: mvn clean install
+      - name: Build project
+        run: mvn clean install
 
-        - name: Login docker
-          run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          working-directory: .
+      - name: Login docker
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        working-directory: .
 
-        - name: Build docker image
-          run: docker build -t caiquepirs/delivery-service .
+      - name: Build docker image
+        run: docker build -t caiquepirs/delivery-service .
 
-        - name: Publish image
-          run: docker push caiquepirs/delivery-service
+      - name: Publish image
+        run: docker push caiquepirs/delivery-service
 
-    deploy:
-      needs: build
-      runs-on: self-hosted
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v3
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-        - name: Create docker file
-          run: |
-               echo "${{ secrets.DOCKER_ENV_FILE }}" > .env
+      - name: Create docker file
+        run: |
+          echo "${{ secrets.DOCKER_ENV_FILE }}" > .env
 
-        - name: Pull image docker
-          run: docker pull caiquepirs/delivery-service
+      - name: Pull image docker
+        run: docker pull caiquepirs/delivery-service
 
-        - name: Run docker compose
-          run: |
-              docker compose up -d --no-deps delivery-service
-              docker image prune -f
-          
+      - name: Run docker compose
+        run: |
+          docker compose up -d --no-deps delivery-service
+          docker image prune -f

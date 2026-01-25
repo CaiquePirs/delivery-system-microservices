@@ -1,4 +1,4 @@
-name: System Delivery Gateway Service
+name: Gateway Service CI/CD Build and Deploy
 
 on:
   push:
@@ -9,51 +9,50 @@ on:
       - '.github/workflows/gateway-service-prod.yml'
 
 jobs:
-    build:
-      runs-on: self-hosted
-      defaults:
-        run:
-          working-directory: ./infrastructure-service/gateway
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v3
+  build:
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: ./infrastructure-service/gateway
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-        - name: Setup java
-          uses: actions/setup-java@v3
-          with:
-            distribution: temurin
-            java-version: '21'
-            cache: 'maven'
+      - name: Setup java
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: 'maven'
 
-        - name: Build project
-          run: mvn clean install
+      - name: Build project
+        run: mvn clean install
 
-        - name: Login docker
-          run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          working-directory: .
+      - name: Login docker
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        working-directory: .
 
-        - name: Build docker image
-          run: docker build -t caiquepirs/gateway-service .
+      - name: Build docker image
+        run: docker build -t caiquepirs/gateway-service .
 
-        - name: Publish image
-          run: docker push caiquepirs/gateway-service
+      - name: Publish image
+        run: docker push caiquepirs/gateway-service
 
-    deploy:
-      needs: build
-      runs-on: self-hosted
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v3
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-        - name: Pull image docker
-          run: docker pull caiquepirs/gateway-service
+      - name: Pull image docker
+        run: docker pull caiquepirs/gateway-service
 
-        - name: Create docker file
-          run: |
-            echo "${{ secrets.DOCKER_ENV_FILE }}" > .env
+      - name: Create docker file
+        run: |
+          echo "${{ secrets.DOCKER_ENV_FILE }}" > .env
 
-        - name: Run docker compose
-          run: |
-            docker compose up -d --no-deps gateway-service
-            docker image prune -f
-
+      - name: Run docker compose
+        run: |
+          docker compose up -d --no-deps gateway-service
+          docker image prune -f

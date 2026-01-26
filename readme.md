@@ -277,6 +277,44 @@ Each microservice includes a **professional CI/CD pipeline**:
 
 ---
 
+---
+
+## 📧 Email Notification Templates
+
+The system ensures real-time communication with both customers and restaurants through professional HTML emails. These templates are generated using **Thymeleaf** and dispatched asynchronously via the **Notification Service**.
+
+<div align="center">
+  <table style="width:100%">
+    <tr>
+      <td align="center"><b>Order Confirmation</b></td>
+      <td align="center"><b>Payment Approved</b></td>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="./notification-service/src/main/resources/templates/Gmail%20-%20Order%20confirmed.png" width="350px">
+      </td>
+      <td align="center">
+        <img src="./notification-service/src/main/resources/templates/Gmail%20-%20Order%20payment%20approved.png" width="350px">
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><b>Out for Delivery</b></td>
+      <td align="center"><b>New Order Received (Restaurant)</b></td>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="./notification-service/src/main/resources/templates/Gmail%20-%20Order%20is%20out%20for%20delivery.png" width="350px">
+      </td>
+      <td align="center">
+        <img src="./notification-service/src/main/resources/templates/Gmail%20-%20New%20orders%20received.png" width="350px">
+      </td>
+    </tr>
+  </table>
+  <p><i>Emails generated using Thymeleaf and dispatched via Spring Mail.</i></p>
+</div>
+
+---
+
 ## ⚙️ How to Run the Project
 
 ### 📋 Prerequisites

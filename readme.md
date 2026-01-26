@@ -240,7 +240,7 @@ Responsible for customer and restaurant notifications.
 ## 🧪 Testing Strategy
 
 * Unit Tests
-* Integration Tests (focused on Order Service)
+* Integration Tests
 * Postman collections for end-to-end validation
 
 ---

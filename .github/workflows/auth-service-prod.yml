@@ -1,4 +1,4 @@
-name: Authentication Service CI/CD Build and Deploy
+name: Authentication Service CI/CD Build and Deploy.
 
 on:
   push:

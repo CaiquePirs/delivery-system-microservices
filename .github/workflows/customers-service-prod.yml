@@ -1,4 +1,4 @@
-name: Customer Service CI/CD Build and Deploy
+name: Customer Service CI/CD Build and Deploy.
 
 on:
   push:

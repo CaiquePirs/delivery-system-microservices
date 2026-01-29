@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu:latest
+    runs-on: self-hosted
     defaults:
       run:
         working-directory: ./notification-service
@@ -40,7 +40,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: ubuntu:latest
+    runs-on: self-hosted
     steps:
       - name: Code checkout
         uses: actions/checkout@v3

@@ -67,10 +67,10 @@ The system ensures real-time communication with both customers and restaurants t
     </tr>
     <tr>
       <td align="center">
-        <img src="./notification-service/src/main/resources/templates/Gmail%20-%20Order%20confirmed.png" width="350px">
+        <img src="./src/main/resources/templates/Gmail%20-%20Order%20confirmed.png" width="350px">
       </td>
       <td align="center">
-        <img src="./notification-service/src/main/resources/templates/Gmail%20-%20Order%20payment%20approved.png" width="350px">
+        <img src="./src/main/resources/templates/Gmail%20-%20Order%20payment%20approved.png" width="350px">
       </td>
     </tr>
     <tr>
@@ -79,10 +79,10 @@ The system ensures real-time communication with both customers and restaurants t
     </tr>
     <tr>
       <td align="center">
-        <img src="./notification-service/src/main/resources/templates/Gmail%20-%20Order%20is%20out%20for%20delivery.png" width="350px">
+        <img src="./src/main/resources/templates/Gmail%20-%20Order%20is%20out%20for%20delivery.png" width="350px">
       </td>
       <td align="center">
-        <img src="./notification-service/src/main/resources/templates/Gmail%20-%20New%20orders%20received.png" width="350px">
+        <img src="./src/main/resources/templates/Gmail%20-%20New%20orders%20received.png" width="350px">
       </td>
     </tr>
   </table>

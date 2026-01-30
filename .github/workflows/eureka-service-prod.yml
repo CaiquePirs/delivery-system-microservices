@@ -1,4 +1,4 @@
-name: Eureka Service CI/CD Build and Deploy
+name: Eureka Service CI/CD Build and Deploy.
 
 on:
   push:

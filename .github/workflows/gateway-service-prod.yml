@@ -1,4 +1,4 @@
-name: Gateway Service CI/CD Build and Deploy
+name: Gateway Service CI/CD Build and Deploy.
 
 on:
   push:

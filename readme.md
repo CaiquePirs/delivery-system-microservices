@@ -352,10 +352,10 @@ This project uses **Keycloak** for authentication and authorization. To simplify
 
 ### 🚀 Importing the Realm
 1. Start the infrastructure using `docker-compose up`.
-2. Access the Keycloak Admin Console (usually at `localhost:8080`).
+2. Access the Keycloak Admin Console (usually at `localhost:8081`).
 3. In the sidebar, click on **Master** (the current realm) and select **Create Realm**.
 4. Click **Browse** and select the file: `keycloak_realm_example.json`.
-5. Click **Create** to import all clients (orders-service, gateway, etc.) and roles.
+5. Click **Create** to import all clients and roles.
 
 > **Note:** Ensure your `.env` file matches the credentials defined in this realm for seamless integration.
 

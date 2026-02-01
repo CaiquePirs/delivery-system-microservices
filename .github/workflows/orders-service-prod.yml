@@ -1,4 +1,4 @@
-name: Orders Service CI/CD Build and Deploy on EC2.
+name: Orders Service CI/CD Build and Deploy.
 
 on:
   push:

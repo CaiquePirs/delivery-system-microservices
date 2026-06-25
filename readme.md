@@ -1,285 +1,141 @@
-# 🍔 Delivery System – Event-Driven Microservices Platform
+# 🍔 Delivery System Microservices
 
-A **production-grade distributed Delivery System**, inspired by platforms like **iFood**, designed with **scalability, resilience, security, and cloud-readiness** as first-class concerns.
+A delivery backend system built with microservices architecture, asynchronous event-driven communication, and centralized authentication through Keycloak.
 
-This project demonstrates a **real-world microservices architecture**, orchestrating **orders, payments, deliveries, notifications, and authentication** through **asynchronous messaging** and **event-driven design**.
+The project simulates a complete order flow, from customer and restaurant registration to order creation, payment processing, delivery start, and notification dispatch. Its main goal is to demonstrate a distributed backend architecture with clear service ownership, database-per-service persistence, and integration between business domains.
 
-It was built to reflect **enterprise backend standards**, focusing on loose coupling, fault tolerance, and maintainability.
+## Overview
 
----
+This repository is a monorepo composed of independent Spring Boot services. Each service has its own `pom.xml`, `Dockerfile`, environment configuration, and test suite.
 
-## 🧠 Architectural Vision
+Services communicate in two main ways:
 
-The system adopts a **Microservices + Event-Driven Architecture**, where each service:
+- REST/Feign: used for synchronous domain queries, such as retrieving customer, restaurant, menu, or order data.
+- RabbitMQ: used for business events, such as order creation, payment approval, delivery updates, and user deletion.
 
-* Owns its **own data (Database per Service)**
-* Communicates asynchronously through **RabbitMQ**
-* Is independently deployable
-* Is secured via **centralized identity management (Keycloak)**
+External traffic goes through the API Gateway, while Eureka Server provides dynamic service registration and discovery.
 
-Synchronous communication (REST) is used **only when strictly necessary**, while **domain events** drive most business flows.
+## Architecture
 
----
-
-## 🏗️ System Architecture
 <div align="center">
-  <img src="delivery-system-architecture.png" width="850px" alt="Arquitetura do Sistema">
+  <img src="delivery-system-architecture.png" width="850px" alt="System architecture diagram">
 </div>
 
-The platform is composed of a **mesh of autonomous microservices**, integrated through a **Message Broker** and exposed via an **API Gateway**.
-
-### 🔷 Core Infrastructure Components
-
-* **API Gateway (Spring Cloud Gateway)**
-  Single entry point for all external traffic, responsible for routing, authentication filters, and request forwarding.
-
-* **Service Discovery (Eureka Server)**
-  Dynamic registration and discovery of microservice instances.
-
-* **Identity Provider (Keycloak)**
-  OAuth2 / OpenID Connect authentication server with Role-Based Access Control (RBAC).
-
-* **Message Broker (RabbitMQ)**
-  Central component for:
-
-    * Asynchronous communication
-    * Domain events
-    * Webhooks
-    * Loose coupling between services
-
-* **Persistence Layer (Polyglot Persistence)**
-
-    * **PostgreSQL (Amazon RDS)** – Customers, Restaurants, Deliveries
-    * **MongoDB Atlas** – Orders and Payments
-    * **Redis Cloud** – Session cache, access tokens, customers and restaurants cache
-
-📌 **Architecture Diagram:**
-Available in the repository under `/docs/delivery-system-architecture.pdf`
-
----
-
-## 🛠️ Microservices & Responsibilities
-
-### 🔐 Authentication Service
-
-Direct integration with **Keycloak**, acting as the identity orchestration layer.
-
-**Responsibilities:**
-
-* Login and token management (JWT)
-* Asynchronous user registration
-* Data consistency between Keycloak and domain services
-
-**Event-Driven Registration Flow:**
-
-1. Customer or Restaurant is created
-2. Authentication Service publishes an event via RabbitMQ
-3. Domain services persist their data
-4. User is registered in Keycloak simultaneously
-
-Deleting a user in any domain service triggers **immediate deletion in Keycloak**.
-
----
-
-### 🧍 Customer Service
-
-Manages customer domain data and secure profile access.
-
-* Full CRUD operations
-* Multiple addresses per customer
-* Profile endpoint protected by JWT
-* Redis caching for customer data
-
----
-
-### 🍽️ Restaurant Service
-
-Responsible for restaurant management and operational state.
-
-* Full CRUD operations
-* Menu ownership
-* Restaurant availability validation (OPEN / CLOSED)
-* Redis cache for restaurant data
-
----
-
-### 📋 Menu Service
-
-Manages restaurant products.
-
-* Each item belongs to exactly one restaurant
-* Mandatory price, category, and availability
-* Price validation (> 0)
-
----
-
-### 🧾 Order Service
-
-The **core service of the platform**, responsible for the full order lifecycle.
-
-**Key Capabilities:**
-
-* Automatic total price calculation
-* Parallel data fetching using `CompletableFuture`
-* Feign Clients for Customers and Restaurants
-* Event publishing on order creation and updates
-* Event consumption to react to payment and delivery changes
-
-**Order Status Flow:**
-
-* `PENDING_PAYMENT`
-* `PAID`
-* `OUT_FOR_DELIVERY`
-
-Only **authenticated users** can place and access orders.
-
----
-
-### 💳 Payment Service
-
-Handles payment processing in a **fully asynchronous and decoupled manner**.
-
-**Features:**
-
-* Supported methods: **PIX, CARD, CASH**
-* Simulated Payment Gateway
-* Webhook endpoints for payment callbacks
-* Publishes payment result events
-
-**Payment Status Flow:**
-
-* `PENDING`
-* `AUTHORIZED`
-* `FAILED`
-
----
-
-### 🚚 Delivery Service
-
-Manages delivery orchestration.
-
-* Automatic courier assignment (simulated)
-* Delivery fee calculation
-* Secure webhook allowing only authenticated restaurants to start delivery
-* Event-driven delivery lifecycle updates
-
-**Delivery Status Flow:**
-
-* `ASSIGNED`
-* `OUT_FOR_DELIVERY`
-
----
-
-### 🛵 Courier Service
-
-Manages delivery personnel.
-
-* Courier registration
-* Vehicle types: BIKE, MOTORCYCLE, CAR
-* Tracks delivered orders and delivery earnings
-
----
-
-### 📧 Notification Service
-
-Responsible for customer and restaurant notifications.
-
-**Highlights:**
-
-* Implements **Strategy Pattern** (Email / SMS)
-* Dynamic HTML email templates
-* Event-driven notification dispatch
-
-**Notifications Sent:**
-
-* Order created
-* Payment confirmed
-* Order out for delivery
-* Restaurant notified of new order
-
----
-
-## 🔁 Event-Driven Business Flow (Example)
-
-1. Customer places an order
-2. Order Service publishes `ORDER_CREATED`
-3. Payment Service consumes the event and processes payment
-4. Payment Service publishes `ORDER_PAID`
-5. Notification Service sends confirmation
-6. Delivery Service assigns courier and updates status
-
----
-
-## 🔒 Security Architecture
-
-* OAuth2 / OpenID Connect via Keycloak
-* JWT tokens for external and internal communication
-* Gateway-level authentication and authorization
-* Secured service-to-service communication
-* Redis cache for tokens and session data
-
----
-
-## 🚀 Technologies & Design Patterns
-
-* **Spring Boot & Spring Cloud** (Gateway, Eureka, OpenFeign)
-* **RabbitMQ** (Exchanges, Queues, Event Routing)
-* **Redis Cloud** (Caching & performance)
-* **MongoDB Atlas & Amazon RDS**
-* **Docker & Docker Compose**
-
-**Design Patterns Applied:**
-
-* Strategy
-* Observer (Event-Driven)
-* Factory
-* Controller Advice (Global Exception Handling)
-
----
-
-## 🧪 Testing Strategy
-
-* Unit Tests
-* Integration Tests
-* Postman collections for end-to-end validation
-
----
-
-## 📦 CI/CD & Infrastructure
-
-Each microservice includes a **professional CI/CD pipeline**:
-
-* **GitHub Actions (CI)**
-
-    * Build automation
-    * Test execution
-    * Docker image generation
-
-* **GitHub Actions (CD)**
-
-    * Automated deployment to **AWS EC2**
-    * Self-hosted GitHub Runner on EC2
-
-* **Containerization**
-
-    * Individual Dockerfiles per service
-    * Centralized Docker Compose orchestration
-
----
-
-## 🧩 Business Rules Enforced
-
-* [x] Access to protected resources requires a valid JWT token
-* [x] Restaurants must be in `OPEN` status to receive orders
-* [x] Menu items must be available (`available = true`)
-* [x] User deletion propagates immediately to Keycloak
-* [x] Item prices are validated to prevent invalid values
-
----
-
----
-
-## 📧 Email Notification Templates
+### Core Components
+
+| Component | Responsibility |
+| --- | --- |
+| API Gateway | Single entry point for the application, responsible for routing requests to microservices and integrating with OAuth2/JWT security. |
+| Eureka Server | Service registry and discovery for all microservices. |
+| Keycloak | Identity provider responsible for authentication, token issuing, and access control. |
+| RabbitMQ | Message broker used for asynchronous communication between services. |
+| Redis | Cache layer for data and tokens in services that need to reduce repeated calls. |
+| PostgreSQL | Relational database used by customers, restaurants, deliveries, and Keycloak. |
+| MongoDB | Document database used by orders and payments. |
+
+## Services
+
+| Service | Description | Persistence |
+| --- | --- | --- |
+| `authentication-service` | Handles login, customer/restaurant registration in Keycloak, and internal service authentication. | Keycloak + Redis |
+| `customers-service` | Manages customers, profiles, and delivery addresses. Publishes an event when a customer is removed. | PostgreSQL + Redis |
+| `restaurants-service` | Manages restaurants, operating status, and menu items. Publishes an event when a restaurant is removed. | PostgreSQL + Redis |
+| `orders-service` | Creates orders, calculates totals, validates customer/restaurant/menu data, and tracks order status changes. | MongoDB |
+| `payments-service` | Processes payments asynchronously, simulates an external gateway integration, and publishes payment confirmation events. | MongoDB |
+| `delivery-service` | Creates deliveries after payment approval, assigns a courier, and updates delivery status. | PostgreSQL |
+| `notification-service` | Consumes events and sends email notifications using HTML templates. | No dedicated database |
+| `infrastructure-service/gateway` | Gateway service based on Spring Cloud Gateway. | - |
+| `infrastructure-service/eureka` | Service discovery based on Netflix Eureka. | - |
+
+## Main Flow
+
+1. A customer or restaurant is registered through the `authentication-service`.
+2. The authentication service creates the user in Keycloak and calls the related domain service.
+3. The customer creates an order in the `orders-service`.
+4. The order is validated using customer, address, restaurant, and menu data.
+5. The `orders-service` publishes an event to start payment verification.
+6. The `payments-service` creates the payment, simulates processing, and receives confirmation through a webhook.
+7. After authorization, the approved payment event is published to orders, deliveries, and notifications.
+8. The `delivery-service` creates the delivery and allows the status to move to out for delivery.
+9. The `notification-service` sends emails during the main order lifecycle steps.
+
+## Event Communication
+
+| Source | Event/Queue/Exchange | Consumers | Purpose |
+| --- | --- | --- | --- |
+| Orders | `ORDERS_RABBITMQ_EXCHANGE_VERIFY_PAYMENT` | Payments, Notifications | Start payment processing and notify that the order was received. |
+| Payments | `PAYMENTS_RABBITMQ_PUBLISHER_EXCHANGE` | Orders, Delivery, Notifications | Notify that the payment was authorized. |
+| Delivery | `DELIVERIES_RABBITMQ_PUBLISHER_DELIVERY_READY` | Orders, Notifications | Notify delivery status updates. |
+| Customers | `CUSTOMERS_DELETED_QUEUE` | Authentication | Remove the user from Keycloak after customer deletion. |
+| Restaurants | `RESTAURANT_DELETED_QUEUE` | Authentication | Remove the user from Keycloak after restaurant deletion. |
+
+Final queue and exchange names are configured through environment variables, as shown in `.env.example` and `docker-compose.yml`.
+
+## Main Endpoints
+
+The endpoints below are exposed by the services and can be accessed through the gateway according to the route configuration.
+
+### Authentication
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `/api/auth/login` | Authenticates a user and returns an access token. |
+| POST | `/api/auth/internal-login` | Generates a token for internal service-to-service communication. |
+| POST | `/api/auth/signUp-customers` | Registers a customer and its identity in Keycloak. |
+| POST | `/api/auth/signUp-restaurants` | Registers a restaurant and its identity in Keycloak. |
+
+### Customers
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `/api/customers` | Creates a customer. |
+| GET | `/api/customers/{id}` | Retrieves a customer by ID. |
+| DELETE | `/api/customers/{id}` | Deletes a customer and publishes a deletion event. |
+| GET | `/api/customers/profile` | Retrieves the authenticated customer's profile. |
+| DELETE | `/api/customers/profile` | Deletes the authenticated customer's profile. |
+| POST | `/api/customers/my-addresses` | Creates an address for the authenticated customer. |
+| GET | `/api/customers/my-addresses/{id}` | Retrieves an address by ID. |
+
+### Restaurants and Menu
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `/api/restaurants` | Creates a restaurant. |
+| GET | `/api/restaurants` | Lists restaurants with optional filters. |
+| GET | `/api/restaurants/{id}` | Retrieves a restaurant by ID. |
+| DELETE | `/api/restaurants/{id}` | Deletes a restaurant and publishes a deletion event. |
+| GET | `/api/restaurants/profile` | Retrieves the authenticated restaurant's profile. |
+| DELETE | `/api/restaurants/profile` | Deletes the authenticated restaurant's profile. |
+| PATCH | `/api/restaurants/profile` | Toggles restaurant status between `OPEN` and `CLOSED`. |
+| POST | `/api/restaurants/{restaurantId}/menus` | Creates a menu item. |
+| GET | `/api/restaurants/{restaurantId}/menus/{id}` | Retrieves an available menu item. |
+| PATCH | `/api/restaurants/{restaurantId}/menus/{id}` | Toggles menu item availability. |
+| DELETE | `/api/restaurants/{restaurantId}/menus/{id}` | Disables a menu item. |
+
+### Orders, Payments, and Deliveries
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `/api/orders` | Creates an order. |
+| GET | `/api/orders/{id}` | Retrieves an order by ID. |
+| GET | `/api/orders/{id}/customers` | Lists orders related to the given customer. |
+| GET | `/api/orders/{id}/restaurants` | Lists orders related to the given restaurant. |
+| POST | `/api/payments/webhook` | Receives payment confirmation. |
+| POST | `/api/deliveries/webhook/{id}` | Updates a delivery to out for delivery. |
+
+## Business Rules
+
+- Only authenticated users can access protected resources.
+- Customers should only access data related to their own profile.
+- Restaurants must be `OPEN` to receive orders.
+- Menu items must be `AVAILABLE` to be included in an order.
+- Orders start with the `PENDING_PAYMENT` status.
+- Payments start as `PENDING` and can move to `AUTHORIZED` or `FAILED`.
+- Approved payments update the order to `PAID` and start the delivery flow.
+- Deliveries can move through `ASSIGNED`, `OUT_FOR_DELIVERY`, `DELIVERED`, or `CANCELLED`.
+- Customer or restaurant deletion propagates credential removal in Keycloak.
+
+## Email Notification Templates
 
 The system ensures real-time communication with both customers and restaurants through professional HTML emails. These templates are generated using **Thymeleaf** and dispatched asynchronously via the **Notification Service**.
 
@@ -315,67 +171,114 @@ The system ensures real-time communication with both customers and restaurants t
 
 ---
 
-## ⚙️ How to Run the Project
+## Technologies
 
-### 📋 Prerequisites
+- Java 21
+- Spring Boot
+- Spring Security OAuth2 Resource Server
+- Spring Cloud Gateway
+- Spring Cloud Netflix Eureka
+- Spring Cloud OpenFeign
+- Spring AMQP / RabbitMQ
+- Spring Data JPA
+- Spring Data MongoDB
+- Spring Data Redis
+- PostgreSQL
+- MongoDB
+- Redis
+- Keycloak
+- Docker and Docker Compose
+- Maven
+- JUnit, Mockito, Spring Boot Test, and H2 for tests
 
-* Java 21
-* Docker & Docker Compose
-* MongoDB Atlas (or local MongoDB)
-* Redis Cloud (or local Redis)
+## Repository Structure
 
-### 🚀 Installation
+```text
+.
+├── authentication-service/
+├── customers-service/
+├── delivery-service/
+├── infrastructure-service/
+│   ├── eureka/
+│   └── gateway/
+├── notification-service/
+├── orders-service/
+├── payments-service/
+├── restaurants-service/
+├── docker-compose.yml
+├── keycloak_realm_example.json
+├── delivery-system-architecture.png
+└── delivery-system-uml.png
+```
 
-Clone the repository:
+## How to Run
+
+### Prerequisites
+
+- Java 21
+- Maven
+- Docker and Docker Compose
+- Access/configuration for PostgreSQL, MongoDB, and Redis
+- Keycloak configured with the realm, client, and roles expected by the project
+
+### Environment Setup
+
+Create the `.env` file based on `.env.example`:
 
 ```bash
-git clone https://github.com/CaiquePirs/delivery-system-microservices.git
+cp .env.example .env
 ```
 
-Configure environment variables using the `.env.example` file (based on `docker-compose.yml`).
-"Copy .env.example to .env and fill in your credentials before running the project."
+Fill in the database, RabbitMQ, Redis, Keycloak, email, queue, and exchange variables. The `keycloak_realm_example.json` file can be used as a base to import the realm into Keycloak.
 
-Start the full ecosystem:
+### Start the Stack with Docker Compose
 
 ```bash
-docker-compose up -d --build
+docker compose up -d
 ```
 
-Verify registered services via Eureka Dashboard:
+Useful services after startup:
+
+| Service | Default URL |
+| --- | --- |
+| Gateway | `http://localhost:${GATEWAY_PORT}` |
+| Eureka | `http://localhost:${EUREKA_SERVER_PORT}` |
+| RabbitMQ Management | `http://localhost:${RABBITMQ_WEB_PORT}` |
+| Keycloak | `http://localhost:${KEYCLOAK_PORT_O1}` |
+
+> Note: ports depend on the values defined in `.env`.
+
+## Running Tests
+
+Each microservice has an independent Maven build, so tests should be run inside each module:
+
+```bash
+cd customers-service
+mvn test
 ```
-http://localhost:8761
+
+To run all application modules manually:
+
+```bash
+for service in authentication-service customers-service restaurants-service orders-service payments-service delivery-service notification-service infrastructure-service/eureka infrastructure-service/gateway; do
+  (cd "$service" && mvn test)
+done
 ```
 
-## 🔐 Identity and Access Management (Keycloak)
+## CI/CD
 
-This project uses **Keycloak** for authentication and authorization. To simplify the setup, a pre-configured realm file is provided.
+The repository includes service-specific workflows under `.github/workflows`. They cover build, test, Docker image generation, and deployment steps according to each pipeline configuration.
 
-### 🚀 Importing the Realm
-1. Start the infrastructure using `docker-compose up`.
-2. Access the Keycloak Admin Console (usually at `localhost:8081`).
-3. In the sidebar, click on **Master** (the current realm) and select **Create Realm**.
-4. Click **Browse** and select the file: `keycloak_realm_example.json`.
-5. Click **Create** to import all clients and roles.
+## Diagrams
 
-> **Note:** Ensure your `.env` file matches the credentials defined in this realm for seamless integration.
+### Entity Diagram
 
----
+<div align="center">
+  <img src="delivery-system-uml.png" width="850px" alt="System entity diagram">
+</div>
 
-## 🗺️ Diagrams & Documentation
-
-* UML Diagrams (Entities)
-* System Architecture Diagram
-* Business Rules Documentation
-
----
-
-## 🔗 GitHub Repository
-
-👉 [https://github.com/CaiquePirs/delivery-system-microservices](https://github.com/CaiquePirs/delivery-system-microservices)
-
----
-
-## 👨‍💻 Author
+## Author
 
 **Caique Pirs**
-Backend Engineer | Java | Spring Boot | Microservices | Cloud | Event-Driven Systems
+
+Backend Engineer | Java | Spring Boot | Microservices | Event-Driven Architecture

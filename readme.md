@@ -1,8 +1,8 @@
 # 🍔 Delivery System Microservices
 
-A delivery backend system built with microservices architecture, asynchronous event-driven communication, and centralized authentication through Keycloak.
-
-The project simulates a complete order flow, from customer and restaurant registration to order creation, payment processing, delivery start, and notification dispatch. Its main goal is to demonstrate a distributed backend architecture with clear service ownership, database-per-service persistence, and integration between business domains.
+A **production-grade distributed Delivery System**, inspired by platforms like **iFood**, designed with **scalability, resilience, security, and cloud-readiness** as first-class concerns.
+This project demonstrates a **real-world microservices architecture**, orchestrating **orders, payments, deliveries, notifications, and authentication** through **asynchronous messaging** and **event-driven design**.
+It was built to reflect **enterprise backend standards**, focusing on loose coupling, fault tolerance, and maintainability.
 
 ## Overview
 
@@ -265,18 +265,27 @@ for service in authentication-service customers-service restaurants-service orde
 done
 ```
 
-## CI/CD
+## CI/CD & Infrastructure
 
-The repository includes service-specific workflows under `.github/workflows`. They cover build, test, Docker image generation, and deployment steps according to each pipeline configuration.
+Each microservice includes a **professional CI/CD pipeline**:
 
-## Diagrams
+* **GitHub Actions (CI)**
 
-### Entity Diagram
+    * Build automation
+    * Test execution
+    * Docker image generation
 
-<div align="center">
-  <img src="delivery-system-uml.png" width="850px" alt="System entity diagram">
-</div>
+* **GitHub Actions (CD)**
 
+    * Automated deployment to **AWS EC2**
+    * Self-hosted GitHub Runner on EC2
+
+* **Containerization**
+
+    * Individual Dockerfiles per service
+    * Centralized Docker Compose orchestration
+
+---
 ## Author
 
 **Caique Pirs**

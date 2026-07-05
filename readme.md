@@ -1,4 +1,4 @@
-# Delivery System — Microservices
+# 🍔 Delivery System — Microservices
 A production-grade distributed delivery system inspired by platforms like iFood, built with scalability, resilience, security, and cloud-readiness as first-class concerns.
 
 This repository is a monorepo composed of **9 independent Spring Boot microservices**. Each service owns its database, messaging contracts, Dockerfile, and CI/CD pipeline — reflecting enterprise backend standards focused on loose coupling, fault tolerance, and maintainability.
